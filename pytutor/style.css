@@ -39,8 +39,13 @@ body {
   color: var(--text);
   font-family: var(--font-ui);
   min-height: 100vh;
+  width: 100%;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  width: 100%;
 }
 
 button { font-family: var(--font-ui); }
@@ -58,6 +63,7 @@ button { font-family: var(--font-ui); }
   background: var(--panel);
   border-bottom: 1px solid var(--border);
   padding: 12px 16px 10px;
+  padding-top: max(12px, env(safe-area-inset-top));
   position: sticky;
   top: 0;
   z-index: 100;
@@ -117,6 +123,8 @@ button { font-family: var(--font-ui); }
   display: flex;
   gap: 6px;
   overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
   padding-bottom: 2px;
   scrollbar-width: none;
 }
@@ -153,7 +161,8 @@ button { font-family: var(--font-ui); }
    MAIN LAYOUT
    ══════════════════════════════════════════════════════════ */
 #main {
-  padding: 14px 14px 32px;
+  padding: 14px 0 32px;
+  width: 100%;
   max-width: 1440px;
   margin: 0 auto;
   display: flex;
@@ -1326,3 +1335,106 @@ body.exam-active .hint-area { opacity: 0.4; pointer-events: none; }
    UTILITY
    ══════════════════════════════════════════════════════════ */
 .hidden { display: none !important; }
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE TAB BUTTON (only on small screens)
+   ══════════════════════════════════════════════════════════ */
+.mobile-tab-row {
+  display: none;
+  padding: 6px 14px 0;
+}
+
+.btn-tab-mobile {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  cursor: pointer;
+  min-height: 36px;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-tab-mobile:active {
+  background: var(--border);
+  color: var(--text);
+}
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE LAYOUT  (< 600 px)
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 599px) {
+
+  /* Show Tab button */
+  .mobile-tab-row { display: block; }
+
+  /* Header: tighter padding, smaller gap */
+  #header { padding: 8px 10px 8px; }
+
+  .header-top { margin-bottom: 8px; gap: 6px; }
+
+  .logo { font-size: 1rem; }
+
+  .header-right { gap: 6px; flex-wrap: wrap; }
+
+  /* Badges */
+  .streak-badge,
+  .score-badge {
+    font-size: 0.72rem;
+    padding: 2px 7px;
+  }
+
+  /* Header buttons */
+  .btn-add-lab,
+  .btn-exam {
+    font-size: 0.68rem;
+    padding: 4px 8px;
+    min-height: 26px;
+  }
+
+  .icon-btn {
+    font-size: 0.85rem;
+    padding: 4px 6px;
+    min-height: 28px;
+    min-width: 28px;
+  }
+
+  /* Main grid padding */
+  #main { padding: 10px 0 24px; gap: 10px; }
+
+  /* Exercise card */
+  #exercise-card { padding: 12px; }
+
+  .exercise-title { font-size: 0.95rem; }
+
+  .exercise-desc { font-size: 0.85rem; }
+
+  /* Code editor font */
+  .code-editor {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+
+  .line-numbers {
+    font-size: 0.75rem;
+    padding: 10px 8px 10px 10px;
+    min-width: 36px;
+  }
+
+  /* Action buttons */
+  .btn {
+    font-size: 0.82rem;
+    padding: 9px 16px;
+    min-height: 40px;
+  }
+
+  .editor-actions { padding: 10px 10px; gap: 8px; }
+
+  /* Console */
+  .console-output { font-size: 0.8rem; }
+
+  /* Keyboard legend: hide on tiny screens */
+  .kbd-legend { display: none; }
+}

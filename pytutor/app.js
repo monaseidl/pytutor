@@ -1606,6 +1606,17 @@ function bindEvents() {
   document.getElementById('hint-btn')
     .addEventListener('click', showNextHint);
 
+  // ── Mobile Tab button ──
+  document.getElementById('tab-btn')
+    .addEventListener('click', () => {
+      const s = editor.selectionStart;
+      const e2 = editor.selectionEnd;
+      editor.value = editor.value.slice(0, s) + '    ' + editor.value.slice(e2);
+      editor.selectionStart = editor.selectionEnd = s + 4;
+      editor.focus();
+      syncLineNumbers();
+    });
+
   document.getElementById('reset-btn')
     .addEventListener('click', () => {
       if (state.currentEx) setEditorCode(state.currentEx.starter_code);
