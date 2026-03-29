@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#4ade80">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <title>PyTutor 🐍</title>
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── Header ── -->
+    <header id="header">
+      <div class="header-top">
+        <h1 class="logo">PyTutor 🐍</h1>
+        <div class="header-right">
+          <div class="streak-badge">
+            🔥 <span id="streak-count">0</span>
+          </div>
+          <div class="score-badge">
+            ⭐ <span id="score-count">0</span>
+          </div>
+          <button id="add-lab-btn" class="btn-add-lab" title="Übungsblatt als Lab importieren">➕ Lab</button>
+          <button id="exam-upload-btn" class="btn-add-lab" title="Alte Prüfungsaufgaben hochladen">📝 Prüfungsaufgaben</button>
+          <button id="exam-btn" class="btn-exam" title="Prüfungsmodus starten (10 Aufgaben, 5 min Timer)">🎯 Prüfung</button>
+          <button id="settings-btn" class="icon-btn" title="Einstellungen (API Key)">⚙️</button>
+        </div>
+      </div>
+      <div class="lab-selector" id="lab-selector"></div>
+    </header>
+
+    <!-- ── Exam Bar ── -->
+    <div id="exam-bar" class="exam-bar hidden">
+      <div class="exam-bar-inner">
+        <span class="exam-bar-title">🎯 Prüfungsmodus</span>
+        <div id="exam-timer" class="exam-timer">5:00</div>
+        <span id="exam-progress-label" class="exam-progress-label">Frage 1 / 10</span>
+        <span id="exam-score-label" class="exam-score-label">0 richtig</span>
+        <button id="exam-exit-btn" class="text-btn small">✕ Beenden <kbd>Esc</kbd></button>
+      </div>
+      <div class="exam-timer-track"><div id="exam-timer-fill" class="exam-timer-fill"></div></div>
+    </div>
+
+    <!-- ── Main Grid ── -->
+    <main id="main">
+
+      <!-- Column Left: Exercise + Editor -->
+      <div class="col-left">
+
+        <!-- Exercise Card -->
+        <section class="card" id="exercise-card">
+          <div class="exercise-header">
+            <div class="exercise-meta">
+              <span id="exercise-status-icon" class="exercise-status-icon" aria-label="Status">🔴</span>
+              <span class="exercise-id" id="exercise-id">–</span>
+              <span class="badge difficulty" id="difficulty-badge">–</span>
+              <span class="badge exam" id="exam-badge">–</span>
+            </div>
+            <div id="variation-spinner" class="spinner-inline hidden">
+              <span class="spin-ring"></span><span>Variation…</span>
+            </div>
+          </div>
+
+          <h2 id="exercise-title" class="exercise-title">Aufgabe wird geladen…</h2>
+
+          <div id="variation-note" class="variation-note hidden"></div>
+
+          <p id="exercise-description" class="exercise-desc"></p>
+
+          <div id="example-tests" class="example-tests"></div>
+
+          <!-- Progress Dashboard (collapsible) -->
+          <div class="progress-dashboard" id="progress-dashboard">
+            <button class="progress-toggle" id="progress-toggle">
+              📊 Fortschritt <span id="progress-arrow" class="progress-arrow">▸</span>
+            </button>
+            <div id="progress-content" class="progress-content hidden"></div>
+          </div>
+
+          <div class="hint-area">
+            <button id="hint-btn" class="hint-btn">💡 Tipp anzeigen</button>
+            <div id="hint-display" class="hint-display hidden"></div>
+          </div>
+        </section>
+
+        <!-- Code Editor -->
+        <section class="card editor-section">
+          <div class="section-bar">
+            <span class="section-label">Python-Code</span>
+            <div class="bar-right">
+              <span class="kbd-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> ausführen</span>
+              <span class="kbd-hint"><kbd>Ctrl</kbd>+<kbd>E</kbd> erklären</span>
+              <button id="reset-btn" class="text-btn">↺ Reset</button>
+            </div>
+          </div>
+          <div class="editor-wrap">
+            <div id="line-numbers" class="line-numbers" aria-hidden="true">1</div>
+            <textarea
+              id="code-editor"
+              class="code-editor"
+              spellcheck="false"
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="off"
+              aria-label="Python Code Editor"
+              placeholder="# Schreib deinen Code hier…"
+            ></textarea>
+          </div>
+          <div class="editor-actions">
+            <button id="run-btn" class="btn btn-run">▶ Ausführen</button>
+            <button id="explain-btn" class="btn btn-explain">🔍 Erklären</button>
+          </div>
+        </section>
+
+      </div><!-- /col-left -->
+
+      <!-- Column Right: Console + Tutor -->
+      <div class="col-right">
+
+        <!-- Console -->
+        <section class="card console-section">
+          <div class="section-bar">
+            <span class="section-label">Konsole</span>
+            <button id="clear-console-btn" class="text-btn small">✕ Leeren</button>
+          </div>
+          <div id="console-output" class="console-output">
+            <span class="console-placeholder">Klick auf ▶ Ausführen um deinen Code zu testen.</span>
+          </div>
+        </section>
+
+        <!-- Tutor Panel -->
+        <section class="card tutor-section">
+          <div class="section-bar">
+            <span class="section-label">🤖 KI-Tutor</span>
+            <button id="api-status-btn" class="api-badge no-key" title="API Key einrichten">Kein API Key</button>
+          </div>
+          <div id="tutor-messages" class="tutor-messages"></div>
+          <div class="tutor-footer">
+            <button id="next-btn" class="btn btn-next hidden">Nächste Aufgabe →</button>
+          </div>
+        </section>
+
+      </div><!-- /col-right -->
+
+    </main>
+  <!-- ── Keyboard Legend ── -->
+  <footer class="kbd-legend">
+    <span class="kbd-legend-title">Tastaturkürzel:</span>
+    <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Ausführen</span>
+    <span><kbd>Ctrl</kbd>+<kbd>E</kbd> Erklären</span>
+    <span><kbd>Ctrl</kbd>+<kbd>H</kbd> Tipp</span>
+    <span><kbd>Esc</kbd> Prüfungsmodus beenden</span>
+  </footer>
+
+  </div><!-- /#app -->
+
+  <!-- ── Settings Modal ── -->
+  <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Einstellungen">
+    <div class="modal-box" role="document">
+      <div class="modal-header">
+        <h3>Einstellungen ⚙️</h3>
+        <button id="close-settings-btn" class="icon-btn" aria-label="Schließen">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label" for="api-provider-select">
+          API-Anbieter
+        </label>
+        <select id="api-provider-select" class="form-input">
+          <option value="anthropic">Anthropic (Claude)</option>
+          <option value="openai">OpenAI</option>
+          <option value="google">Google Gemini</option>
+        </select>
+
+        <label class="form-label" for="api-key-input">
+          API Key
+          <span class="form-hint">Dein Key wird nur lokal in deinem Browser gespeichert und nie übertragen.</span>
+        </label>
+        <input
+          type="password"
+          id="api-key-input"
+          class="form-input"
+          placeholder="sk-ant-api03-…"
+          autocomplete="off"
+        >
+        <div id="api-key-status" class="api-key-status" aria-live="polite"></div>
+
+        <div class="settings-info">
+          <p>💡 <strong>Wo bekomme ich einen API Key?</strong></p>
+          <p>Anthropic: console.anthropic.com · OpenAI: platform.openai.com · Google: aistudio.google.com</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-settings-btn" class="btn btn-run">✓ Speichern</button>
+        <button id="test-api-btn" class="btn btn-explain">⚡ API testen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Add Lab Modal ── -->
+  <div id="add-lab-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Lab hinzufügen">
+    <div class="modal-box modal-box-wide" role="document">
+      <div class="modal-header">
+        <h3>➕ Lab aus Übungsblatt importieren</h3>
+        <button id="close-add-lab-btn" class="icon-btn" aria-label="Schließen">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="add-lab-row">
+          <label class="form-label add-lab-label" for="add-lab-number">Lab-Nummer</label>
+          <select id="add-lab-number" class="form-input add-lab-select">
+            <option value="1">Lab 1</option>
+            <option value="2">Lab 2</option>
+            <option value="3">Lab 3</option>
+            <option value="4">Lab 4</option>
+            <option value="5">Lab 5</option>
+            <option value="6">Lab 6</option>
+            <option value="7">Lab 7</option>
+            <option value="8">Lab 8</option>
+            <option value="9">Lab 9</option>
+            <option value="10">Lab 10</option>
+          </select>
+        </div>
+
+        <div class="add-lab-tabs" role="tablist">
+          <button class="add-lab-tab active" role="tab" data-tab="text">📄 Text</button>
+          <button class="add-lab-tab" role="tab" data-tab="pdf">📎 PDF</button>
+        </div>
+
+        <div id="add-lab-tab-text" class="add-lab-tab-panel">
+          <label class="form-label" for="lab-text-input">
+            Übungsblatt-Text einfügen
+            <span class="form-hint">
+              Kopiere den kompletten Übungsblatt-Text (Aufgabentexte + Python-Code mit Doctests).
+              Die KI erkennt Funktionsnamen, Parameter und Tests automatisch.
+            </span>
+          </label>
+          <textarea
+            id="lab-text-input"
+            class="form-input form-textarea"
+            placeholder="# Beispiel:
+def a_plus_abs_b(a, b):
+    &quot;&quot;&quot;Return a + abs(b), but without calling abs.
+    >>> a_plus_abs_b(2, 3)
+    5
+    >>> a_plus_abs_b(2, -3)
+    5
+    &quot;&quot;&quot;"
+            spellcheck="false"
+            autocorrect="off"
+          ></textarea>
+          <div class="settings-info" style="margin-top:12px">
+            <p>💡 <strong>Tipp:</strong> Füge den gesamten Text des Übungsblatts ein – je mehr Kontext, desto besser die Aufgaben.</p>
+          </div>
+        </div>
+
+        <div id="add-lab-tab-pdf" class="add-lab-tab-panel hidden">
+          <label class="form-label" for="lab-pdf-input">
+            PDF hochladen
+            <span class="form-hint">
+              Bei Anthropic &amp; Google wird das PDF direkt analysiert. Bei OpenAI wird der Text zuerst extrahiert.
+            </span>
+          </label>
+          <input type="file" id="lab-pdf-input" accept=".pdf,application/pdf" class="form-input lab-pdf-file-input">
+          <p id="lab-pdf-name" class="form-hint lab-pdf-name"></p>
+        </div>
+
+        <div id="add-lab-status" class="api-key-status" aria-live="polite"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="generate-lab-btn" class="btn btn-run">⚡ Aufgaben generieren</button>
+        <button id="cancel-add-lab-btn" class="btn btn-explain">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Exam Upload Modal ── -->
+  <div id="exam-upload-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Prüfungsaufgaben hochladen">
+    <div class="modal-box modal-box-wide" role="document">
+      <div class="modal-header">
+        <h3>📝 Prüfungsaufgaben importieren</h3>
+        <button id="close-exam-upload-btn" class="icon-btn" aria-label="Schließen">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="add-lab-tabs" role="tablist">
+          <button class="exam-upload-tab active" role="tab" data-tab="text">📄 Text</button>
+          <button class="exam-upload-tab" role="tab" data-tab="pdf">📎 PDF</button>
+        </div>
+
+        <div id="exam-upload-tab-text" class="add-lab-tab-panel">
+          <label class="form-label" for="exam-text-input">
+            Prüfungstext einfügen
+            <span class="form-hint">Kopiere die Aufgaben aus einer alten Prüfung – inkl. Funktionsdefinitionen und Doctests.</span>
+          </label>
+          <textarea
+            id="exam-text-input"
+            class="form-input form-textarea"
+            placeholder="# Prüfungsaufgabe Beispiel:&#10;def fibonacci(n):&#10;    &quot;&quot;&quot;&#10;    >>> fibonacci(0)&#10;    0&#10;    >>> fibonacci(6)&#10;    8&#10;    &quot;&quot;&quot;"
+            spellcheck="false"
+            autocorrect="off"
+          ></textarea>
+          <div class="settings-info" style="margin-top:12px">
+            <p>💡 Prüfungsaufgaben werden separat gespeichert und im Prüfungsmodus bevorzugt eingesetzt.</p>
+          </div>
+        </div>
+
+        <div id="exam-upload-tab-pdf" class="add-lab-tab-panel hidden">
+          <label class="form-label" for="exam-pdf-input">
+            Prüfungs-PDF hochladen
+            <span class="form-hint">Bei Anthropic &amp; Google wird das PDF direkt analysiert. Bei OpenAI wird der Text zuerst extrahiert.</span>
+          </label>
+          <input type="file" id="exam-pdf-input" accept=".pdf,application/pdf" class="form-input lab-pdf-file-input">
+          <p id="exam-pdf-name" class="form-hint lab-pdf-name"></p>
+        </div>
+
+        <div id="exam-upload-status" class="api-key-status" aria-live="polite"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="generate-exam-btn" class="btn btn-run">⚡ Aufgaben generieren</button>
+        <button id="cancel-exam-upload-btn" class="btn btn-explain">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

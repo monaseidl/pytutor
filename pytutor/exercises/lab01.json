@@ -1,0 +1,393 @@
+{
+  "lab_id": "lab01",
+  "lab_title": "Functions and Control",
+  "lab_description": "Grundlegende Funktionen und Kontrollstrukturen in Python",
+  "exercises": [
+    {
+      "id": "lab01_01",
+      "title": "a_plus_abs_b",
+      "description_de": "Schreibe eine Funktion, die a + |b| berechnet – also a plus den Absolutwert von b. Der Clou: Du darfst die eingebaute Funktion abs() NICHT verwenden. Löse es nur mit Vergleichen und den Grundrechenarten.",
+      "function_name": "a_plus_abs_b",
+      "parameters": ["a", "b"],
+      "starter_code": "def a_plus_abs_b(a, b):\n    pass",
+      "canonical_solution": "def a_plus_abs_b(a, b):\n    if b < 0:\n        return a - b\n    else:\n        return a + b",
+      "tests": [
+        {"input": [2, 3],   "expected": 5},
+        {"input": [2, -3],  "expected": 5},
+        {"input": [-1, 4],  "expected": 3},
+        {"input": [-1, -4], "expected": 3},
+        {"input": [0, 0],   "expected": 0},
+        {"input": [5, -5],  "expected": 10}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["x", "y"], ["m", "n"], ["base", "offset"]],
+        "concept_variations": [
+          {
+            "id": "var_01a",
+            "description_de": "Berechne |a| + b (Absolutwert von a, ohne abs())",
+            "function_name": "abs_a_plus_b",
+            "starter_code": "def abs_a_plus_b(a, b):\n    pass",
+            "canonical_solution": "def abs_a_plus_b(a, b):\n    if a < 0:\n        return -a + b\n    else:\n        return a + b"
+          },
+          {
+            "id": "var_01b",
+            "description_de": "Berechne |a| + |b| (beide Absolutwerte, ohne abs())",
+            "function_name": "abs_a_plus_abs_b",
+            "starter_code": "def abs_a_plus_abs_b(a, b):\n    pass",
+            "canonical_solution": "def abs_a_plus_abs_b(a, b):\n    if a < 0:\n        a = -a\n    if b < 0:\n        b = -b\n    return a + b"
+          },
+          {
+            "id": "var_01c",
+            "description_de": "Berechne a - |b| (a minus Absolutwert von b, ohne abs())",
+            "function_name": "a_minus_abs_b",
+            "starter_code": "def a_minus_abs_b(a, b):\n    pass",
+            "canonical_solution": "def a_minus_abs_b(a, b):\n    if b < 0:\n        return a + b\n    else:\n        return a - b"
+          }
+        ]
+      },
+      "hints": [
+        "Überlege: Wann ist b negativ, und was musst du dann rechnen, damit das Ergebnis trotzdem positiv wird?",
+        "Wenn b negativ ist, gilt |b| = -b. Nutze ein if/else um zwischen den zwei Fällen zu unterscheiden.",
+        "Wenn b < 0: return a - b. Wenn b >= 0: return a + b. Das entspricht genau a + |b|."
+      ],
+      "explanation": "Der Absolutwert einer Zahl ist ihr Abstand von Null – also immer positiv. Statt abs() zu nutzen, prüfst du mit if/else ob b negativ ist. Ist b negativ, dreht -b das Vorzeichen um und macht es positiv.",
+      "difficulty": "easy",
+      "topics": ["if/else", "Vorzeichen", "Arithmetik", "Absolutwert"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab01_02",
+      "title": "two_of_three",
+      "description_de": "Gegeben sind drei Zahlen a, b und c. Gib die Summe der Quadrate der beiden GRÖSSTEN Zahlen zurück. Du darfst max() und min() verwenden.",
+      "function_name": "two_of_three",
+      "parameters": ["a", "b", "c"],
+      "starter_code": "def two_of_three(a, b, c):\n    pass",
+      "canonical_solution": "def two_of_three(a, b, c):\n    return a**2 + b**2 + c**2 - min(a, b, c)**2",
+      "tests": [
+        {"input": [1, 2, 3], "expected": 13},
+        {"input": [5, 3, 1], "expected": 34},
+        {"input": [10, 2, 8], "expected": 164},
+        {"input": [1, 1, 1], "expected": 2},
+        {"input": [-1, -2, -3], "expected": 5},
+        {"input": [3, 3, 0], "expected": 18}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["x", "y", "z"], ["p", "q", "r"]],
+        "concept_variations": [
+          {
+            "id": "var_02a",
+            "description_de": "Gib die Summe der beiden KLEINSTEN Zahlen zurück (nicht quadriert).",
+            "function_name": "sum_of_two_smallest",
+            "starter_code": "def sum_of_two_smallest(a, b, c):\n    pass",
+            "canonical_solution": "def sum_of_two_smallest(a, b, c):\n    return a + b + c - max(a, b, c)"
+          },
+          {
+            "id": "var_02b",
+            "description_de": "Gib das Produkt der beiden größten Zahlen zurück.",
+            "function_name": "product_of_two_largest",
+            "starter_code": "def product_of_two_largest(a, b, c):\n    pass",
+            "canonical_solution": "def product_of_two_largest(a, b, c):\n    return (a * b * c) // min(a, b, c) if min(a, b, c) != 0 else sorted([a,b,c])[-1] * sorted([a,b,c])[-2]"
+          },
+          {
+            "id": "var_02c",
+            "description_de": "Gib den Durchschnitt der beiden kleinsten Zahlen zurück.",
+            "function_name": "avg_of_two_smallest",
+            "starter_code": "def avg_of_two_smallest(a, b, c):\n    pass",
+            "canonical_solution": "def avg_of_two_smallest(a, b, c):\n    return (a + b + c - max(a, b, c)) / 2"
+          }
+        ]
+      },
+      "hints": [
+        "Du brauchst nicht alle möglichen Kombinationen prüfen. Überlege: Was ist die Summe aller drei Quadrate, und was musst du davon abziehen?",
+        "Die Summe der Quadrate aller drei minus das Quadrat der kleinsten Zahl ergibt die Summe der Quadrate der zwei größten.",
+        "Lösung: a**2 + b**2 + c**2 - min(a, b, c)**2"
+      ],
+      "explanation": "Statt die zwei größten zu finden und zu quadrieren, ist es einfacher: Quadriere alle drei, addiere sie, und ziehe das Quadrat der kleinsten ab. min() liefert die kleinste Zahl.",
+      "difficulty": "medium",
+      "topics": ["min/max", "Quadrieren", "Arithmetik", "Problemlösung"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab01_03",
+      "title": "even_q",
+      "description_de": "Schreibe eine Funktion, die True zurückgibt wenn die übergebene Zahl gerade ist, und False wenn sie ungerade ist. Verwende den Modulo-Operator %.",
+      "function_name": "even_q",
+      "parameters": ["n"],
+      "starter_code": "def even_q(n):\n    pass",
+      "canonical_solution": "def even_q(n):\n    return n % 2 == 0",
+      "tests": [
+        {"input": [0],  "expected": true},
+        {"input": [2],  "expected": true},
+        {"input": [4],  "expected": true},
+        {"input": [-2], "expected": true},
+        {"input": [1],  "expected": false},
+        {"input": [3],  "expected": false},
+        {"input": [-3], "expected": false},
+        {"input": [7],  "expected": false}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["zahl"], ["x"], ["num"]],
+        "concept_variations": [
+          {
+            "id": "var_03a",
+            "description_de": "Schreibe odd_q(n): gibt True zurück wenn n ungerade ist.",
+            "function_name": "odd_q",
+            "starter_code": "def odd_q(n):\n    pass",
+            "canonical_solution": "def odd_q(n):\n    return n % 2 != 0"
+          },
+          {
+            "id": "var_03b",
+            "description_de": "Schreibe divisible_by(n, d): gibt True zurück wenn n durch d teilbar ist.",
+            "function_name": "divisible_by",
+            "starter_code": "def divisible_by(n, d):\n    pass",
+            "canonical_solution": "def divisible_by(n, d):\n    return n % d == 0"
+          },
+          {
+            "id": "var_03c",
+            "description_de": "Schreibe both_even(a, b): gibt True zurück wenn BEIDE Zahlen gerade sind.",
+            "function_name": "both_even",
+            "starter_code": "def both_even(a, b):\n    pass",
+            "canonical_solution": "def both_even(a, b):\n    return a % 2 == 0 and b % 2 == 0"
+          }
+        ]
+      },
+      "hints": [
+        "Eine Zahl ist gerade, wenn sie ohne Rest durch 2 teilbar ist. Welcher Operator prüft den Rest einer Division?",
+        "Der Modulo-Operator % gibt den Rest einer Division zurück. n % 2 ergibt 0 wenn n gerade ist.",
+        "return n % 2 == 0 gibt direkt True oder False zurück – kein if/else nötig!"
+      ],
+      "explanation": "Der Modulo-Operator % berechnet den Rest der Division. 4 % 2 = 0 (gerade), 5 % 2 = 1 (ungerade). Der Vergleich n % 2 == 0 ergibt direkt einen Boolean-Wert.",
+      "difficulty": "easy",
+      "topics": ["Modulo", "Boolean", "Teilbarkeit", "return"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab01_04",
+      "title": "voting_ready",
+      "description_de": "Schreibe eine Funktion, die prüft ob eine Person wahlberechtigt ist. In Deutschland darf man ab 18 Jahren wählen. Gib True zurück wenn das Alter >= 18 ist, sonst False.",
+      "function_name": "voting_ready",
+      "parameters": ["age"],
+      "starter_code": "def voting_ready(age):\n    pass",
+      "canonical_solution": "def voting_ready(age):\n    return age >= 18",
+      "tests": [
+        {"input": [18],  "expected": true},
+        {"input": [19],  "expected": true},
+        {"input": [21],  "expected": true},
+        {"input": [100], "expected": true},
+        {"input": [17],  "expected": false},
+        {"input": [16],  "expected": false},
+        {"input": [0],   "expected": false}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["alter"], ["years"], ["user_age"]],
+        "concept_variations": [
+          {
+            "id": "var_04a",
+            "description_de": "drinking_age(age): True wenn die Person in den USA Alkohol kaufen darf (ab 21).",
+            "function_name": "drinking_age",
+            "starter_code": "def drinking_age(age):\n    pass",
+            "canonical_solution": "def drinking_age(age):\n    return age >= 21"
+          },
+          {
+            "id": "var_04b",
+            "description_de": "is_senior(age): True wenn die Person Rentenalter erreicht hat (ab 67).",
+            "function_name": "is_senior",
+            "starter_code": "def is_senior(age):\n    pass",
+            "canonical_solution": "def is_senior(age):\n    return age >= 67"
+          },
+          {
+            "id": "var_04c",
+            "description_de": "in_age_range(age, min_age, max_age): True wenn das Alter im angegebenen Bereich liegt (inklusiv).",
+            "function_name": "in_age_range",
+            "starter_code": "def in_age_range(age, min_age, max_age):\n    pass",
+            "canonical_solution": "def in_age_range(age, min_age, max_age):\n    return min_age <= age <= max_age"
+          }
+        ]
+      },
+      "hints": [
+        "Du brauchst nur eine einzige Bedingung zu prüfen. Ab welchem Alter darf man in Deutschland wählen?",
+        "Verwende den Vergleichsoperator >= (größer oder gleich). Das Ergebnis ist direkt True oder False.",
+        "return age >= 18 – das reicht vollständig als Lösung."
+      ],
+      "explanation": "Vergleichsoperatoren wie >= geben direkt einen Boolean zurück. Du brauchst kein if/else, sondern kannst das Ergebnis des Vergleichs direkt mit return zurückgeben.",
+      "difficulty": "easy",
+      "topics": ["Vergleichsoperatoren", "Boolean", "return", "Bedingungen"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab01_05",
+      "title": "logging_in",
+      "description_de": "Simuliere einen Login-Versuch. Die Funktion bekommt die Anzahl bisheriger Fehlversuche (num_guesses) und gibt eine Zeichenkette zurück: Bei 0 Versuchen: 'Bitte einloggen'. Bei 1-2 Versuchen: 'Falsches Passwort'. Bei 3-4 Versuchen: 'Noch X Versuche' (X = 5 - num_guesses). Bei 5+ Versuchen: 'Konto gesperrt'.",
+      "function_name": "logging_in",
+      "parameters": ["num_guesses"],
+      "starter_code": "def logging_in(num_guesses):\n    pass",
+      "canonical_solution": "def logging_in(num_guesses):\n    if num_guesses == 0:\n        return 'Bitte einloggen'\n    elif num_guesses <= 2:\n        return 'Falsches Passwort'\n    elif num_guesses <= 4:\n        return f'Noch {5 - num_guesses} Versuche'\n    else:\n        return 'Konto gesperrt'",
+      "tests": [
+        {"input": [0], "expected": "Bitte einloggen"},
+        {"input": [1], "expected": "Falsches Passwort"},
+        {"input": [2], "expected": "Falsches Passwort"},
+        {"input": [3], "expected": "Noch 2 Versuche"},
+        {"input": [4], "expected": "Noch 1 Versuche"},
+        {"input": [5], "expected": "Konto gesperrt"},
+        {"input": [10], "expected": "Konto gesperrt"}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["versuche"], ["attempts"], ["tries"]],
+        "concept_variations": [
+          {
+            "id": "var_05a",
+            "description_de": "Ampelstatus: Bei score >= 90: 'Sehr gut', 70-89: 'Gut', 50-69: 'Bestanden', < 50: 'Nicht bestanden'.",
+            "function_name": "grade_label",
+            "starter_code": "def grade_label(score):\n    pass",
+            "canonical_solution": "def grade_label(score):\n    if score >= 90:\n        return 'Sehr gut'\n    elif score >= 70:\n        return 'Gut'\n    elif score >= 50:\n        return 'Bestanden'\n    else:\n        return 'Nicht bestanden'"
+          },
+          {
+            "id": "var_05b",
+            "description_de": "Temperaturstatus: unter 0: 'gefroren', 0-15: 'kalt', 16-25: 'angenehm', über 25: 'heiß'.",
+            "function_name": "temp_status",
+            "starter_code": "def temp_status(temp):\n    pass",
+            "canonical_solution": "def temp_status(temp):\n    if temp < 0:\n        return 'gefroren'\n    elif temp <= 15:\n        return 'kalt'\n    elif temp <= 25:\n        return 'angenehm'\n    else:\n        return 'heiß'"
+          },
+          {
+            "id": "var_05c",
+            "description_de": "Altersgruppe: 0-12: 'Kind', 13-17: 'Jugendlicher', 18-64: 'Erwachsener', 65+: 'Senior'.",
+            "function_name": "age_group",
+            "starter_code": "def age_group(age):\n    pass",
+            "canonical_solution": "def age_group(age):\n    if age <= 12:\n        return 'Kind'\n    elif age <= 17:\n        return 'Jugendlicher'\n    elif age <= 64:\n        return 'Erwachsener'\n    else:\n        return 'Senior'"
+          }
+        ]
+      },
+      "hints": [
+        "Diese Aufgabe hat 4 verschiedene Fälle. Schreibe für jeden Fall eine Bedingung mit if / elif / else.",
+        "Für die Nachricht mit X Versuchen: Berechne 5 - num_guesses und baue den Text mit einem f-String zusammen.",
+        "Prüfe die Fälle in Reihenfolge: zuerst == 0, dann <= 2, dann <= 4, dann den Rest mit else."
+      ],
+      "explanation": "if/elif/else ermöglicht es, mehrere Fälle nacheinander zu prüfen. Python prüft die Bedingungen der Reihe nach und führt nur den ersten passenden Block aus. f-Strings (f'Text {variable}') erlauben es, Variablen direkt in Strings einzubetten.",
+      "difficulty": "medium",
+      "topics": ["if/elif/else", "f-Strings", "mehrere Bedingungen", "return"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab01_06",
+      "title": "simple_calc",
+      "description_de": "Schreibe einen einfachen Taschenrechner. Die Funktion bekommt zwei Zahlen (a, b) und einen Operator als String ('+', '-', '*', '/'). Gib das Ergebnis zurück. Bei Division durch Null gib None zurück. Bei unbekanntem Operator ebenfalls None.",
+      "function_name": "simple_calc",
+      "parameters": ["a", "b", "operator"],
+      "starter_code": "def simple_calc(a, b, operator):\n    pass",
+      "canonical_solution": "def simple_calc(a, b, operator):\n    if operator == '+':\n        return a + b\n    elif operator == '-':\n        return a - b\n    elif operator == '*':\n        return a * b\n    elif operator == '/':\n        if b == 0:\n            return None\n        return a / b\n    else:\n        return None",
+      "tests": [
+        {"input": [10, 5, "+"],  "expected": 15},
+        {"input": [10, 5, "-"],  "expected": 5},
+        {"input": [10, 5, "*"],  "expected": 50},
+        {"input": [10, 5, "/"],  "expected": 2.0},
+        {"input": [7,  0, "/"],  "expected": null},
+        {"input": [3,  4, "%"],  "expected": null},
+        {"input": [-3, 3, "+"],  "expected": 0},
+        {"input": [0,  0, "*"],  "expected": 0}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["x", "y", "op"], ["num1", "num2", "op"]],
+        "concept_variations": [
+          {
+            "id": "var_06a",
+            "description_de": "Schreibe safe_divide(a, b): Gibt a/b zurück, oder 0 wenn b == 0 (keine None).",
+            "function_name": "safe_divide",
+            "starter_code": "def safe_divide(a, b):\n    pass",
+            "canonical_solution": "def safe_divide(a, b):\n    if b == 0:\n        return 0\n    return a / b"
+          },
+          {
+            "id": "var_06b",
+            "description_de": "Schreibe apply_op(a, b, op) mit den Operatoren 'add', 'sub', 'mul', 'div' als Wörter statt Symbolen.",
+            "function_name": "apply_op",
+            "starter_code": "def apply_op(a, b, op):\n    pass",
+            "canonical_solution": "def apply_op(a, b, op):\n    if op == 'add':\n        return a + b\n    elif op == 'sub':\n        return a - b\n    elif op == 'mul':\n        return a * b\n    elif op == 'div':\n        return a / b if b != 0 else None\n    else:\n        return None"
+          },
+          {
+            "id": "var_06c",
+            "description_de": "Schreibe calc_with_power(a, b, op): wie simple_calc, aber mit zusätzlichem '**' Operator für Potenzierung.",
+            "function_name": "calc_with_power",
+            "starter_code": "def calc_with_power(a, b, op):\n    pass",
+            "canonical_solution": "def calc_with_power(a, b, op):\n    if op == '+':\n        return a + b\n    elif op == '-':\n        return a - b\n    elif op == '*':\n        return a * b\n    elif op == '/':\n        return a / b if b != 0 else None\n    elif op == '**':\n        return a ** b\n    else:\n        return None"
+          }
+        ]
+      },
+      "hints": [
+        "Vergleiche den operator-String mit jedem der vier Rechenzeichen mithilfe von if/elif. Vergiss den Sonderfall Division durch Null nicht.",
+        "Prüfe zuerst den Operator, und bei '/' zusätzlich ob b == 0 ist – das ergibt eine verschachtelte if-Abfrage.",
+        "Struktur: if op == '+': return a+b / elif op == '-': ... / elif op == '/': if b==0: return None / return a/b / else: return None"
+      ],
+      "explanation": "String-Vergleiche mit == erlauben es, verschiedene Operatoren zu unterscheiden. Wichtig: Bei der Division muss man zusätzlich auf Division durch Null prüfen, weil das sonst einen ZeroDivisionError erzeugt. None ist Pythons Wert für 'kein Ergebnis'.",
+      "difficulty": "medium",
+      "topics": ["if/elif/else", "String-Vergleich", "Division durch Null", "None", "Arithmetik"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab01_07",
+      "title": "triangle_q",
+      "description_de": "Bestimme die Art eines Dreiecks anhand der drei Seitenlängen a, b, c. Gib zurück: 'equilateral' wenn alle drei Seiten gleich lang sind, 'isosceles' wenn genau zwei Seiten gleich lang sind, 'scalene' wenn alle drei Seiten verschieden lang sind. Hinweis: Du musst NICHT prüfen, ob die Seiten ein gültiges Dreieck bilden.",
+      "function_name": "triangle_q",
+      "parameters": ["a", "b", "c"],
+      "starter_code": "def triangle_q(a, b, c):\n    pass",
+      "canonical_solution": "def triangle_q(a, b, c):\n    if a == b == c:\n        return 'equilateral'\n    elif a == b or b == c or a == c:\n        return 'isosceles'\n    else:\n        return 'scalene'",
+      "tests": [
+        {"input": [3, 3, 3],  "expected": "equilateral"},
+        {"input": [5, 5, 5],  "expected": "equilateral"},
+        {"input": [3, 3, 5],  "expected": "isosceles"},
+        {"input": [5, 3, 5],  "expected": "isosceles"},
+        {"input": [3, 5, 5],  "expected": "isosceles"},
+        {"input": [3, 4, 5],  "expected": "scalene"},
+        {"input": [1, 2, 3],  "expected": "scalene"},
+        {"input": [7, 3, 11], "expected": "scalene"}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["x", "y", "z"], ["s1", "s2", "s3"], ["seite1", "seite2", "seite3"]],
+        "concept_variations": [
+          {
+            "id": "var_07a",
+            "description_de": "Schreibe is_equilateral(a, b, c): True wenn alle drei Seiten gleich sind.",
+            "function_name": "is_equilateral",
+            "starter_code": "def is_equilateral(a, b, c):\n    pass",
+            "canonical_solution": "def is_equilateral(a, b, c):\n    return a == b == c"
+          },
+          {
+            "id": "var_07b",
+            "description_de": "Schreibe classify_sides(a, b, c): 'all_equal' / 'two_equal' / 'none_equal' – beschreibt wie viele Seiten gleich sind.",
+            "function_name": "classify_sides",
+            "starter_code": "def classify_sides(a, b, c):\n    pass",
+            "canonical_solution": "def classify_sides(a, b, c):\n    if a == b == c:\n        return 'all_equal'\n    elif a == b or b == c or a == c:\n        return 'two_equal'\n    else:\n        return 'none_equal'"
+          },
+          {
+            "id": "var_07c",
+            "description_de": "Schreibe valid_triangle(a, b, c): True wenn die drei Seiten ein gültiges Dreieck bilden (Dreiecksungleichung: jede Seite kleiner als Summe der anderen beiden).",
+            "function_name": "valid_triangle",
+            "starter_code": "def valid_triangle(a, b, c):\n    pass",
+            "canonical_solution": "def valid_triangle(a, b, c):\n    return a + b > c and b + c > a and a + c > b"
+          }
+        ]
+      },
+      "hints": [
+        "Überlege: Wie viele verschiedene Fälle gibt es? Prüfe zuerst den speziellsten Fall (alle gleich), dann den mittleren (genau zwei gleich), dann den allgemeinen.",
+        "Python erlaubt Kettenvergleiche: a == b == c prüft ob alle drei gleich sind. Für 'genau zwei gleich' nutze or: a==b or b==c or a==c.",
+        "if a==b==c: return 'equilateral' / elif a==b or b==c or a==c: return 'isosceles' / else: return 'scalene'"
+      ],
+      "explanation": "Kettenvergleiche (a == b == c) sind ein Python-Feature, das mehrere Vergleiche auf einmal prüft. Die Reihenfolge der if-Blöcke ist wichtig: Prüfe zuerst den speziellsten Fall (gleichseitig), dann den allgemeineren (gleichschenklig), und zuletzt den Rest.",
+      "difficulty": "medium",
+      "topics": ["if/elif/else", "Vergleichsoperatoren", "Kettenvergleiche", "or"],
+      "exam_relevance": "high"
+    }
+  ]
+}

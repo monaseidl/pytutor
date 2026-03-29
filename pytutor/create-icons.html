@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PyTutor – Icon Generator</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #111;
+      color: #e2e8f0;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 40px 16px;
+    }
+    h1  { margin: 0; font-size: 1.5rem; color: #4ade80; }
+    p   { margin: 0; color: #888; font-size: 0.9rem; text-align: center; }
+
+    .row {
+      display: flex;
+      gap: 48px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .card span { font-size: 0.8rem; color: #888; }
+
+    /* Show canvases at a fixed display size */
+    #c192 { width: 96px;  height: 96px; }
+    #c512 { width: 128px; height: 128px; }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: system-ui, sans-serif;
+      min-height: 46px;
+      transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.85; }
+    .dl-192 { background: #4ade80; color: #111; }
+    .dl-512 { background: #4ade80; color: #111; }
+
+    .hint {
+      max-width: 440px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 18px 22px;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: #aaa;
+    }
+    .hint strong { color: #e2e8f0; }
+    .hint code {
+      background: #2a2a2a;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #fb923c;
+    }
+    ol { margin: 8px 0 0; padding-left: 18px; }
+  </style>
+</head>
+<body>
+
+  <h1>PyTutor Icon Generator 🐍</h1>
+  <p>Lade beide Icons herunter und lege sie in den Ordner <code style="color:#fb923c;background:#2a2a2a;padding:1px 6px;border-radius:4px;font-family:monospace">pytutor/icons/</code></p>
+
+  <div class="row">
+    <div class="card">
+      <canvas id="c192" width="192" height="192"></canvas>
+      <span>192 × 192 px</span>
+      <button class="dl-192" onclick="download(192)">⬇ icon-192.png laden</button>
+    </div>
+    <div class="card">
+      <canvas id="c512" width="512" height="512"></canvas>
+      <span>512 × 512 px</span>
+      <button class="dl-512" onclick="download(512)">⬇ icon-512.png laden</button>
+    </div>
+  </div>
+
+  <div class="hint">
+    <strong>Anleitung:</strong>
+    <ol>
+      <li>Beide Icons herunterladen (Buttons oben)</li>
+      <li>Ordner <code>pytutor/icons/</code> erstellen</li>
+      <li><code>icon-192.png</code> und <code>icon-512.png</code> dort ablegen</li>
+      <li>Dateien committen und pushen — fertig!</li>
+    </ol>
+  </div>
+
+  <script>
+    function drawIcon(canvas) {
+      const ctx = canvas.getContext('2d');
+      const s = canvas.width;
+
+      // Weißer Hintergrund (wird von System zu Kreis/Squircle beschnitten)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, s, s);
+
+      // Grünes abgerundetes Quadrat
+      const pad = Math.round(s * 0.07);
+      const r   = Math.round(s * 0.20);
+      fillRoundRect(ctx, pad, pad, s - pad * 2, s - pad * 2, r, '#4ade80');
+
+      // Weißer fetter "Py"-Text
+      ctx.fillStyle    = '#ffffff';
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font         = `900 ${Math.round(s * 0.48)}px 'Courier New', Courier, monospace`;
+      ctx.fillText('Py', s / 2, s / 2);
+    }
+
+    function fillRoundRect(ctx, x, y, w, h, r, color) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y,     x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h,     x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y,         x + r, y);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    function download(size) {
+      const canvas = document.getElementById('c' + size);
+      const a      = document.createElement('a');
+      a.download   = 'icon-' + size + '.png';
+      a.href       = canvas.toDataURL('image/png');
+      a.click();
+    }
+
+    drawIcon(document.getElementById('c192'));
+    drawIcon(document.getElementById('c512'));
+  </script>
+</body>
+</html>
