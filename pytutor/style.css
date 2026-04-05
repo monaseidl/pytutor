@@ -1438,3 +1438,12 @@ body.exam-active .hint-area { opacity: 0.4; pointer-events: none; }
   /* Keyboard legend: hide on tiny screens */
   .kbd-legend { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   PWA STANDALONE — safe area für Statusleiste
+   ══════════════════════════════════════════════════════════ */
+@media all and (display-mode: standalone) {
+  #header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
