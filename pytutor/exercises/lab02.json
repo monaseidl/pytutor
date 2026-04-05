@@ -1,0 +1,580 @@
+{
+  "lab_id": "lab02",
+  "lab_title": "Functions and Control",
+  "lab_description": "Funktionen und Kontrollstrukturen: Schleifen, Modulo, Ziffern-Operationen und Hilfs-Funktionen",
+  "exercises": [
+    {
+      "id": "lab02_01",
+      "title": "largest_factor",
+      "description_de": "Schreibe eine Funktion, die den größten Teiler von n zurückgibt, der kleiner als n ist (n > 1). Ein Teiler ist eine Zahl, die n ohne Rest teilt. Für Primzahlen ist der einzige solche Teiler die 1.",
+      "function_name": "largest_factor",
+      "parameters": ["n"],
+      "starter_code": "def largest_factor(n):\n    pass",
+      "canonical_solution": "def largest_factor(n):\n    k = n - 1\n    while k > 0:\n        if n % k == 0:\n            return k\n        k -= 1",
+      "tests": [
+        {"input": [15],  "expected": 5},
+        {"input": [80],  "expected": 40},
+        {"input": [13],  "expected": 1},
+        {"input": [4],   "expected": 2},
+        {"input": [100], "expected": 50},
+        {"input": [7],   "expected": 1},
+        {"input": [2],   "expected": 1},
+        {"input": [9],   "expected": 3}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["zahl"], ["x"], ["num"]],
+        "concept_variations": [
+          {
+            "id": "var_02_01a",
+            "description_de": "Schreibe smallest_factor(n): gibt den kleinsten Teiler von n zurück, der größer als 1 ist. (Für Primzahlen ist das n selbst.)",
+            "function_name": "smallest_factor",
+            "starter_code": "def smallest_factor(n):\n    pass",
+            "canonical_solution": "def smallest_factor(n):\n    k = 2\n    while k < n:\n        if n % k == 0:\n            return k\n        k += 1\n    return n"
+          },
+          {
+            "id": "var_02_01b",
+            "description_de": "Schreibe is_prime(n): gibt True zurück wenn n eine Primzahl ist, sonst False. (n > 1)",
+            "function_name": "is_prime",
+            "starter_code": "def is_prime(n):\n    pass",
+            "canonical_solution": "def is_prime(n):\n    k = 2\n    while k < n:\n        if n % k == 0:\n            return False\n        k += 1\n    return True"
+          },
+          {
+            "id": "var_02_01c",
+            "description_de": "Schreibe count_factors(n): zählt wie viele Teiler n hat (einschließlich 1 und n).",
+            "function_name": "count_factors",
+            "starter_code": "def count_factors(n):\n    pass",
+            "canonical_solution": "def count_factors(n):\n    count = 0\n    k = 1\n    while k <= n:\n        if n % k == 0:\n            count += 1\n        k += 1\n    return count"
+          }
+        ]
+      },
+      "hints": [
+        "Starte bei n-1 und gehe nach unten. Der erste Wert k, für den n % k == 0 gilt, ist der gesuchte Teiler.",
+        "Benutze eine while-Schleife: Starte mit k = n - 1, verringere k um 1 in jedem Schritt, prüfe ob n % k == 0.",
+        "Sobald du einen Teiler gefunden hast, kannst du ihn direkt mit return zurückgeben – du musst nicht weitersuchen."
+      ],
+      "explanation": "Ein Teiler von n ist eine Zahl k, für die n % k == 0 gilt (kein Rest). Indem wir von n-1 abwärts suchen, finden wir automatisch den größten zuerst. Bei Primzahlen hat n keine Teiler außer 1 und sich selbst – die Schleife landet also bei k=1.",
+      "difficulty": "medium",
+      "topics": ["while-Schleife", "Modulo", "Teiler", "Primzahlen"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab02_02",
+      "title": "sum_digits",
+      "description_de": "Schreibe eine Funktion, die die Quersumme einer nicht-negativen ganzen Zahl y berechnet – also die Summe aller einzelnen Ziffern. Tipp: Floor-Division (//) und Modulo (%) helfen dabei, Ziffern zu extrahieren.",
+      "function_name": "sum_digits",
+      "parameters": ["y"],
+      "starter_code": "def sum_digits(y):\n    pass",
+      "canonical_solution": "def sum_digits(y):\n    total = 0\n    while y > 0:\n        total += y % 10\n        y //= 10\n    return total",
+      "tests": [
+        {"input": [10],         "expected": 1},
+        {"input": [4224],       "expected": 12},
+        {"input": [1234567890], "expected": 45},
+        {"input": [123],        "expected": 6},
+        {"input": [0],          "expected": 0},
+        {"input": [9],          "expected": 9},
+        {"input": [99],         "expected": 18},
+        {"input": [1000],       "expected": 1}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["n"], ["zahl"], ["num"]],
+        "concept_variations": [
+          {
+            "id": "var_02_02a",
+            "description_de": "Schreibe count_digits(y): zählt wie viele Ziffern y hat. (y >= 0, 0 hat eine Ziffer)",
+            "function_name": "count_digits",
+            "starter_code": "def count_digits(y):\n    pass",
+            "canonical_solution": "def count_digits(y):\n    if y == 0:\n        return 1\n    count = 0\n    while y > 0:\n        count += 1\n        y //= 10\n    return count"
+          },
+          {
+            "id": "var_02_02b",
+            "description_de": "Schreibe product_digits(y): berechnet das Produkt aller Ziffern von y (y > 0).",
+            "function_name": "product_digits",
+            "starter_code": "def product_digits(y):\n    pass",
+            "canonical_solution": "def product_digits(y):\n    product = 1\n    while y > 0:\n        product *= y % 10\n        y //= 10\n    return product"
+          },
+          {
+            "id": "var_02_02c",
+            "description_de": "Schreibe max_digit(y): gibt die größte Ziffer in y zurück (y > 0).",
+            "function_name": "max_digit",
+            "starter_code": "def max_digit(y):\n    pass",
+            "canonical_solution": "def max_digit(y):\n    largest = 0\n    while y > 0:\n        d = y % 10\n        if d > largest:\n            largest = d\n        y //= 10\n    return largest"
+          }
+        ]
+      },
+      "hints": [
+        "y % 10 gibt die letzte Ziffer von y zurück. y // 10 entfernt die letzte Ziffer. Kombiniere beides in einer Schleife.",
+        "Schema: Solange y > 0: nimm y % 10 (letzte Ziffer), addiere sie zu total, setze y = y // 10 (nächste Stelle).",
+        "total = 0; while y > 0: total += y % 10; y //= 10; return total"
+      ],
+      "explanation": "Modulo 10 extrahiert die letzte Ziffer (z.B. 4224 % 10 = 4). Floor-Division durch 10 'schiebt' die Zahl nach rechts (4224 // 10 = 422). Die while-Schleife wiederholt das, bis keine Ziffern mehr übrig sind.",
+      "difficulty": "easy",
+      "topics": ["while-Schleife", "Modulo", "Floor-Division", "Ziffern"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab02_03",
+      "title": "getKthDigit",
+      "description_de": "Schreibe eine Funktion, die die k-te Ziffer von n zurückgibt. Die Zählung beginnt bei 0 von rechts. Negative Zahlen werden wie positive behandelt (nur der Betrag zählt).",
+      "function_name": "getKthDigit",
+      "parameters": ["n", "k"],
+      "starter_code": "def getKthDigit(n, k):\n    pass",
+      "canonical_solution": "def getKthDigit(n, k):\n    return abs(n) // 10**k % 10",
+      "tests": [
+        {"input": [789,  0], "expected": 9},
+        {"input": [789,  1], "expected": 8},
+        {"input": [789,  2], "expected": 7},
+        {"input": [789,  3], "expected": 0},
+        {"input": [-789, 0], "expected": 9},
+        {"input": [100,  0], "expected": 0},
+        {"input": [100,  2], "expected": 1},
+        {"input": [42,   1], "expected": 4}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["num", "pos"], ["zahl", "stelle"]],
+        "concept_variations": [
+          {
+            "id": "var_02_03a",
+            "description_de": "Schreibe last_digit(n): gibt die letzte Ziffer (Einerstelle) von n zurück. Negative Zahlen wie positive behandeln.",
+            "function_name": "last_digit",
+            "starter_code": "def last_digit(n):\n    pass",
+            "canonical_solution": "def last_digit(n):\n    return abs(n) % 10"
+          },
+          {
+            "id": "var_02_03b",
+            "description_de": "Schreibe first_digit(n): gibt die erste Ziffer (linkste Stelle) von n zurück (n > 0).",
+            "function_name": "first_digit",
+            "starter_code": "def first_digit(n):\n    pass",
+            "canonical_solution": "def first_digit(n):\n    while n >= 10:\n        n //= 10\n    return n"
+          },
+          {
+            "id": "var_02_03c",
+            "description_de": "Schreibe sum_kth_digits(n, k1, k2): gibt die Summe der k1-ten und k2-ten Ziffer von n zurück.",
+            "function_name": "sum_kth_digits",
+            "starter_code": "def sum_kth_digits(n, k1, k2):\n    pass",
+            "canonical_solution": "def sum_kth_digits(n, k1, k2):\n    d1 = abs(n) // 10**k1 % 10\n    d2 = abs(n) // 10**k2 % 10\n    return d1 + d2"
+          }
+        ]
+      },
+      "hints": [
+        "Um die k-te Stelle zu isolieren: teile zuerst durch 10^k (damit werden die letzten k Stellen abgeschnitten), dann nimm % 10 für die Einerstelle.",
+        "10**k in Python berechnet die k-te Potenz von 10. Für k=0 ist das 1, für k=1 ist das 10, für k=2 ist das 100.",
+        "return abs(n) // 10**k % 10 — abs() behandelt negative Zahlen wie positive."
+      ],
+      "explanation": "abs(n) // 10**k verschiebt die Zahl k Stellen nach rechts (entfernt die k niedrigwertigsten Ziffern). Anschließend extrahiert % 10 die jetzt ganz rechts stehende Ziffer. Wenn k größer als die Stellenzahl ist, gibt abs(n) // 10**k = 0 zurück.",
+      "difficulty": "medium",
+      "topics": ["Modulo", "Floor-Division", "Potenzen", "Ziffern-Extraktion"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab02_04",
+      "title": "setKthDigit",
+      "description_de": "Schreibe eine Funktion, die die k-te Ziffer von n (eine ganze Zahl) durch d (eine einstellige Ziffer 0–9) ersetzt und das Ergebnis zurückgibt. k ist nicht-negativ, d ist nicht-negativ und einstellig.",
+      "function_name": "setKthDigit",
+      "parameters": ["n", "k", "d"],
+      "starter_code": "def setKthDigit(n, k, d):\n    pass",
+      "canonical_solution": "def setKthDigit(n, k, d):\n    old_digit = abs(n) // 10**k % 10\n    return n - old_digit * 10**k + d * 10**k",
+      "tests": [
+        {"input": [468, 0, 1], "expected": 461},
+        {"input": [468, 1, 1], "expected": 418},
+        {"input": [468, 2, 1], "expected": 168},
+        {"input": [468, 3, 1], "expected": 1468},
+        {"input": [999, 0, 0], "expected": 990},
+        {"input": [100, 1, 5], "expected": 150},
+        {"input": [0,   0, 7], "expected": 7}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["num", "pos", "digit"], ["zahl", "stelle", "wert"]],
+        "concept_variations": [
+          {
+            "id": "var_02_04a",
+            "description_de": "Schreibe zero_last_digit(n): gibt n zurück, aber mit der letzten Ziffer durch 0 ersetzt.",
+            "function_name": "zero_last_digit",
+            "starter_code": "def zero_last_digit(n):\n    pass",
+            "canonical_solution": "def zero_last_digit(n):\n    return n - n % 10"
+          },
+          {
+            "id": "var_02_04b",
+            "description_de": "Schreibe increment_kth_digit(n, k): erhöht die k-te Ziffer von n um 1. Falls die Ziffer 9 ist, wird sie 0 (kein Übertrag in höhere Stellen).",
+            "function_name": "increment_kth_digit",
+            "starter_code": "def increment_kth_digit(n, k):\n    pass",
+            "canonical_solution": "def increment_kth_digit(n, k):\n    old_digit = n // 10**k % 10\n    new_digit = (old_digit + 1) % 10\n    return n - old_digit * 10**k + new_digit * 10**k"
+          }
+        ]
+      },
+      "hints": [
+        "Überlege in zwei Schritten: Zuerst die alte Ziffer an Position k entfernen, dann die neue Ziffer d an Position k einfügen.",
+        "Alte Ziffer entfernen: n - old_digit * 10**k (subtrahiert den Beitrag der alten Ziffer). Neue Ziffer einfügen: + d * 10**k.",
+        "Hole die alte Ziffer mit: old_digit = abs(n) // 10**k % 10. Dann: return n - old_digit * 10**k + d * 10**k"
+      ],
+      "explanation": "10**k bestimmt den 'Stellenwert' der k-ten Position. Indem du old_digit * 10**k subtrahierst, setzt du diese Stelle auf 0. Dann addierst du d * 10**k, um den neuen Wert einzutragen. Das ist wie das Auslöschen und Neuschreiben einer einzigen Stelle.",
+      "difficulty": "medium",
+      "topics": ["Modulo", "Floor-Division", "Potenzen", "Ziffern-Manipulation"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab02_05",
+      "title": "double_eights",
+      "description_de": "Schreibe eine Funktion, die True zurückgibt wenn die Zahl n zwei aufeinanderfolgende 8en enthält (z.B. 88 oder 2882), sonst False.",
+      "function_name": "double_eights",
+      "parameters": ["n"],
+      "starter_code": "def double_eights(n):\n    pass",
+      "canonical_solution": "def double_eights(n):\n    while n > 0:\n        if n % 10 == 8 and (n // 10) % 10 == 8:\n            return True\n        n //= 10\n    return False",
+      "tests": [
+        {"input": [8],        "expected": false},
+        {"input": [88],       "expected": true},
+        {"input": [2882],     "expected": true},
+        {"input": [880088],   "expected": true},
+        {"input": [12345],    "expected": false},
+        {"input": [80808080], "expected": false},
+        {"input": [1881],     "expected": false},
+        {"input": [8800],     "expected": true}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["zahl"], ["num"], ["x"]],
+        "concept_variations": [
+          {
+            "id": "var_02_05a",
+            "description_de": "Schreibe double_digit(n, d): True wenn die Ziffer d zweimal hintereinander in n vorkommt.",
+            "function_name": "double_digit",
+            "starter_code": "def double_digit(n, d):\n    pass",
+            "canonical_solution": "def double_digit(n, d):\n    while n > 0:\n        if n % 10 == d and (n // 10) % 10 == d:\n            return True\n        n //= 10\n    return False"
+          },
+          {
+            "id": "var_02_05b",
+            "description_de": "Schreibe has_digit_n(n, d): True wenn die Ziffer d in der Zahl n vorkommt.",
+            "function_name": "has_digit_n",
+            "starter_code": "def has_digit_n(n, d):\n    pass",
+            "canonical_solution": "def has_digit_n(n, d):\n    while n > 0:\n        if n % 10 == d:\n            return True\n        n //= 10\n    return False"
+          },
+          {
+            "id": "var_02_05c",
+            "description_de": "Schreibe triple_digit(n, d): True wenn die Ziffer d dreimal hintereinander in n vorkommt.",
+            "function_name": "triple_digit",
+            "starter_code": "def triple_digit(n, d):\n    pass",
+            "canonical_solution": "def triple_digit(n, d):\n    while n > 0:\n        if n % 10 == d and (n // 10) % 10 == d and (n // 100) % 10 == d:\n            return True\n        n //= 10\n    return False"
+          }
+        ]
+      },
+      "hints": [
+        "Prüfe von rechts nach links: Ist die letzte Ziffer (n % 10) eine 8 UND ist die vorletzte Ziffer ((n // 10) % 10) auch eine 8?",
+        "Schiebe in jeder Schleifenrunde n um eine Stelle nach rechts (n //= 10), um alle Ziffernpaare zu prüfen.",
+        "while n > 0: if n % 10 == 8 and (n // 10) % 10 == 8: return True; n //= 10; return False"
+      ],
+      "explanation": "Durch n //= 10 in jeder Runde wird die Zahl von rechts nach links 'abgetastet'. In jeder Runde prüft man das aktuelle Ziffernpaar (letzte und vorletzte Stelle). Findet man zwei 8en, gibt man sofort True zurück.",
+      "difficulty": "medium",
+      "topics": ["while-Schleife", "Modulo", "Floor-Division", "Bedingungen"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab02_06",
+      "title": "fizzbuzz",
+      "description_de": "Implementiere die klassische FizzBuzz-Sequenz. Die Funktion gibt für jede Zahl von 1 bis n (einschließlich) eine Zeile aus: 'fizzbuzz' wenn durch 3 UND 5 teilbar, 'fizz' wenn nur durch 3 teilbar, 'buzz' wenn nur durch 5 teilbar, sonst die Zahl selbst. Die Funktion gibt nichts zurück (None), sie druckt nur.",
+      "function_name": "fizzbuzz",
+      "parameters": ["n"],
+      "starter_code": "def fizzbuzz(n):\n    pass",
+      "canonical_solution": "def fizzbuzz(n):\n    for i in range(1, n + 1):\n        if i % 3 == 0 and i % 5 == 0:\n            print('fizzbuzz')\n        elif i % 3 == 0:\n            print('fizz')\n        elif i % 5 == 0:\n            print('buzz')\n        else:\n            print(i)",
+      "tests": [
+        {
+          "input": [5],
+          "test_type": "print",
+          "expected_output": ["1", "2", "fizz", "4", "buzz"]
+        },
+        {
+          "input": [15],
+          "test_type": "print",
+          "expected_output": ["1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz", "11", "fizz", "13", "14", "fizzbuzz"]
+        },
+        {
+          "input": [1],
+          "test_type": "print",
+          "expected_output": ["1"]
+        },
+        {
+          "input": [3],
+          "test_type": "print",
+          "expected_output": ["1", "2", "fizz"]
+        }
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": false,
+        "concept_variations": [
+          {
+            "id": "var_02_06a",
+            "description_de": "Schreibe fizzbuzz_list(n): statt zu drucken, gibt eine Liste aller FizzBuzz-Werte als Strings zurück.",
+            "function_name": "fizzbuzz_list",
+            "starter_code": "def fizzbuzz_list(n):\n    pass",
+            "canonical_solution": "def fizzbuzz_list(n):\n    result = []\n    for i in range(1, n + 1):\n        if i % 3 == 0 and i % 5 == 0:\n            result.append('fizzbuzz')\n        elif i % 3 == 0:\n            result.append('fizz')\n        elif i % 5 == 0:\n            result.append('buzz')\n        else:\n            result.append(str(i))\n    return result"
+          },
+          {
+            "id": "var_02_06b",
+            "description_de": "Schreibe count_fizz(n): zählt wie viele 'fizz' (ohne 'fizzbuzz') in der FizzBuzz-Sequenz bis n vorkommen.",
+            "function_name": "count_fizz",
+            "starter_code": "def count_fizz(n):\n    pass",
+            "canonical_solution": "def count_fizz(n):\n    count = 0\n    for i in range(1, n + 1):\n        if i % 3 == 0 and i % 5 != 0:\n            count += 1\n    return count"
+          }
+        ]
+      },
+      "hints": [
+        "Wichtig: Prüfe zuerst ob eine Zahl durch BEIDE (3 und 5) teilbar ist – erst dann die Einzelfälle. Sonst wird 'fizzbuzz' nie ausgegeben.",
+        "Verwende eine for-Schleife mit range(1, n + 1). Der Modulo-Operator % prüft Teilbarkeit: i % 3 == 0 bedeutet 'durch 3 teilbar'.",
+        "Struktur: for i in range(1, n+1): / if i%3==0 and i%5==0: print('fizzbuzz') / elif i%3==0: print('fizz') / elif i%5==0: print('buzz') / else: print(i)"
+      ],
+      "explanation": "Der Schlüssel ist die Reihenfolge der Bedingungen: 'fizzbuzz' (durch 3 UND 5) muss zuerst kommen, sonst würde z.B. 15 als 'fizz' ausgegeben. range(1, n+1) erzeugt Zahlen von 1 bis n (n ist inklusive).",
+      "difficulty": "easy",
+      "topics": ["for-Schleife", "range", "Modulo", "if/elif/else", "print"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab02_07",
+      "title": "repeating",
+      "description_de": "Schreibe eine Funktion, die prüft ob t Ziffern sich wiederholen und zusammen die Zahl n bilden. Beispiel: repeating(2, 6161) ist True, weil '61' sich wiederholt. Die Anzahl der Ziffern in n muss ein Vielfaches von t sein.",
+      "function_name": "repeating",
+      "parameters": ["t", "n"],
+      "starter_code": "def repeating(t, n):\n    pass",
+      "canonical_solution": "def repeating(t, n):\n    num_digits = len(str(n))\n    if num_digits % t != 0:\n        return False\n    pattern = n % (10**t)\n    temp = n\n    while temp > 0:\n        if temp % (10**t) != pattern:\n            return False\n        temp //= (10**t)\n    return True",
+      "tests": [
+        {"input": [1, 6161], "expected": false},
+        {"input": [2, 6161], "expected": true},
+        {"input": [3, 6161], "expected": false},
+        {"input": [4, 6161], "expected": true},
+        {"input": [5, 6161], "expected": false},
+        {"input": [1, 1111], "expected": true},
+        {"input": [2, 1212], "expected": true},
+        {"input": [2, 1213], "expected": false}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["block_size", "num"], ["length", "zahl"]],
+        "concept_variations": [
+          {
+            "id": "var_02_07a",
+            "description_de": "Schreibe all_same_digit(n): True wenn alle Ziffern von n gleich sind (z.B. 1111, 999).",
+            "function_name": "all_same_digit",
+            "starter_code": "def all_same_digit(n):\n    pass",
+            "canonical_solution": "def all_same_digit(n):\n    first = n % 10\n    while n > 0:\n        if n % 10 != first:\n            return False\n        n //= 10\n    return True"
+          }
+        ]
+      },
+      "hints": [
+        "Schritt 1: Prüfe ob die Gesamtanzahl der Ziffern von n durch t teilbar ist (sonst False). Du kannst len(str(n)) nutzen um Ziffern zu zählen.",
+        "Schritt 2: Das 'Muster' (die letzten t Ziffern) ist n % 10**t. Prüfe ob jeder t-Ziffern-Block von rechts diesem Muster entspricht.",
+        "Verschiebe temp in jeder Runde um t Stellen: temp //= 10**t. Prüfe in jeder Runde ob temp % 10**t == pattern."
+      ],
+      "explanation": "10**t ist der Stellenwert für t Stellen (z.B. 10**2 = 100 für 2-er Blöcke). n % 10**t extrahiert die letzten t Ziffern als Muster. Durch wiederholtes //= 10**t wandern wir blockweise durch die Zahl und vergleichen jeden Block mit dem Muster.",
+      "difficulty": "hard",
+      "topics": ["while-Schleife", "Modulo", "Potenzen", "Ziffern", "Muster"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab02_08",
+      "title": "unique_digits",
+      "description_de": "Schreibe eine Funktion, die die Anzahl einzigartiger Ziffern in einer positiven ganzen Zahl n zurückgibt. Nutze die eingebettete Hilfsfunktion has_digit(n, k), die prüft ob die Ziffer k in n vorkommt. Implementiere BEIDE Funktionen.",
+      "function_name": "unique_digits",
+      "parameters": ["n"],
+      "starter_code": "def unique_digits(n):\n    def has_digit(n, k):\n        \"\"\"Returns whether k is a digit in n.\"\"\"\n        assert k >= 0 and k < 10\n        # YOUR CODE HERE\n        pass\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def unique_digits(n):\n    def has_digit(n, k):\n        assert k >= 0 and k < 10\n        while n > 0:\n            if n % 10 == k:\n                return True\n            n //= 10\n        return False\n    count = 0\n    for d in range(10):\n        if has_digit(n, d):\n            count += 1\n    return count",
+      "tests": [
+        {"input": [8675309],  "expected": 7},
+        {"input": [13173131], "expected": 3},
+        {"input": [101],      "expected": 2},
+        {"input": [1],        "expected": 1},
+        {"input": [1234567890], "expected": 10},
+        {"input": [111],      "expected": 1},
+        {"input": [9876],     "expected": 4}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": true,
+        "param_alternatives": [["zahl"], ["num"], ["x"]],
+        "concept_variations": [
+          {
+            "id": "var_02_08a",
+            "description_de": "Schreibe count_even_digits(n): zählt wie viele gerade Ziffern (0,2,4,6,8) in n vorkommen (Duplikate zählen mehrfach).",
+            "function_name": "count_even_digits",
+            "starter_code": "def count_even_digits(n):\n    pass",
+            "canonical_solution": "def count_even_digits(n):\n    count = 0\n    while n > 0:\n        if n % 10 % 2 == 0:\n            count += 1\n        n //= 10\n    return count"
+          },
+          {
+            "id": "var_02_08b",
+            "description_de": "Schreibe has_all_digits(n): True wenn alle Ziffern 0–9 mindestens einmal in n vorkommen.",
+            "function_name": "has_all_digits",
+            "starter_code": "def has_all_digits(n):\n    pass",
+            "canonical_solution": "def has_all_digits(n):\n    def has_digit(n, k):\n        while n > 0:\n            if n % 10 == k:\n                return True\n            n //= 10\n        return False\n    for d in range(10):\n        if not has_digit(n, d):\n            return False\n    return True"
+          }
+        ]
+      },
+      "hints": [
+        "has_digit: Verwende eine while-Schleife: Solange n > 0, prüfe ob n % 10 == k. Falls ja, return True. Dann n //= 10. Am Ende return False.",
+        "unique_digits: Gehe alle Ziffern 0–9 durch (for d in range(10)). Zähle mit has_digit(n, d) wie viele davon tatsächlich in n vorkommen.",
+        "Eine Funktion darf eine andere Funktion in sich definieren (verschachtelte Funktionen). has_digit ist nur innerhalb von unique_digits sichtbar."
+      ],
+      "explanation": "Verschachtelte Funktionen (Funktionen in Funktionen) sind ein mächtiges Python-Feature. has_digit erledigt einen abgegrenzten Teilschritt (Vorhandensein einer Ziffer prüfen), und unique_digits nutzt es 10-mal (einmal pro möglicher Ziffer 0–9).",
+      "difficulty": "medium",
+      "topics": ["verschachtelte Funktionen", "while-Schleife", "for-Schleife", "range", "Modulo"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab02_09",
+      "title": "handToDice (Yahtzee)",
+      "description_de": "For Fun: Yahtzee-Hilfsfunktion. Schreibe handToDice(hand): Die Funktion nimmt eine 3-stellige Ganzzahl (z.B. 214) und gibt die drei einzelnen Würfel als Tupel zurück (z.B. (2, 1, 4)). Die erste Ziffer ist der hundertste Wert usw.",
+      "function_name": "handToDice",
+      "parameters": ["hand"],
+      "starter_code": "def handToDice(hand):\n    pass",
+      "canonical_solution": "def handToDice(hand):\n    a = hand // 100\n    b = (hand // 10) % 10\n    c = hand % 10\n    return (a, b, c)",
+      "tests": [
+        {"input": [123], "expected": [1, 2, 3]},
+        {"input": [214], "expected": [2, 1, 4]},
+        {"input": [654], "expected": [6, 5, 4]},
+        {"input": [111], "expected": [1, 1, 1]},
+        {"input": [321], "expected": [3, 2, 1]},
+        {"input": [100], "expected": [1, 0, 0]}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": false,
+        "concept_variations": []
+      },
+      "hints": [
+        "hand // 100 gibt die Hunderterstelle (erster Würfel). (hand // 10) % 10 gibt die Zehnerstelle (zweiter Würfel). hand % 10 gibt die Einerstelle (dritter Würfel).",
+        "Gib alle drei Werte als Tupel zurück: return (a, b, c)"
+      ],
+      "explanation": "Eine 3-stellige Zahl wie 214 besteht aus: 2 * 100 + 1 * 10 + 4. Mit // 100 extrahiert man die 2, mit // 10 % 10 die 1, und mit % 10 die 4. Ein Tupel (a, b, c) gibt mehrere Werte auf einmal zurück.",
+      "difficulty": "easy",
+      "topics": ["Modulo", "Floor-Division", "Tupel", "Rückgabewerte"],
+      "exam_relevance": "low"
+    },
+    {
+      "id": "lab02_10",
+      "title": "diceToOrderedHand (Yahtzee)",
+      "description_de": "For Fun: Yahtzee-Hilfsfunktion. Schreibe diceToOrderedHand(a, b, c): Nimmt drei Würfelwerte und gibt sie als sortierte 3-stellige Ganzzahl zurück – die größte Ziffer links, die kleinste rechts. Tipp: max(a,b,c) und min(a,b,c) sind erlaubt.",
+      "function_name": "diceToOrderedHand",
+      "parameters": ["a", "b", "c"],
+      "starter_code": "def diceToOrderedHand(a, b, c):\n    pass",
+      "canonical_solution": "def diceToOrderedHand(a, b, c):\n    largest = max(a, b, c)\n    smallest = min(a, b, c)\n    middle = a + b + c - largest - smallest\n    return largest * 100 + middle * 10 + smallest",
+      "tests": [
+        {"input": [1, 2, 3], "expected": 321},
+        {"input": [6, 5, 4], "expected": 654},
+        {"input": [1, 4, 2], "expected": 421},
+        {"input": [3, 3, 3], "expected": 333},
+        {"input": [5, 1, 3], "expected": 531},
+        {"input": [4, 4, 2], "expected": 442}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": true,
+        "can_rename_params": false,
+        "concept_variations": []
+      },
+      "hints": [
+        "Benutze max(a, b, c) für den größten Wert und min(a, b, c) für den kleinsten. Den mittleren Wert erhältst du durch: a + b + c - größter - kleinster.",
+        "Baue die 3-stellige Zahl so: largest * 100 + middle * 10 + smallest"
+      ],
+      "explanation": "max() und min() finden größten/kleinsten Wert unter drei Zahlen. Der mittlere Wert ergibt sich als Differenz der Gesamtsumme minus Extremwerte. Die Zahl wird dann wie eine dreistellige Dezimalzahl zusammengebaut: Hunderterstelle * 100 + Zehnerstelle * 10 + Einerstelle.",
+      "difficulty": "easy",
+      "topics": ["max/min", "Arithmetik", "Tupel", "Sortierung"],
+      "exam_relevance": "low"
+    },
+    {
+      "id": "lab02_11",
+      "title": "playStep2 (Yahtzee)",
+      "description_de": "For Fun: Yahtzee-Schritt 2. handToDice und diceToOrderedHand sind bereits definiert. Wenn alle 3 Würfel gleich sind: behalte die Hand. Wenn genau 2 gleich sind (Paar): ersetze den Außenseiter durch den nächsten Würfel aus dice (von rechts). Sonst (kein Paar): behalte den höchsten und ersetze die anderen zwei. dice ist ein Integer; neue Würfel werden von rechts entnommen (dice % 10), danach dice //= 10. Gib (neue_hand_sortiert, restliche_dice) zurück.",
+      "function_name": "playStep2",
+      "parameters": ["hand", "dice"],
+      "starter_code": "def handToDice(hand):\n    a = hand // 100\n    b = (hand // 10) % 10\n    c = hand % 10\n    return (a, b, c)\n\ndef diceToOrderedHand(a, b, c):\n    largest = max(a, b, c)\n    smallest = min(a, b, c)\n    middle = a + b + c - largest - smallest\n    return largest * 100 + middle * 10 + smallest\n\ndef playStep2(hand, dice):\n    pass",
+      "canonical_solution": "def handToDice(hand):\n    a = hand // 100\n    b = (hand // 10) % 10\n    c = hand % 10\n    return (a, b, c)\n\ndef diceToOrderedHand(a, b, c):\n    largest = max(a, b, c)\n    smallest = min(a, b, c)\n    middle = a + b + c - largest - smallest\n    return largest * 100 + middle * 10 + smallest\n\ndef playStep2(hand, dice):\n    a, b, c = handToDice(hand)\n    if a == b == c:\n        return (diceToOrderedHand(a, b, c), dice)\n    elif a == b:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(a, b, new_die), dice)\n    elif b == c:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(b, c, new_die), dice)\n    elif a == c:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(a, c, new_die), dice)\n    else:\n        highest = max(a, b, c)\n        d1 = dice % 10\n        dice //= 10\n        d2 = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(highest, d1, d2), dice)",
+      "tests": [
+        {"input": [413, 2312], "expected": [421, 23]},
+        {"input": [413, 2345], "expected": [544, 23]},
+        {"input": [544, 23],   "expected": [443, 2]},
+        {"input": [544, 456],  "expected": [644, 45]},
+        {"input": [333, 999],  "expected": [333, 999]},
+        {"input": [321, 65],   "expected": [653, 0]}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": false,
+        "can_rename_params": false,
+        "concept_variations": []
+      },
+      "hints": [
+        "Konvertiere zuerst hand in 3 Würfel mit handToDice. Prüfe dann: alle gleich → nichts tun. Paar vorhanden → einen neuen Würfel ziehen. Kein Paar → zwei neue Würfel ziehen.",
+        "Neue Würfel kommen von rechts: new_die = dice % 10, dann dice //= 10. Für zwei neue Würfel wiederhole das zweimal.",
+        "Am Ende: Erstelle die neue sortierte Hand mit diceToOrderedHand und gib (neue_hand, verbleibende_dice) zurück."
+      ],
+      "explanation": "Das ist ein komplexerer Algorithmus mit mehreren Fällen (if/elif/else). Entscheidend ist die Reihenfolge: Erst alle-gleich prüfen, dann paarweise. Die dice werden als Stack von rechts gelesen: % 10 nimmt den nächsten Wurf, // 10 entfernt ihn.",
+      "difficulty": "hard",
+      "topics": ["Tupel", "Fallunterscheidung", "Hilfsfunktionen", "Algorithmus"],
+      "exam_relevance": "low"
+    },
+    {
+      "id": "lab02_12",
+      "title": "score (Yahtzee)",
+      "description_de": "For Fun: Yahtzee-Wertung. handToDice ist bereits definiert. Schreibe score(hand): Berechnet den Punktestand für eine Hand (3-stellige Ganzzahl). 3 gleiche Würfel: 20 + Summe. 2 gleiche Würfel (Paar): 10 + Summe des Paares. Kein Paar: Wert des größten Würfels.",
+      "function_name": "score",
+      "parameters": ["hand"],
+      "starter_code": "def handToDice(hand):\n    a = hand // 100\n    b = (hand // 10) % 10\n    c = hand % 10\n    return (a, b, c)\n\ndef score(hand):\n    pass",
+      "canonical_solution": "def handToDice(hand):\n    a = hand // 100\n    b = (hand // 10) % 10\n    c = hand % 10\n    return (a, b, c)\n\ndef score(hand):\n    a, b, c = handToDice(hand)\n    if a == b == c:\n        return 20 + a + b + c\n    elif a == b:\n        return 10 + a + b\n    elif b == c:\n        return 10 + b + c\n    elif a == c:\n        return 10 + a + c\n    else:\n        return max(a, b, c)",
+      "tests": [
+        {"input": [432], "expected": 4},
+        {"input": [532], "expected": 5},
+        {"input": [443], "expected": 18},
+        {"input": [633], "expected": 16},
+        {"input": [444], "expected": 32},
+        {"input": [655], "expected": 20},
+        {"input": [321], "expected": 3}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": false,
+        "can_rename_params": false,
+        "concept_variations": []
+      },
+      "hints": [
+        "Konvertiere die Hand zuerst mit handToDice in drei Würfel a, b, c. Da die Hand sortiert ist (a >= b >= c), ist a der größte Würfel.",
+        "Prüfe in dieser Reihenfolge: a==b==c (alle drei), dann a==b, dann b==c (bei sortierter Hand kann a==c nur auftreten wenn auch b gleich ist).",
+        "Kein Paar: return max(a, b, c) — aber da die Hand sortiert ist, ist a immer der größte Würfel."
+      ],
+      "explanation": "Da die Hand durch diceToOrderedHand immer sortiert ist (größte links), ist a >= b >= c garantiert. Das vereinfacht die Fallunterscheidung: Bei sortierten Händen gilt a==c nur dann, wenn auch b gleich ist, also alle drei gleich sind.",
+      "difficulty": "medium",
+      "topics": ["Tupel", "if/elif/else", "Hilfsfunktionen", "Fallunterscheidung"],
+      "exam_relevance": "low"
+    },
+    {
+      "id": "lab02_13",
+      "title": "PlayThreeDiceYahtzee",
+      "description_de": "For Fun: Vollständiges Yahtzee-Spiel. Alle Hilfsfunktionen sind bereits definiert. Schreibe PlayThreeDiceYahtzee(dice): Entnimm die ersten 3 Würfel von rechts aus dice, erstelle die Ausgangshand, spiele dann 2-mal playStep2, berechne am Ende den score. Gibt (endergebnis_hand, punktestand) zurück.",
+      "function_name": "PlayThreeDiceYahtzee",
+      "parameters": ["dice"],
+      "starter_code": "def handToDice(hand):\n    a = hand // 100\n    b = (hand // 10) % 10\n    c = hand % 10\n    return (a, b, c)\n\ndef diceToOrderedHand(a, b, c):\n    largest = max(a, b, c)\n    smallest = min(a, b, c)\n    middle = a + b + c - largest - smallest\n    return largest * 100 + middle * 10 + smallest\n\ndef playStep2(hand, dice):\n    a, b, c = handToDice(hand)\n    if a == b == c:\n        return (diceToOrderedHand(a, b, c), dice)\n    elif a == b:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(a, b, new_die), dice)\n    elif b == c:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(b, c, new_die), dice)\n    elif a == c:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(a, c, new_die), dice)\n    else:\n        highest = max(a, b, c)\n        d1 = dice % 10\n        dice //= 10\n        d2 = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(highest, d1, d2), dice)\n\ndef score(hand):\n    a, b, c = handToDice(hand)\n    if a == b == c:\n        return 20 + a + b + c\n    elif a == b:\n        return 10 + a + b\n    elif b == c:\n        return 10 + b + c\n    elif a == c:\n        return 10 + a + c\n    else:\n        return max(a, b, c)\n\ndef PlayThreeDiceYahtzee(dice):\n    pass",
+      "canonical_solution": "def handToDice(hand):\n    a = hand // 100\n    b = (hand // 10) % 10\n    c = hand % 10\n    return (a, b, c)\n\ndef diceToOrderedHand(a, b, c):\n    largest = max(a, b, c)\n    smallest = min(a, b, c)\n    middle = a + b + c - largest - smallest\n    return largest * 100 + middle * 10 + smallest\n\ndef playStep2(hand, dice):\n    a, b, c = handToDice(hand)\n    if a == b == c:\n        return (diceToOrderedHand(a, b, c), dice)\n    elif a == b:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(a, b, new_die), dice)\n    elif b == c:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(b, c, new_die), dice)\n    elif a == c:\n        new_die = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(a, c, new_die), dice)\n    else:\n        highest = max(a, b, c)\n        d1 = dice % 10\n        dice //= 10\n        d2 = dice % 10\n        dice //= 10\n        return (diceToOrderedHand(highest, d1, d2), dice)\n\ndef score(hand):\n    a, b, c = handToDice(hand)\n    if a == b == c:\n        return 20 + a + b + c\n    elif a == b:\n        return 10 + a + b\n    elif b == c:\n        return 10 + b + c\n    elif a == c:\n        return 10 + a + c\n    else:\n        return max(a, b, c)\n\ndef PlayThreeDiceYahtzee(dice):\n    c = dice % 10\n    dice //= 10\n    b = dice % 10\n    dice //= 10\n    a = dice % 10\n    dice //= 10\n    hand = diceToOrderedHand(a, b, c)\n    hand, dice = playStep2(hand, dice)\n    hand, dice = playStep2(hand, dice)\n    return (hand, score(hand))",
+      "tests": [
+        {"input": [2312413], "expected": [432, 4]},
+        {"input": [2315413], "expected": [532, 5]},
+        {"input": [2345413], "expected": [443, 18]}
+      ],
+      "variation_rules": {
+        "can_vary_numbers": false,
+        "can_rename_params": false,
+        "concept_variations": []
+      },
+      "hints": [
+        "Entnimm die ersten 3 Würfel von rechts: c = dice % 10; dice //= 10; b = dice % 10; dice //= 10; a = dice % 10; dice //= 10.",
+        "Erstelle die erste Hand mit diceToOrderedHand(a, b, c). Rufe dann playStep2 zweimal auf (jedes Mal erhältst du eine neue Hand und restliche dice).",
+        "Am Ende: Berechne den Score mit score(hand) und gib (hand, score_wert) zurück."
+      ],
+      "explanation": "PlayThreeDiceYahtzee verbindet alle Hilfsfunktionen zu einem vollständigen Spielablauf. Das ist das Prinzip des Top-Down-Designs: Komplexe Probleme werden in kleine, einzeln testbare Funktionen aufgeteilt, die dann zusammen das große Problem lösen.",
+      "difficulty": "hard",
+      "topics": ["Top-Down-Design", "Hilfsfunktionen", "Tupel", "Algorithmus"],
+      "exam_relevance": "low"
+    }
+  ]
+}
