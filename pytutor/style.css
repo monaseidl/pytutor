@@ -43,6 +43,7 @@ body {
   width: 100%;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  touch-action: pan-y;
 }
 
 #app {
