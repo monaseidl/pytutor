@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#4ade80">
+  <meta name="theme-color" content="#1a1714">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="./manifest.json">
@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
-  <title>PyTutor 🐍</title>
+  <title>PyTutor</title>
 </head>
 <body>
   <div id="app">
@@ -19,18 +19,18 @@
     <!-- ── Header ── -->
     <header id="header">
       <div class="header-top">
-        <h1 class="logo">PyTutor 🐍</h1>
+        <h1 class="logo">PyTutor</h1>
         <div class="header-right">
           <div class="streak-badge">
-            🔥 <span id="streak-count">0</span>
+            Streak <span id="streak-count">0</span>
           </div>
           <div class="score-badge">
-            ⭐ <span id="score-count">0</span>
+            Score <span id="score-count">0</span>
           </div>
-          <button id="add-lab-btn" class="btn-add-lab" title="Übungsblatt als Lab importieren">➕ Lab</button>
-          <button id="exam-upload-btn" class="btn-add-lab" title="Alte Prüfungsaufgaben hochladen">📝 Prüfungsaufgaben</button>
-          <button id="exam-btn" class="btn-exam" title="Prüfungsmodus starten (10 Aufgaben, 5 min Timer)">🎯 Prüfung</button>
-          <button id="settings-btn" class="icon-btn" title="Einstellungen (API Key)">⚙️</button>
+          <button id="add-lab-btn" class="btn-add-lab" title="Übungsblatt als Lab importieren">+ Lab</button>
+          <button id="exam-upload-btn" class="btn-add-lab" title="Alte Prüfungsaufgaben hochladen">Prüfungsaufgaben</button>
+          <button id="exam-btn" class="btn-exam" title="Prüfungsmodus starten (10 Aufgaben, 5 min Timer)">Prüfung</button>
+          <button id="settings-btn" class="icon-btn" title="Einstellungen (API Key)">○</button>
         </div>
       </div>
       <div class="lab-selector" id="lab-selector"></div>
@@ -39,7 +39,7 @@
     <!-- ── Exam Bar ── -->
     <div id="exam-bar" class="exam-bar hidden">
       <div class="exam-bar-inner">
-        <span class="exam-bar-title">🎯 Prüfungsmodus</span>
+        <span class="exam-bar-title">Prüfungsmodus</span>
         <div id="exam-timer" class="exam-timer">5:00</div>
         <span id="exam-progress-label" class="exam-progress-label">Frage 1 / 10</span>
         <span id="exam-score-label" class="exam-score-label">0 richtig</span>
@@ -58,7 +58,7 @@
         <section class="card" id="exercise-card">
           <div class="exercise-header">
             <div class="exercise-meta">
-              <span id="exercise-status-icon" class="exercise-status-icon" aria-label="Status">🔴</span>
+              <span id="exercise-status-icon" class="exercise-status-icon" aria-label="Status">●</span>
               <span class="exercise-id" id="exercise-id">–</span>
               <span class="badge difficulty" id="difficulty-badge">–</span>
               <span class="badge exam" id="exam-badge">–</span>
@@ -79,13 +79,13 @@
           <!-- Progress Dashboard (collapsible) -->
           <div class="progress-dashboard" id="progress-dashboard">
             <button class="progress-toggle" id="progress-toggle">
-              📊 Fortschritt <span id="progress-arrow" class="progress-arrow">▸</span>
+              Fortschritt <span id="progress-arrow" class="progress-arrow">▸</span>
             </button>
             <div id="progress-content" class="progress-content hidden"></div>
           </div>
 
           <div class="hint-area">
-            <button id="hint-btn" class="hint-btn">💡 Tipp anzeigen</button>
+            <button id="hint-btn" class="hint-btn">Tipp anzeigen</button>
             <div id="hint-display" class="hint-display hidden"></div>
           </div>
         </section>
@@ -118,7 +118,7 @@
           </div>
           <div class="editor-actions">
             <button id="run-btn" class="btn btn-run">▶ Ausführen</button>
-            <button id="explain-btn" class="btn btn-explain">🔍 Erklären</button>
+            <button id="explain-btn" class="btn btn-explain">◎ Erklären</button>
           </div>
         </section>
 
@@ -141,7 +141,7 @@
         <!-- Tutor Panel -->
         <section class="card tutor-section">
           <div class="section-bar">
-            <span class="section-label">🤖 KI-Tutor</span>
+            <span class="section-label">KI-Tutor</span>
             <button id="api-status-btn" class="api-badge no-key" title="API Key einrichten">Kein API Key</button>
           </div>
           <div id="tutor-messages" class="tutor-messages"></div>
@@ -168,7 +168,7 @@
   <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Einstellungen">
     <div class="modal-box" role="document">
       <div class="modal-header">
-        <h3>Einstellungen ⚙️</h3>
+        <h3>Einstellungen</h3>
         <button id="close-settings-btn" class="icon-btn" aria-label="Schließen">✕</button>
       </div>
       <div class="modal-body">
@@ -195,13 +195,13 @@
         <div id="api-key-status" class="api-key-status" aria-live="polite"></div>
 
         <div class="settings-info">
-          <p>💡 <strong>Wo bekomme ich einen API Key?</strong></p>
+          <p><strong>Wo bekomme ich einen API Key?</strong></p>
           <p>Anthropic: console.anthropic.com · OpenAI: platform.openai.com · Google: aistudio.google.com</p>
         </div>
       </div>
       <div class="modal-footer">
         <button id="save-settings-btn" class="btn btn-run">✓ Speichern</button>
-        <button id="test-api-btn" class="btn btn-explain">⚡ API testen</button>
+        <button id="test-api-btn" class="btn btn-explain">API testen</button>
       </div>
     </div>
   </div>
@@ -210,7 +210,7 @@
   <div id="add-lab-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Lab hinzufügen">
     <div class="modal-box modal-box-wide" role="document">
       <div class="modal-header">
-        <h3>➕ Lab aus Übungsblatt importieren</h3>
+        <h3>+ Lab aus Übungsblatt importieren</h3>
         <button id="close-add-lab-btn" class="icon-btn" aria-label="Schließen">✕</button>
       </div>
       <div class="modal-body">
@@ -231,8 +231,8 @@
         </div>
 
         <div class="add-lab-tabs" role="tablist">
-          <button class="add-lab-tab active" role="tab" data-tab="text">📄 Text</button>
-          <button class="add-lab-tab" role="tab" data-tab="pdf">📎 PDF</button>
+          <button class="add-lab-tab active" role="tab" data-tab="text">Text</button>
+          <button class="add-lab-tab" role="tab" data-tab="pdf">PDF</button>
         </div>
 
         <div id="add-lab-tab-text" class="add-lab-tab-panel">
@@ -258,7 +258,7 @@ def a_plus_abs_b(a, b):
             autocorrect="off"
           ></textarea>
           <div class="settings-info" style="margin-top:12px">
-            <p>💡 <strong>Tipp:</strong> Füge den gesamten Text des Übungsblatts ein – je mehr Kontext, desto besser die Aufgaben.</p>
+            <p><strong>Tipp:</strong> Füge den gesamten Text des Übungsblatts ein – je mehr Kontext, desto besser die Aufgaben.</p>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ def a_plus_abs_b(a, b):
         <div id="add-lab-status" class="api-key-status" aria-live="polite"></div>
       </div>
       <div class="modal-footer">
-        <button id="generate-lab-btn" class="btn btn-run">⚡ Aufgaben generieren</button>
+        <button id="generate-lab-btn" class="btn btn-run">Aufgaben generieren</button>
         <button id="cancel-add-lab-btn" class="btn btn-explain">Abbrechen</button>
       </div>
     </div>
@@ -286,13 +286,13 @@ def a_plus_abs_b(a, b):
   <div id="exam-upload-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Prüfungsaufgaben hochladen">
     <div class="modal-box modal-box-wide" role="document">
       <div class="modal-header">
-        <h3>📝 Prüfungsaufgaben importieren</h3>
+        <h3>Prüfungsaufgaben importieren</h3>
         <button id="close-exam-upload-btn" class="icon-btn" aria-label="Schließen">✕</button>
       </div>
       <div class="modal-body">
         <div class="add-lab-tabs" role="tablist">
-          <button class="exam-upload-tab active" role="tab" data-tab="text">📄 Text</button>
-          <button class="exam-upload-tab" role="tab" data-tab="pdf">📎 PDF</button>
+          <button class="exam-upload-tab active" role="tab" data-tab="text">Text</button>
+          <button class="exam-upload-tab" role="tab" data-tab="pdf">PDF</button>
         </div>
 
         <div id="exam-upload-tab-text" class="add-lab-tab-panel">
@@ -308,7 +308,7 @@ def a_plus_abs_b(a, b):
             autocorrect="off"
           ></textarea>
           <div class="settings-info" style="margin-top:12px">
-            <p>💡 Prüfungsaufgaben werden separat gespeichert und im Prüfungsmodus bevorzugt eingesetzt.</p>
+            <p>Prüfungsaufgaben werden separat gespeichert und im Prüfungsmodus bevorzugt eingesetzt.</p>
           </div>
         </div>
 
@@ -324,7 +324,7 @@ def a_plus_abs_b(a, b):
         <div id="exam-upload-status" class="api-key-status" aria-live="polite"></div>
       </div>
       <div class="modal-footer">
-        <button id="generate-exam-btn" class="btn btn-run">⚡ Aufgaben generieren</button>
+        <button id="generate-exam-btn" class="btn btn-run">Aufgaben generieren</button>
         <button id="cancel-exam-upload-btn" class="btn btn-explain">Abbrechen</button>
       </div>
     </div>

@@ -307,9 +307,9 @@ function renderExercise(ex) {
 
   const attempts = state.progress.attempts[ex.id] || 0;
   const correct  = state.progress.correct[ex.id]  || 0;
-  const icon     = correct >= 2 ? '🟢' : correct === 1 ? '🟡' : '🔴';
   const statusEl = document.getElementById('exercise-status-icon');
-  statusEl.textContent = icon;
+  statusEl.textContent = '●';
+  statusEl.style.color = correct >= 2 ? '#8fa888' : correct === 1 ? '#c4a882' : '#c17f6b';
   statusEl.title       = `${attempts} Versuche, ${correct} mal richtig`;
 
   const diffMap = { easy: 'leicht', medium: 'mittel', hard: 'schwer' };
@@ -1256,7 +1256,7 @@ async function callAPI(prompt, maxTokens = 1000) {
         'Authorization': `Bearer ${key}`,
       },
       body: JSON.stringify({
-        model:      'gpt-4o',
+        model:      'gpt-4o-mini',
         max_tokens: maxTokens,
         messages:   [{ role: 'user', content: prompt }],
       }),
