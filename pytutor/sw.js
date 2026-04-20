@@ -5,7 +5,7 @@
 // Der alte Cache wird dann beim nächsten Start automatisch
 // gelöscht und alle Dateien frisch vom Server geladen.
 // ─────────────────────────────────────────────────────────────
-const CACHE_NAME = 'pytutor-v1'; // <── nur diese Zeile ändern!
+const CACHE_NAME = 'pytutor-v2'; // <── nur diese Zeile ändern!
 
 const ASSETS = [
   './index.html',
@@ -37,16 +37,18 @@ self.addEventListener('activate', event => {
   self.clients.claim(); // bestehende Tabs sofort übernehmen
 });
 
-// fetch: Cache zuerst, dann Netzwerk als Fallback
+// fetch: nur Same-Origin cachen, externe API-Calls direkt durchlassen
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        return response;
-      });
-    })
-  );
+  if (event.request.url.startsWith(self.location.origin)) {
+    event.respondWith(
+      caches.match(event.request).then(cached => {
+        if (cached) return cached;
+        return fetch(event.request).then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return response;
+        });
+      })
+    );
+  }
 });
