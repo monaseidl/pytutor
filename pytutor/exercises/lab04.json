@@ -1,0 +1,412 @@
+{
+  "exercises": [
+    {
+      "id": "lab04_01",
+      "title": "sum",
+      "description_de": "Schreibe eine rekursive Funktion sum(n), die die Summe aller ganzen Zahlen von 0 bis n (inklusive) berechnet. n ist nicht-negativ. Verwende Rekursion, keine Schleifen.",
+      "function_name": "sum",
+      "parameters": ["n"],
+      "starter_code": "def sum(n):\n    # Basisfall und rekursiver Schritt\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def sum(n):\n    if n == 0:\n        return 0\n    return n + sum(n - 1)",
+      "tests": [
+        {"input": [0], "expected": 0},
+        {"input": [1], "expected": 1},
+        {"input": [5], "expected": 15},
+        {"input": [10], "expected": 55}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Berechne die Summe von 0 bis 7",
+          "Berechne die Summe von 0 bis 3",
+          "Berechne die Summe von 0 bis 20"
+        ]
+      },
+      "hints": [
+        "Was ist die einfachste Version des Problems? sum(0) sollte 0 ergeben – das ist dein Basisfall.",
+        "sum(5) = 5 + sum(4). Wie lässt sich das verallgemeinern? sum(n) = n + ???",
+        "return n + sum(n - 1) reduziert das Problem bei jedem Schritt um 1, bis n == 0."
+      ],
+      "explanation": "Das klassische Rekursionsmuster: Basisfall (n==0 → 0) + rekursiver Schritt (n + sum(n-1)). Jeder Aufruf löst ein kleineres Teilproblem.",
+      "difficulty": "easy",
+      "topics": ["rekursion", "basisfall", "lineare-rekursion"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_02",
+      "title": "sine",
+      "description_de": "Nähere die Sinusfunktion rekursiv an. Nutze zwei Fakten: 1) sine(x) ≈ x wenn abs(x) < 0.0001 (Basisfall). 2) Trigonometrische Identität: sin(x) = 3·sin(x/3) − 4·sin³(x/3). Kein Import von math erlaubt.",
+      "function_name": "sine",
+      "parameters": ["x"],
+      "starter_code": "def sine(x):\n    # Basisfall: abs(x) < 0.0001\n    # Rekursiver Schritt: sin(x) = 3*sine(x/3) - 4*sine(x/3)**3\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def sine(x):\n    if abs(x) < 0.0001:\n        return x\n    s = sine(x / 3)\n    return 3 * s - 4 * s ** 3",
+      "tests": [
+        {"input": [0], "expected": 0},
+        {"input": [0.00005], "expected": 0.00005},
+        {"input": [1], "expected": 0.8415},
+        {"input": [3.14159], "expected": 0.0}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Andere x-Werte wie 0.5 oder 1.5",
+          "Sehr kleiner Wert wie 0.0001",
+          "Negativer Wert wie -1"
+        ]
+      },
+      "hints": [
+        "Der Basisfall: wenn abs(x) < 0.0001, gib einfach x zurück (sin(x) ≈ x für sehr kleine x).",
+        "Berechne sine(x/3) einmal und speichere es in einer Variable s – du brauchst es zweimal.",
+        "Der rekursive Schritt lautet: return 3 * s - 4 * s ** 3"
+      ],
+      "explanation": "Rekursion durch Problemverkleinerung: x/3 wird immer kleiner bis zum Basisfall < 0.0001. Die trigonometrische Identität erlaubt es, sin(x) aus sin(x/3) zu berechnen.",
+      "difficulty": "medium",
+      "topics": ["rekursion", "mathematik", "approximation", "basisfall"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab04_03",
+      "title": "oddCount",
+      "description_de": "Schreibe rekursiv (ohne Schleifen) die Funktion oddCount(L), die die Anzahl der ungeraden Ganzzahlen in der Liste L zurückgibt. L kann leer sein.",
+      "function_name": "oddCount",
+      "parameters": ["L"],
+      "starter_code": "def oddCount(L):\n    # Basisfall: leere Liste\n    # Rekursiver Schritt: erstes Element prüfen + Rest\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def oddCount(L):\n    if not L:\n        return 0\n    return (1 if L[0] % 2 != 0 else 0) + oddCount(L[1:])",
+      "tests": [
+        {"input": [[]], "expected": 0},
+        {"input": [[1, 2, 3]], "expected": 2},
+        {"input": [[2, 4, 6]], "expected": 0},
+        {"input": [[1, 3, 5, 7]], "expected": 4}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste [1, 2, 3, 4, 5, 6]",
+          "Liste mit allen ungeraden Zahlen",
+          "Liste mit negativen Zahlen [-1, -2, -3]"
+        ]
+      },
+      "hints": [
+        "Der Basisfall: wenn L leer ist (not L), gib 0 zurück.",
+        "Schau dir das erste Element an: ist L[0] % 2 != 0 (ungerade)? Dann +1, sonst +0.",
+        "Rufe oddCount(L[1:]) rekursiv auf – L[1:] ist die Liste ohne das erste Element."
+      ],
+      "explanation": "Listrekursion: immer das erste Element prüfen und dann rekursiv mit dem Rest L[1:] weitermachen. Der Basisfall ist die leere Liste. L[1:] erstellt eine neue Teilliste ohne das erste Element.",
+      "difficulty": "easy",
+      "topics": ["rekursion", "listen", "basisfall", "modulo"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_04",
+      "title": "oddSum",
+      "description_de": "Schreibe rekursiv (ohne Schleifen, ohne neue Liste) die Funktion oddSum(L), die die Summe aller ungeraden Ganzzahlen in der Liste L zurückgibt. Gib 0 zurück wenn keine ungeraden Zahlen vorhanden sind.",
+      "function_name": "oddSum",
+      "parameters": ["L"],
+      "starter_code": "def oddSum(L):\n    # Basisfall: leere Liste\n    # Rekursiver Schritt: ungerades Element addieren oder überspringen\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def oddSum(L):\n    if not L:\n        return 0\n    first = L[0] if L[0] % 2 != 0 else 0\n    return first + oddSum(L[1:])",
+      "tests": [
+        {"input": [[]], "expected": 0},
+        {"input": [[1, 2, 3]], "expected": 4},
+        {"input": [[2, 4, 6]], "expected": 0},
+        {"input": [[1, 3, 5]], "expected": 9}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste [7, 2, 5, 8, 3]",
+          "Liste mit einer einzigen ungeraden Zahl",
+          "Liste mit negativen ungeraden Zahlen"
+        ]
+      },
+      "hints": [
+        "Basisfall: leere Liste → 0.",
+        "Wenn L[0] ungerade ist (% 2 != 0), addiere L[0] zur Summe des Rests. Sonst addiere 0.",
+        "first = L[0] if L[0] % 2 != 0 else 0 – dann return first + oddSum(L[1:])"
+      ],
+      "explanation": "Sehr ähnlich zu oddCount, aber wir addieren den Wert statt 1. Gerade Elemente tragen 0 bei. Der Trick: immer nur das erste Element ansehen, dann rekursiv den Rest.",
+      "difficulty": "easy",
+      "topics": ["rekursion", "listen", "basisfall", "modulo"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_05",
+      "title": "oddsOnly",
+      "description_de": "Schreibe rekursiv (ohne Schleifen) die Funktion oddsOnly(L), die eine neue Liste zurückgibt, die nur die ungeraden Zahlen aus L in der gleichen Reihenfolge enthält.",
+      "function_name": "oddsOnly",
+      "parameters": ["L"],
+      "starter_code": "def oddsOnly(L):\n    # Basisfall: leere Liste\n    # Rekursiver Schritt: ungerade Elemente in neue Liste\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def oddsOnly(L):\n    if not L:\n        return []\n    rest = oddsOnly(L[1:])\n    if L[0] % 2 != 0:\n        return [L[0]] + rest\n    return rest",
+      "tests": [
+        {"input": [[]], "expected": []},
+        {"input": [[1, 2, 3, 4]], "expected": [1, 3]},
+        {"input": [[2, 4, 6]], "expected": []},
+        {"input": [[1, 3, 5]], "expected": [1, 3, 5]}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste [5, 2, 7, 4, 9]",
+          "Liste mit nur einem ungeraden Element",
+          "Liste [-1, -2, -3, -4]"
+        ]
+      },
+      "hints": [
+        "Basisfall: leere Liste → []",
+        "Berechne zuerst oddsOnly(L[1:]) (die ungeraden Zahlen des Rests). Dann entscheide ob L[0] dazugehört.",
+        "Wenn L[0] ungerade: return [L[0]] + rest. Wenn gerade: return rest. Mit [L[0]] + rest erzeugst du eine neue Liste."
+      ],
+      "explanation": "Statt eine Summe aufzubauen, bauen wir eine Liste auf. [L[0]] + rest hängt das erste Element vor den Rest. Basisfall ist die leere Liste [].",
+      "difficulty": "medium",
+      "topics": ["rekursion", "listen", "basisfall", "listen-aufbau"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_06",
+      "title": "maxOdd",
+      "description_de": "Schreibe rekursiv (ohne Schleifen) die Funktion maxOdd(L), die die größte ungerade Ganzzahl in L zurückgibt, oder None wenn L keine ungeraden Zahlen enthält.",
+      "function_name": "maxOdd",
+      "parameters": ["L"],
+      "starter_code": "def maxOdd(L):\n    # Basisfall: leere Liste → None\n    # Rekursiver Schritt: Maximum der ungeraden Zahlen\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def maxOdd(L):\n    if not L:\n        return None\n    rest = maxOdd(L[1:])\n    if L[0] % 2 != 0:\n        if rest is None:\n            return L[0]\n        return max(L[0], rest)\n    return rest",
+      "tests": [
+        {"input": [[]], "expected": null},
+        {"input": [[2, 4, 6]], "expected": null},
+        {"input": [[1, 2, 3]], "expected": 3},
+        {"input": [[5, 2, 7, 4]], "expected": 7}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste [9, 3, 7, 1, 5]",
+          "Liste mit nur einer ungeraden Zahl [2, 4, 7]",
+          "Liste mit negativen ungeraden Zahlen [-3, -5, -7]"
+        ]
+      },
+      "hints": [
+        "Basisfall: leere Liste → None (kein Maximum ohne Elemente).",
+        "Hole rekursiv das Maximum der ungeraden Zahlen aus L[1:]. Dann vergleiche mit L[0] falls L[0] ungerade ist.",
+        "Sei vorsichtig: rest könnte None sein (keine ungeraden in L[1:]). Prüfe mit 'if rest is None'."
+      ],
+      "explanation": "None signalisiert 'kein ungerades Element gefunden'. Beim Vergleich mit max() müssen wir None separat behandeln. Python's max() funktioniert nicht mit None.",
+      "difficulty": "medium",
+      "topics": ["rekursion", "listen", "basisfall", "none", "maximum"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_07",
+      "title": "hasConsecutiveDigits",
+      "description_de": "Schreibe rekursiv (ohne Schleifen) die Funktion hasConsecutiveDigits(n), die True zurückgibt wenn die Zahl n zwei aufeinanderfolgende gleiche Ziffern enthält, sonst False. n kann negativ sein.",
+      "function_name": "hasConsecutiveDigits",
+      "parameters": ["n"],
+      "starter_code": "def hasConsecutiveDigits(n):\n    # Basisfall: einstellige Zahl\n    # Rekursiver Schritt: letzte zwei Ziffern vergleichen\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def hasConsecutiveDigits(n):\n    n = abs(n)\n    if n < 10:\n        return False\n    return (n % 10 == (n // 10) % 10) or hasConsecutiveDigits(n // 10)",
+      "tests": [
+        {"input": [5], "expected": false},
+        {"input": [1122], "expected": true},
+        {"input": [1234], "expected": false},
+        {"input": [122], "expected": true},
+        {"input": [-1122], "expected": true}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Andere Zahl wie 1223 oder 12345",
+          "Zahl mit drei gleichen aufeinanderfolgenden Ziffern wie 1113",
+          "Negative Zahl wie -122"
+        ]
+      },
+      "hints": [
+        "Basisfall: einstellige Zahl (< 10) kann keine zwei aufeinanderfolgenden Ziffern haben → False.",
+        "n % 10 gibt die letzte Ziffer. (n // 10) % 10 gibt die vorletzte Ziffer. Sind die gleich → True.",
+        "Wenn die letzten zwei Ziffern nicht gleich sind, prüfe rekursiv n // 10 (Zahl ohne letzte Ziffer)."
+      ],
+      "explanation": "n % 10 = letzte Ziffer, (n // 10) % 10 = vorletzte Ziffer. Mit // 10 schneiden wir die letzte Ziffer ab und reduzieren das Problem.",
+      "difficulty": "medium",
+      "topics": ["rekursion", "zahlen", "ziffern", "modulo", "integer-division"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_08",
+      "title": "alternatingSum",
+      "description_de": "Schreibe rekursiv (ohne Schleifen) die Funktion alternatingSum(L), die die alternierende Summe der Liste zurückgibt: L[0] - L[1] + L[2] - L[3] + ... Beispiel: alternatingSum([1,2,3,4,5]) = 1-2+3-4+5 = 3.",
+      "function_name": "alternatingSum",
+      "parameters": ["L"],
+      "starter_code": "def alternatingSum(L):\n    # Basisfall: leere Liste\n    # Rekursiver Schritt: L[0] - alternatingSum(L[1:])\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def alternatingSum(L):\n    if not L:\n        return 0\n    return L[0] - alternatingSum(L[1:])",
+      "tests": [
+        {"input": [[]], "expected": 0},
+        {"input": [[5, 3, 8, 4]], "expected": 6},
+        {"input": [[1, 2, 3, 4, 5]], "expected": 3},
+        {"input": [[42]], "expected": 42}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste [10, 5, 3, 2]",
+          "Liste mit negativen Zahlen [-1, -2, -3]",
+          "Liste [100, 1]"
+        ]
+      },
+      "hints": [
+        "Basisfall: leere Liste → 0.",
+        "Denke daran: L[0] - (L[1] - L[2] + ...) = L[0] - alternatingSum(L[1:]). Das Vorzeichen dreht sich automatisch!",
+        "return L[0] - alternatingSum(L[1:]) – der elegante Trick ist, dass die Subtraktion das Vorzeichen beim nächsten Aufruf umdreht."
+      ],
+      "explanation": "Der Trick: L[0] - alternatingSum(L[1:]) dreht das Vorzeichen automatisch bei jedem rekursiven Aufruf um. Für [1,2,3]: 1 - (2 - (3 - 0)) = 1 - (2-3) = 1 - (-1) = 2 ✓",
+      "difficulty": "medium",
+      "topics": ["rekursion", "listen", "basisfall", "vorzeichen"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_09",
+      "title": "is_palindrome",
+      "description_de": "Implementiere die rekursive Funktion is_palindrome(strng), die True zurückgibt wenn strng ein Palindrom ist (vorwärts wie rückwärts gelesen gleich). Beispiele: 'racecar', 'aba', 'a' sind Palindrome.",
+      "function_name": "is_palindrome",
+      "parameters": ["strng"],
+      "starter_code": "def is_palindrome(strng):\n    # Basisfall: String der Länge 0 oder 1\n    # Rekursiver Schritt: erstes und letztes Zeichen vergleichen\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def is_palindrome(strng):\n    if len(strng) <= 1:\n        return True\n    return strng[0] == strng[-1] and is_palindrome(strng[1:-1])",
+      "tests": [
+        {"input": ["racecar"], "expected": true},
+        {"input": ["hello"], "expected": false},
+        {"input": ["a"], "expected": true},
+        {"input": ["aba"], "expected": true},
+        {"input": ["abba"], "expected": true}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Teste 'level' oder 'radar'",
+          "Teste einen leeren String ''",
+          "Teste 'abcba'"
+        ]
+      },
+      "hints": [
+        "Basisfall: ein String mit 0 oder 1 Zeichen ist immer ein Palindrom (len(strng) <= 1 → True).",
+        "Vergleiche das erste (strng[0]) und das letzte (strng[-1]) Zeichen. Wenn sie unterschiedlich sind → False.",
+        "Wenn erstes und letztes Zeichen gleich sind, prüfe rekursiv den mittleren Teil: is_palindrome(strng[1:-1])."
+      ],
+      "explanation": "strng[1:-1] schneidet das erste und letzte Zeichen ab und übergibt den Rest rekursiv. Bei jedem Schritt wird das Problem kleiner, bis der Basisfall (0 oder 1 Zeichen) erreicht ist.",
+      "difficulty": "easy",
+      "topics": ["rekursion", "strings", "slicing", "basisfall"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_10",
+      "title": "num_eights",
+      "description_de": "Schreibe eine rekursive Funktion num_eights(pos), die zählt wie oft die Ziffer 8 in der positiven ganzen Zahl pos vorkommt.",
+      "function_name": "num_eights",
+      "parameters": ["pos"],
+      "starter_code": "def num_eights(pos):\n    # Basisfall: pos == 0\n    # Rekursiver Schritt: letzte Ziffer prüfen, dann pos // 10\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def num_eights(pos):\n    if pos == 0:\n        return 0\n    return (1 if pos % 10 == 8 else 0) + num_eights(pos // 10)",
+      "tests": [
+        {"input": [8], "expected": 1},
+        {"input": [88], "expected": 2},
+        {"input": [2682], "expected": 1},
+        {"input": [80808080], "expected": 4},
+        {"input": [123], "expected": 0}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Zähle Achten in 888",
+          "Zähle Achten in 12345678",
+          "Zähle Achten in 8008"
+        ]
+      },
+      "hints": [
+        "Basisfall: pos == 0 → 0 (keine Ziffern mehr zu prüfen).",
+        "pos % 10 gibt die letzte Ziffer. Ist sie 8 → +1, sonst +0.",
+        "pos // 10 entfernt die letzte Ziffer. Rufe num_eights(pos // 10) rekursiv auf."
+      ],
+      "explanation": "Das gleiche Muster wie hasConsecutiveDigits: letzte Ziffer prüfen (% 10), dann Problem verkleinern (// 10). Basisfall ist 0 – keine Ziffern mehr.",
+      "difficulty": "easy",
+      "topics": ["rekursion", "zahlen", "ziffern", "modulo"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_11",
+      "title": "merge",
+      "description_de": "Implementiere merge(dict1, dict2) das zwei Dictionaries mit int oder float Werten zusammenführt und ein neues Dictionary zurückgibt. Falls ein Schlüssel in beiden vorkommt, ist der Wert die Summe. Verwende Rekursion!",
+      "function_name": "merge",
+      "parameters": ["dict1", "dict2"],
+      "starter_code": "def merge(dict1, dict2):\n    # Basisfall: dict1 leer → dict2 zurückgeben\n    # Rekursiver Schritt: ein Schlüssel aus dict1 entnehmen und einarbeiten\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def merge(dict1, dict2):\n    if not dict1:\n        return dict(dict2)\n    key = next(iter(dict1))\n    val = dict1[key]\n    rest = {k: v for k, v in dict1.items() if k != key}\n    merged = merge(rest, dict2)\n    if key in merged:\n        merged[key] += val\n    else:\n        merged[key] = val\n    return merged",
+      "tests": [
+        {"input": [{}, {}], "expected": {}},
+        {"input": [{"a": 1}, {"b": 2}], "expected": {"a": 1, "b": 2}},
+        {"input": [{"a": 1, "b": 2}, {"b": 3, "c": 4}], "expected": {"a": 1, "b": 5, "c": 4}},
+        {"input": [{"x": 1.5}, {"x": 2.5}], "expected": {"x": 4.0}}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Andere Schlüssel-Wert Paare mit floats",
+          "Ein leeres Dictionary und ein nicht-leeres",
+          "Drei gemeinsame Schlüssel"
+        ]
+      },
+      "hints": [
+        "Basisfall: dict1 ist leer → gib eine Kopie von dict2 zurück: dict(dict2).",
+        "Hole einen Schlüssel aus dict1: key = next(iter(dict1)). Erstelle den Rest ohne diesen Schlüssel.",
+        "Rufe merge(rest, dict2) auf, um den Rest zu mergen. Dann füge key hinzu oder addiere val wenn key schon vorhanden."
+      ],
+      "explanation": "Wir entnehmen bei jedem Schritt einen Schlüssel aus dict1 (Problem wird kleiner). Basisfall: dict1 leer. next(iter(dict1)) gibt den ersten Schlüssel.",
+      "difficulty": "hard",
+      "topics": ["rekursion", "dictionaries", "basisfall", "schlüssel-werte"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab04_12",
+      "title": "mario_number",
+      "description_de": "Mario muss ein Level durchqueren (ein String mit ' ' für freie Felder und 'P' für Piranha-Pflanzen). Mario startet bei Index 0 und kann einen Schritt (+1) oder einen Sprung (+2) machen. Gib die Anzahl der verschiedenen Wege zurück, wie Mario das Ende erreichen kann ohne auf einem 'P' zu landen.",
+      "function_name": "mario_number",
+      "parameters": ["level"],
+      "starter_code": "def mario_number(level):\n    # Tipp: definiere eine Hilfsfunktion helper(i) die von Position i aus zählt\n    # Basisfall 1: i == len(level) - 1 → 1 Weg gefunden\n    # Basisfall 2: i >= len(level) oder level[i] == 'P' → 0 Wege\n    # Rekursiver Schritt: helper(i+1) + helper(i+2)\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def mario_number(level):\n    def helper(i):\n        if i == len(level) - 1:\n            return 1\n        if i >= len(level) or level[i] == 'P':\n            return 0\n        return helper(i + 1) + helper(i + 2)\n    return helper(0)",
+      "tests": [
+        {"input": [" "], "expected": 1},
+        {"input": ["  "], "expected": 1},
+        {"input": ["   "], "expected": 2},
+        {"input": ["    "], "expected": 3},
+        {"input": [" P P "], "expected": 1},
+        {"input": [" P PP "], "expected": 0}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Level mit anderen Piranha-Positionen",
+          "Kürzeres Level '  P '",
+          "Level ohne Piranhas '     '"
+        ]
+      },
+      "hints": [
+        "Definiere eine innere Hilfsfunktion helper(i) die zählt wie viele Wege es von Position i aus gibt.",
+        "Basisfall 1: i ist am Ende (i == len(level) - 1) → 1 gültiger Weg. Basisfall 2: level[i] == 'P' oder i zu groß → 0 Wege.",
+        "Rekursiver Schritt: addiere die Wege von i+1 (Schritt) und i+2 (Sprung): return helper(i+1) + helper(i+2)"
+      ],
+      "explanation": "Baumrekursion: von jeder Position gibt es zwei Möglichkeiten (Schritt oder Sprung). Wir addieren die Anzahl der Wege beider Optionen. Das ergibt eine baumförmige Aufrufstruktur.",
+      "difficulty": "hard",
+      "topics": ["rekursion", "baum-rekursion", "strings", "basisfall", "hilfsfunktion"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab04_13",
+      "title": "knapsack",
+      "description_de": "Du bist ein Dieb mit einem Rucksack der Kapazität c. Gegeben sind Gewichte weights[i] und Werte values[i] von n Gegenständen. Wähle eine Teilmenge so dass das Gesamtgewicht ≤ c und der Gesamtwert maximal ist. Schreibe eine rekursive Funktion.",
+      "function_name": "knapsack",
+      "parameters": ["weights", "values", "c"],
+      "starter_code": "def knapsack(weights, values, c):\n    # Basisfall: keine Gegenstände mehr oder Kapazität 0\n    # Rekursiver Schritt: Gegenstand nehmen ODER überspringen\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def knapsack(weights, values, c):\n    if not weights or c == 0:\n        return 0\n    if weights[0] > c:\n        return knapsack(weights[1:], values[1:], c)\n    skip = knapsack(weights[1:], values[1:], c)\n    take = values[0] + knapsack(weights[1:], values[1:], c - weights[0])\n    return max(skip, take)",
+      "tests": [
+        {"input": [[2, 6, 3, 3], [1, 5, 3, 3], 6], "expected": 6},
+        {"input": [[], [], 10], "expected": 0},
+        {"input": [[1], [5], 0], "expected": 0},
+        {"input": [[1, 2], [3, 4], 3], "expected": 7}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Andere Gewichte [1, 3, 2] und Werte [2, 5, 3], Kapazität 4",
+          "Kapazität genau so groß wie ein Gegenstand",
+          "Alle Gegenstände passen in den Rucksack"
+        ]
+      },
+      "hints": [
+        "Basisfall: keine Gegenstände mehr (weights leer) oder Kapazität 0 → Wert ist 0.",
+        "Für jeden Gegenstand hast du zwei Optionen: überspringen (skip) oder mitnehmen (take, wenn weights[0] ≤ c).",
+        "skip = knapsack(weights[1:], values[1:], c) – take = values[0] + knapsack(weights[1:], values[1:], c - weights[0]). Gib max(skip, take) zurück."
+      ],
+      "explanation": "Klassisches DP-Problem rekursiv gelöst: Bei jedem Schritt entscheiden wir für den ersten Gegenstand ob wir ihn nehmen oder nicht. Baumrekursion – beide Äste werden erkundet und das Maximum gewählt.",
+      "difficulty": "hard",
+      "topics": ["rekursion", "baum-rekursion", "optimierung", "rucksack-problem"],
+      "exam_relevance": "medium"
+    }
+  ]
+}

@@ -11,6 +11,19 @@ const LS_PROVIDER    = 'pytutor_api_provider';
 const EXAM_TOTAL     = 10;   // questions per exam session
 const EXAM_SECS      = 300;  // 5 minutes per question
 
+const LAB_CONFIG = [
+  { id: 'lab01',    label: 'Lab 1'      },
+  { id: 'lab02',    label: 'Lab 2'      },
+  { id: 'lab03a',   label: 'Lab 3a'     },
+  { id: 'lab03b',   label: 'Lab 3b'     },
+  { id: 'lab04',    label: 'Lab 4'      },
+  { id: 'lab05',    label: 'Lab 5'      },
+  { id: 'lab06',    label: 'Lab 6'      },
+  { id: 'lab07',    label: 'Lab 7'      },
+  { id: 'lab09',    label: 'Lab 9'      },
+  { id: 'lab_exam', label: 'Prüfungslab', exam: true },
+];
+
 // ── State ──────────────────────────────────────────────────────────────────
 const state = {
   exercises:    [],
@@ -166,6 +179,32 @@ function updateApiStatusBadge() {
 async function loadLab(labId) {
   state.currentLabId = labId;
 
+  // Sonderfall: Prüfungslab lädt aus importierten Prüfungsaufgaben
+  if (labId === 'lab_exam') {
+    try {
+      const raw       = localStorage.getItem('exam_questions');
+      const exercises = raw ? JSON.parse(raw) : [];
+      if (!exercises.length) {
+        state.exercises = [];
+        addTutorMsg(
+          'Noch keine Prüfungsaufgaben vorhanden. Importiere alte Prüfungen über <strong>Prüfungsaufgaben</strong> in der Menüleiste.',
+          'info'
+        );
+        return;
+      }
+      state.exercises = exercises;
+      checkLabCompletion(labId);
+      selectNextExercise();
+      addTutorMsg(
+        `Prüfungslab geladen – <strong>${exercises.length} Aufgaben</strong> aus importierten Prüfungen. Übe ohne Zeitdruck!`,
+        'info'
+      );
+    } catch {
+      state.exercises = [];
+    }
+    return;
+  }
+
   // 1. Check localStorage for user-imported labs (Änderung 1)
   const cached = localStorage.getItem(`pytutor_lab_${labId}`);
   if (cached) {
@@ -191,9 +230,9 @@ async function loadLab(labId) {
     selectNextExercise();
   } catch {
     state.exercises = [];
-    const num = parseInt(labId.replace('lab', ''), 10);
+    const labLabel = LAB_CONFIG.find(l => l.id === labId)?.label || labId;
     addTutorMsg(
-      `Lab ${num} noch nicht verfügbar. Füge die Datei <code>exercises/${labId}.json</code> hinzu oder importiere das Übungsblatt über <strong>➕ Lab</strong>.`,
+      `${labLabel} noch nicht verfügbar. Füge die Datei <code>exercises/${labId}.json</code> hinzu oder importiere das Übungsblatt über <strong>➕ Lab</strong>.`,
       'info'
     );
   }
@@ -206,19 +245,18 @@ function buildLabSelector() {
   const container = document.getElementById('lab-selector');
   container.innerHTML = '';
 
-  for (let i = 1; i <= 10; i++) {
-    const labId = `lab${String(i).padStart(2, '0')}`;
-    const btn   = document.createElement('button');
-    btn.className     = 'lab-btn' + (labId === 'lab01' ? ' active' : '');
-    btn.textContent   = `Lab ${i}`;
-    btn.dataset.labId = labId;
+  LAB_CONFIG.forEach(lab => {
+    const btn = document.createElement('button');
+    btn.className     = 'lab-btn' + (lab.id === 'lab01' ? ' active' : '') + (lab.exam ? ' lab-btn--exam' : '');
+    btn.textContent   = lab.label;
+    btn.dataset.labId = lab.id;
     btn.addEventListener('click', () => {
       document.querySelectorAll('.lab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      loadLab(labId);
+      loadLab(lab.id);
     });
     container.appendChild(btn);
-  }
+  });
 }
 
 // Mark lab button green with ✓ if all exercises solved
@@ -583,19 +621,35 @@ function renderConsole(result, ex) {
 async function fetchErrorFeedback(code, result, ex) {
   const loadId = addLoadingBubble();
 
-  const prompt = `Erkläre diesem Python-Anfänger auf Deutsch was in seinem Code falsch ist. Erkläre: 1) Was schiefgelaufen ist, 2) Warum das passiert, 3) Wie er es beheben kann. Benutze <code> Tags für Code-Begriffe. Maximal 80 Wörter. Sei ermutigend.
+  const failedTests = (result.test_results || []).filter(t => !t.passed).slice(0, 3);
 
-Aufgabe: ${ex.function_name} – ${ex.description_de}
+  const prompt = `Du bist ein geduldiger Python-Tutor der Studenten Schritt für Schritt erklärt, warum ihr Code nicht funktioniert. Antworte auf Deutsch als HTML (verwende <strong>, <code>, <br> Tags – kein Markdown). Gliedere deine Antwort in genau diese vier Abschnitte:
 
-Code:
+<strong>1. Was stimmt nicht?</strong><br>
+Erkläre in 1–2 Sätzen konkret, was das Problem ist. Nenne die betroffenen Zeilen oder Stellen im Code des Studenten.
+
+<strong>2. Wie funktioniert das Konzept?</strong><br>
+Erkläre das relevante Python-Konzept (z.B. Rückgabewerte, Schleifen, Bedingungen, Typen) in einfachen Worten für Anfänger – so als wäre es das erste Mal dass jemand davon hört.
+
+<strong>3. Was genau passt an meiner Lösung nicht?</strong><br>
+Gehe durch die falschen Zeilen im Code des Studenten. Erkläre für jede problematische Zeile: was sie tut, warum das nicht mit der Aufgabenstellung übereinstimmt.
+
+<strong>4. Wie würde ich meinen Code umschreiben?</strong><br>
+Zeige einen konkreten Weg, wie der Student seinen bestehenden Code anpassen müsste (nicht einfach die fertige Lösung, sondern den Weg dahin). Nutze <code>-Tags für Code-Snippets.
+
+Sei ermutigend und freundlich. Maximal 350 Wörter.
+
+Aufgabe: <code>${ex.function_name}</code> – ${ex.description_de}
+
+Code des Studenten:
 ${code}
 
-Status: ${result.status}
+Fehlerstatus: ${result.status}
 Fehler: ${result.error_message || 'Falsche Ausgabe'}
-Tests: ${JSON.stringify((result.test_results || []).slice(0, 3))}`;
+Fehlgeschlagene Tests: ${JSON.stringify(failedTests)}`;
 
   try {
-    const text = await callAPI(prompt, 600);
+    const text = await callAPI(prompt, 1500);
     removeLoadingBubble(loadId);
     addTutorMsg(text, 'error');
   } catch {
@@ -676,6 +730,24 @@ function resetHints() {
   const display = document.getElementById('hint-display');
   display.innerHTML = '';
   display.classList.add('hidden');
+}
+
+/* ══════════════════════════════════════════════════════════
+   SHOW SOLUTION
+   ══════════════════════════════════════════════════════════ */
+function showSolution() {
+  if (exam.active) return;
+  const ex = state.currentBase;
+  if (!ex?.canonical_solution) {
+    addTutorMsg('Für diese Aufgabe ist keine Musterlösung hinterlegt.', 'info');
+    return;
+  }
+  setEditorCode(ex.canonical_solution);
+  addTutorMsg(
+    'Die Musterlösung wurde in den Editor eingefügt. Schau sie dir genau an – ' +
+    'führe sie aus und versuche dann zu verstehen, warum jede Zeile so geschrieben ist!',
+    'hint'
+  );
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1011,9 +1083,9 @@ function closeAddLabModal() {
 }
 
 async function generateLabFromText() {
-  const labNum = document.getElementById('add-lab-number').value;
-  const labId  = `lab${String(labNum).padStart(2, '0')}`;
-  const text   = document.getElementById('lab-text-input').value.trim();
+  const labId    = document.getElementById('add-lab-number').value;
+  const labLabel = LAB_CONFIG.find(l => l.id === labId)?.label || labId;
+  const text     = document.getElementById('lab-text-input').value.trim();
   const status = document.getElementById('add-lab-status');
   const btn    = document.getElementById('generate-lab-btn');
 
@@ -1068,7 +1140,7 @@ ${text}`;
     closeAddLabModal();
     await loadLab(labId);
     addTutorMsg(
-      `Lab ${parseInt(labNum, 10)} erfolgreich geladen! <strong>${exercises.length} Aufgaben</strong> importiert. 🎉`,
+      `${labLabel} erfolgreich geladen! <strong>${exercises.length} Aufgaben</strong> importiert. 🎉`,
       'success'
     );
   } catch (e) {
@@ -1179,8 +1251,8 @@ async function callAPIWithPDF(pdfBase64, prompt, maxTokens = 4096) {
 }
 
 async function generateLabFromPDF() {
-  const labNum    = document.getElementById('add-lab-number').value;
-  const labId     = `lab${String(labNum).padStart(2, '0')}`;
+  const labId    = document.getElementById('add-lab-number').value;
+  const labLabel = LAB_CONFIG.find(l => l.id === labId)?.label || labId;
   const fileInput = document.getElementById('lab-pdf-input');
   const status    = document.getElementById('add-lab-status');
   const btn       = document.getElementById('generate-lab-btn');
@@ -1229,7 +1301,7 @@ async function generateLabFromPDF() {
     closeAddLabModal();
     await loadLab(labId);
     addTutorMsg(
-      `Lab ${parseInt(labNum, 10)} erfolgreich aus PDF geladen! <strong>${exercises.length} Aufgaben</strong> importiert. 🎉`,
+      `${labLabel} erfolgreich aus PDF geladen! <strong>${exercises.length} Aufgaben</strong> importiert. 🎉`,
       'success'
     );
   } catch (e) {
@@ -1602,6 +1674,9 @@ function bindEvents() {
 
   document.getElementById('explain-btn')
     .addEventListener('click', explainCode);
+
+  document.getElementById('solution-btn')
+    .addEventListener('click', showSolution);
 
   document.getElementById('hint-btn')
     .addEventListener('click', showNextHint);

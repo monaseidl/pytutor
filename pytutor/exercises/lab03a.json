@@ -1,0 +1,252 @@
+{
+  "exercises": [
+    {
+      "id": "lab03a_01",
+      "title": "remove_odd_indices",
+      "description_de": "Gegeben eine Liste lst, ein Boolean odd und ein Gewicht weight. Gibt eine neue Liste zurück, bei der Elemente an bestimmten Indizes entfernt wurden: Wenn odd True ist, werden Elemente an ungeraden Indizes entfernt (gerade bleiben). Wenn odd False ist, werden Elemente an geraden Indizes entfernt (ungerade bleiben). Die verbleibenden Elemente werden mit weight multipliziert. Die Originalliste soll unverändert bleiben.",
+      "function_name": "remove_odd_indices",
+      "parameters": ["lst", "odd", "weight"],
+      "starter_code": "def remove_odd_indices(lst, odd, weight):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def remove_odd_indices(lst, odd, weight):\n    result = []\n    for i in range(len(lst)):\n        keep = (odd and i % 2 == 0) or (not odd and i % 2 == 1)\n        if keep:\n            result.append(lst[i] * weight)\n    return result",
+      "tests": [
+        {"input": [[1, 2, 3, 4], true, 1], "expected": [1, 3]},
+        {"input": [[5, 6, 7, 8], false, 4], "expected": [24, 32]},
+        {"input": [[], true, 2], "expected": []},
+        {"input": [[10, 20, 30], false, 1], "expected": [20]}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Ändere die Liste auf [2, 4, 6, 8, 10] und weight auf 3",
+          "Ändere odd auf False und verwende eine andere Liste",
+          "Verwende eine Liste mit nur einem Element"
+        ]
+      },
+      "hints": [
+        "Gehe mit range(len(lst)) durch die Liste – du brauchst den Index i, um zu wissen ob du das Element behalten sollst.",
+        "Nutze den Modulo-Operator: gerade Indizes haben i % 2 == 0, ungerade i % 2 == 1. Wenn odd=True, behalte nur gerade Indizes.",
+        "Erstelle eine leere Ergebnisliste result = [], füge die gewollten Elemente multipliziert mit weight ein und gib result zurück."
+      ],
+      "explanation": "Mit range(len(lst)) bekommst du jeden Index. Der Modulo-Operator % prüft gerade (% 2 == 0) oder ungerade (% 2 == 1). Eine neue Liste erstellen statt die originale ändern – das nennt man nicht-destruktiv.",
+      "difficulty": "medium",
+      "topics": ["listen", "schleifen", "index", "modulo", "boolean"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03a_02",
+      "title": "merge",
+      "description_de": "Führe zwei bereits sortierte Listen lst1 und lst2 zusammen. Die zurückgegebene neue Liste enthält alle Elemente beider Listen in aufsteigend sortierter Reihenfolge.",
+      "function_name": "merge",
+      "parameters": ["lst1", "lst2"],
+      "starter_code": "def merge(lst1, lst2):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def merge(lst1, lst2):\n    result = []\n    i, j = 0, 0\n    while i < len(lst1) and j < len(lst2):\n        if lst1[i] <= lst2[j]:\n            result.append(lst1[i])\n            i += 1\n        else:\n            result.append(lst2[j])\n            j += 1\n    result.extend(lst1[i:])\n    result.extend(lst2[j:])\n    return result",
+      "tests": [
+        {"input": [[1, 3, 5], [2, 4, 6]], "expected": [1, 2, 3, 4, 5, 6]},
+        {"input": [[], [2, 4, 6]], "expected": [2, 4, 6]},
+        {"input": [[1, 2, 3], []], "expected": [1, 2, 3]},
+        {"input": [[5, 7], [2, 4, 6]], "expected": [2, 4, 5, 6, 7]}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Merge [1, 4, 7] und [2, 5, 8]",
+          "Merge eine einelementige Liste mit einer größeren Liste",
+          "Merge [10, 20] und [15, 25, 35]"
+        ]
+      },
+      "hints": [
+        "Verwende zwei Zeiger i und j, die jeweils auf die aktuelle Position in lst1 und lst2 zeigen. Starte mit i, j = 0, 0.",
+        "Solange beide Zeiger noch innerhalb ihrer Liste sind, vergleiche lst1[i] mit lst2[j] und füge das kleinere ins Ergebnis – dann erhöhe den entsprechenden Zeiger.",
+        "Wenn eine Liste aufgebraucht ist, hänge den Rest der anderen einfach ans Ergebnis: result.extend(lst1[i:]) und result.extend(lst2[j:])."
+      ],
+      "explanation": "Merge ist die Grundlage von Merge Sort. Mit zwei Zeigern laufen wir durch beide Listen gleichzeitig und wählen immer das kleinere Element. Am Ende wird der verbleibende Rest der längeren Liste angehängt.",
+      "difficulty": "hard",
+      "topics": ["listen", "schleifen", "algorithmen", "zwei-zeiger"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03a_03",
+      "title": "alternatingSum",
+      "description_de": "Gibt die alternierende Summe der Elemente in der Liste zurück. Das erste Element wird addiert, das zweite subtrahiert, das dritte addiert usw. Beispiel: [5, 3, 8, 4] → 5 - 3 + 8 - 4 = 6.",
+      "function_name": "alternatingSum",
+      "parameters": ["lst"],
+      "starter_code": "def alternatingSum(lst):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def alternatingSum(lst):\n    result = 0\n    for i in range(len(lst)):\n        if i % 2 == 0:\n            result += lst[i]\n        else:\n            result -= lst[i]\n    return result",
+      "tests": [
+        {"input": [[5, 3, 8, 4]], "expected": 6},
+        {"input": [[]], "expected": 0},
+        {"input": [[1]], "expected": 1},
+        {"input": [[1, 2, 3]], "expected": 2}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Andere Liste [10, 5, 3, 2]",
+          "Liste mit nur negativen Zahlen [-1, -2, -3]",
+          "Längere Liste [1, 2, 3, 4, 5]"
+        ]
+      },
+      "hints": [
+        "Du brauchst den Index – verwende range(len(lst)) statt direkt über die Elemente zu iterieren.",
+        "Gerade Indizes (0, 2, 4, ...) → addieren. Ungerade Indizes (1, 3, 5, ...) → subtrahieren. Prüfe mit i % 2 == 0.",
+        "Starte mit result = 0 und aktualisiere result in jeder Iteration je nach Vorzeichen."
+      ],
+      "explanation": "5 - 3 + 8 - 4 = 6. Index 0 → +, Index 1 → -, Index 2 → +, usw. Der Modulo-Operator i % 2 unterscheidet gerade und ungerade Positionen.",
+      "difficulty": "easy",
+      "topics": ["listen", "schleifen", "modulo", "index"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab03a_04",
+      "title": "is_anagram",
+      "description_de": "Entscheide ob zwei Strings s1 und s2 Anagramme voneinander sind. Zwei Strings sind Anagramme, wenn sie die gleichen Buchstaben in beliebiger Reihenfolge enthalten (Groß-/Kleinschreibung wird ignoriert). Verwende nur Listen in deiner Lösung (keine Sets oder Counter).",
+      "function_name": "is_anagram",
+      "parameters": ["s1", "s2"],
+      "starter_code": "def is_anagram(s1, s2):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def is_anagram(s1, s2):\n    s1_lower = list(s1.lower())\n    s2_lower = list(s2.lower())\n    s1_lower.sort()\n    s2_lower.sort()\n    return s1_lower == s2_lower",
+      "tests": [
+        {"input": ["", ""], "expected": true},
+        {"input": ["abCdabCd", "abcdabcd"], "expected": true},
+        {"input": ["abcdaabcd", "aabbcddcb"], "expected": false},
+        {"input": ["listen", "silent"], "expected": true}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Teste 'Hallo' und 'oHlal'",
+          "Teste 'abc' und 'abcd' (unterschiedliche Länge)",
+          "Teste 'Python' und 'Typhon'"
+        ]
+      },
+      "hints": [
+        "Wandle beide Strings mit .lower() in Kleinbuchstaben um, dann mit list() in eine Liste aus Einzelzeichen.",
+        "Sortiere beide Listen mit .sort() – zwei echte Anagramme ergeben nach dem Sortieren dieselbe Liste.",
+        "Vergleiche die sortierten Listen mit == und gib das Ergebnis direkt zurück."
+      ],
+      "explanation": "Anagramme haben die gleichen Buchstaben. Wenn man beide Strings sortiert, müssen sie identisch sein. list('abc') → ['a', 'b', 'c']. .sort() sortiert eine Liste in-place.",
+      "difficulty": "medium",
+      "topics": ["listen", "strings", "sortieren", "vergleich"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab03a_05",
+      "title": "pairwise_differences",
+      "description_de": "Gegeben zwei Listen a und b gleicher Länge. Gibt eine neue Liste zurück, die den absoluten Unterschied zwischen den jeweiligen Elementen an derselben Position enthält.",
+      "function_name": "pairwise_differences",
+      "parameters": ["a", "b"],
+      "starter_code": "def pairwise_differences(a, b):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def pairwise_differences(a, b):\n    result = []\n    for x, y in zip(a, b):\n        result.append(abs(x - y))\n    return result",
+      "tests": [
+        {"input": [[5, 10, 15], [3, 8, 20]], "expected": [2, 2, 5]},
+        {"input": [[1.2, 3.4, 5.6], [0.2, 3.0, 5.0]], "expected": [1.0, 0.4, 0.6000000000000005]},
+        {"input": [[], []], "expected": []},
+        {"input": [[0], [0]], "expected": [0]}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Andere Zahlen [1, 5, 9] und [4, 2, 6]",
+          "Negative Zahlen in einer Liste [-3, -1] und [2, 4]",
+          "Einelementige Listen [42] und [0]"
+        ]
+      },
+      "hints": [
+        "Verwende zip(a, b) um gleichzeitig durch beide Listen zu laufen: for x, y in zip(a, b).",
+        "abs() gibt den absoluten Betrag zurück, also immer positiv: abs(-5) → 5.",
+        "Erstelle eine leere Liste result = [], füge für jedes Paar abs(x - y) ein und gib result zurück."
+      ],
+      "explanation": "zip(a, b) kombiniert zwei Listen paarweise: zip([1,2,3], [4,5,6]) liefert die Paare (1,4), (2,5), (3,6). abs() berechnet den Absolutwert einer Differenz.",
+      "difficulty": "easy",
+      "topics": ["listen", "zip", "abs", "schleifen"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab03a_06",
+      "title": "rotateStringLeft",
+      "description_de": "Gibt den String s um n Positionen nach links rotiert zurück. Wenn n negativ ist, wird um |n| Positionen nach rechts rotiert. Beispiel: rotateStringLeft('abcd', 1) → 'bcda'.",
+      "function_name": "rotateStringLeft",
+      "parameters": ["s", "n"],
+      "starter_code": "def rotateStringLeft(s, n):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def rotateStringLeft(s, n):\n    if len(s) == 0:\n        return s\n    n = n % len(s)\n    return s[n:] + s[:n]",
+      "tests": [
+        {"input": ["abcd", 1], "expected": "bcda"},
+        {"input": ["abcd", -1], "expected": "dabc"},
+        {"input": ["abcd", 4], "expected": "abcd"},
+        {"input": ["python", 2], "expected": "thonpy"}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Rotation n=2 mit 'hello'",
+          "Negative Rotation n=-2 mit 'world'",
+          "Rotation gleich Länge des Strings (kein Effekt)"
+        ]
+      },
+      "hints": [
+        "String-Slicing: s[n:] gibt alle Zeichen ab Position n, s[:n] gibt die ersten n Zeichen.",
+        "Eine Linksrotation um 1 von 'abcd': nimm s[1:] = 'bcd' und hänge s[:1] = 'a' dahinter → 'bcda'.",
+        "Für negative n hilft der Modulo-Operator: in Python ist -1 % 4 = 3, also funktioniert n = n % len(s) automatisch für beide Richtungen."
+      ],
+      "explanation": "s[n:] + s[:n] dreht den String nach links. In Python: -1 % 4 = 3, deshalb klappt derselbe Code auch für negative Rotationen.",
+      "difficulty": "medium",
+      "topics": ["strings", "slicing", "modulo"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03a_07",
+      "title": "caesar_cipher",
+      "description_de": "Eine Caesar-Verschlüsselung verschiebt jeden Buchstaben im Text um 'shift' Positionen im Alphabet. Großbuchstaben bleiben groß, Kleinbuchstaben bleiben klein, Nicht-Buchstaben (Leerzeichen, Zahlen, ...) werden nicht verändert. 'Z' wickelt zu 'A' um.",
+      "function_name": "caesar_cipher",
+      "parameters": ["message", "shift"],
+      "starter_code": "def caesar_cipher(message, shift):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def caesar_cipher(message, shift):\n    result = []\n    for ch in message:\n        if ch.isalpha():\n            base = ord('A') if ch.isupper() else ord('a')\n            result.append(chr((ord(ch) - base + shift) % 26 + base))\n        else:\n            result.append(ch)\n    return ''.join(result)",
+      "tests": [
+        {"input": ["We Attack At Dawn", 1], "expected": "Xf Buubdl Bu Ebxo"},
+        {"input": ["zodiac", -2], "expected": "xmbgya"},
+        {"input": ["Hello!", 0], "expected": "Hello!"},
+        {"input": ["Z", 1], "expected": "A"}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Shift von 13 (ROT13) mit 'Hello'",
+          "Anderer Text und Shift, z.B. 'abc' mit shift 3",
+          "Text mit Zahlen und Sonderzeichen"
+        ]
+      },
+      "hints": [
+        "ord('A') = 65, ord('a') = 97. Mit ord() bekommst du den ASCII-Wert eines Zeichens, mit chr() den Buchstaben zurück.",
+        "Subtrahiere die Basis (65 oder 97) um in den Bereich 0–25 zu kommen, addiere shift, dann % 26 für den Wrap-Around.",
+        "Prüfe mit ch.isalpha() ob ein Zeichen ein Buchstabe ist. Mit ch.isupper() unterscheidest du Groß- und Kleinbuchstaben."
+      ],
+      "explanation": "ord('A')=65, ord('Z')=90. Durch Subtraktion der Basis arbeiten wir im Bereich 0–25. % 26 sorgt dafür, dass Z wieder zu A wird. chr() wandelt die Zahl zurück in einen Buchstaben.",
+      "difficulty": "hard",
+      "topics": ["strings", "ascii", "ord-chr", "schleifen", "modulo"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03a_08",
+      "title": "max_product",
+      "description_de": "Gegeben eine Liste von ganzen Zahlen s. Gibt das maximale Produkt zurück, das aus nicht-aufeinanderfolgenden Elementen der Liste gebildet werden kann. Eine leere Liste gibt 1 zurück.",
+      "function_name": "max_product",
+      "parameters": ["s"],
+      "starter_code": "def max_product(s):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def max_product(s):\n    if not s:\n        return 1\n    if len(s) == 1:\n        return s[0]\n    n = len(s)\n    dp = [1] * (n + 2)\n    for i in range(n - 1, -1, -1):\n        dp[i] = max(s[i] * dp[i + 2], dp[i + 1])\n    return dp[0]",
+      "tests": [
+        {"input": [[10, 3, 1, 9, 2]], "expected": 90},
+        {"input": [[5, 10, 5, 10, 5]], "expected": 125},
+        {"input": [[]], "expected": 1},
+        {"input": [[7]], "expected": 7}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Andere Liste [3, 7, 2, 8, 1]",
+          "Liste mit gleichen Elementen [4, 4, 4, 4]",
+          "Kurze Liste mit 2 Elementen [6, 3]"
+        ]
+      },
+      "hints": [
+        "Bei jedem Element hast du zwei Möglichkeiten: es nehmen (und dann das nächste überspringen) oder es überspringen.",
+        "Denke von rechts nach links: Was ist das beste Produkt ab Position i? Entweder s[i] * bestes_ab_i+2 oder bestes_ab_i+1.",
+        "Speichere die Teilergebnisse in einer Liste dp. dp[i] = max(s[i] * dp[i+2], dp[i+1]). Starte mit dp[-1] = dp[-2] = 1."
+      ],
+      "explanation": "Dieses schwierige Problem nutzt dynamische Programmierung (DP): Wir berechnen von rechts nach links das optimale Teilergebnis für jede Position. dp[i] = max(s[i] * dp[i+2], dp[i+1]).",
+      "difficulty": "hard",
+      "topics": ["listen", "dynamische-programmierung", "schleifen", "algorithmen"],
+      "exam_relevance": "low"
+    }
+  ]
+}

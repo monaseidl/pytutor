@@ -1,0 +1,152 @@
+[
+  {
+    "id": "lab05_01",
+    "title": "VendingMachine – Verkaufsautomat",
+    "description_de": "Schreibe eine Klasse VendingMachine (Verkaufsautomat).\n\nDer Automat hat ein Guthaben (balance, Standard: 0) und ein Inventar als Dictionary.\n\nMethoden:\n• add_funds(amount) – fügt amount zum Guthaben hinzu\n• restock(item, price, quantity) – legt Artikel mit Preis und Menge ins Inventar\n• vend(item) – kauft Artikel wenn Guthaben reicht:\n  – Guthaben wird reduziert, Menge um 1 verringert\n  – Gibt den item-Namen zurück\n  – Falls Guthaben nicht reicht: gibt 'Insufficient funds, please add X' zurück (X = fehlender Betrag als Zahl)\n  – Falls ausverkauft (quantity == 0): gibt 'X is out of stock' zurück",
+    "function_name": "test_vend",
+    "parameters": ["balance", "item", "price", "quantity"],
+    "starter_code": "class VendingMachine:\n    def __init__(self, balance=0):\n        pass  # TODO: Initialisiere self.balance und self.inventory (leeres Dictionary)\n\n    def add_funds(self, amount):\n        pass  # TODO: Erhöhe das Guthaben\n\n    def restock(self, item, price, quantity):\n        pass  # TODO: Lege Artikel mit Preis und Menge ins Inventar\n\n    def vend(self, item):\n        pass  # TODO: Verkaufe den Artikel oder gib Fehlermeldung zurück\n\n\n# Testhelfer – nicht ändern\ndef test_vend(balance, item, price, quantity):\n    vm = VendingMachine(balance)\n    vm.restock(item, price, quantity)\n    return vm.vend(item)",
+    "canonical_solution": "class VendingMachine:\n    def __init__(self, balance=0):\n        self.balance = balance\n        self.inventory = {}\n\n    def add_funds(self, amount):\n        self.balance += amount\n\n    def restock(self, item, price, quantity):\n        self.inventory[item] = {'price': price, 'quantity': quantity}\n\n    def vend(self, item):\n        if item not in self.inventory or self.inventory[item]['quantity'] == 0:\n            return f'{item} is out of stock'\n        price = self.inventory[item]['price']\n        if self.balance < price:\n            return f'Insufficient funds, please add {price - self.balance}'\n        self.balance -= price\n        self.inventory[item]['quantity'] -= 1\n        return item\n\n\n# Testhelfer – nicht ändern\ndef test_vend(balance, item, price, quantity):\n    vm = VendingMachine(balance)\n    vm.restock(item, price, quantity)\n    return vm.vend(item)",
+    "tests": [
+      {"input": [2, "cola", 1, 5], "expected": "cola"},
+      {"input": [0, "cola", 1, 5], "expected": "Insufficient funds, please add 1"},
+      {"input": [5, "cola", 1, 0], "expected": "cola is out of stock"}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Verwende andere Artikel (z.B. 'chips', 'water') mit anderen Preisen und prüfe ob der Kauf klappt",
+        "Verwende ein Guthaben das genau dem Preis entspricht (balance == price) – Ergebnis: Artikel wird ausgegeben",
+        "Verwende ein Guthaben das knapp nicht reicht (z.B. balance=0.5, price=1) – prüfe die Fehlermeldung"
+      ]
+    },
+    "hints": [
+      "Speichere das Inventar als Dictionary: self.inventory = {} und in restock: self.inventory[item] = {'price': price, 'quantity': quantity}",
+      "In vend() prüfe zuerst ob der Artikel vorrätig ist (quantity > 0), dann ob das Guthaben reicht (self.balance >= price)",
+      "Verwende f-Strings: f'Insufficient funds, please add {price - self.balance}' und f'{item} is out of stock'"
+    ],
+    "explanation": "Objekte kapseln Zustand (self.balance, self.inventory) und Verhalten (Methoden). Der Verkaufsautomat merkt sich seinen Zustand zwischen Methodenaufrufen – typisches OOP-Muster.",
+    "difficulty": "medium",
+    "topics": ["OOP", "Klassen", "Instanzvariablen", "Dictionary", "__init__", "f-Strings"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab05_02",
+    "title": "Account – Zeit bis zur Rente",
+    "description_de": "Die Klasse Account (Konto) ist bereits implementiert. Implementiere die fehlende Methode time_to_retire(amount).\n\nDie Methode berechnet, wie viele Jahre es dauert bis das Kontoguthaben >= amount ist. Jedes Jahr wächst das Guthaben um interest_rate (2%):\n\nself.balance += self.balance * Account.interest_rate\n\nBeispiel: Guthaben=100, Ziel=105\n→ Jahr 1: 102 → Jahr 2: 104.04 → Jahr 3: 106.12 ≥ 105 → Antwort: 3\n\nWenn das Guthaben bereits >= amount ist: gib 0 zurück.",
+    "function_name": "test_time_to_retire",
+    "parameters": ["balance", "target"],
+    "starter_code": "class Account:\n    max_withdrawal = 10\n    interest_rate = 0.02\n\n    def __init__(self, balance):\n        self.balance = balance\n\n    def withdraw(self, amount):\n        if amount > type(self).max_withdrawal:\n            print('Amount must be less than', type(self).max_withdrawal)\n        else:\n            self.balance -= amount\n\n    def deposit(self, amount):\n        self.balance += amount\n\n    def time_to_retire(self, amount):\n        pass  # TODO: Gib zurück, nach wie vielen Jahren self.balance >= amount ist\n\n\n# Testhelfer – nicht ändern\ndef test_time_to_retire(balance, target):\n    return Account(balance).time_to_retire(target)",
+    "canonical_solution": "class Account:\n    max_withdrawal = 10\n    interest_rate = 0.02\n\n    def __init__(self, balance):\n        self.balance = balance\n\n    def withdraw(self, amount):\n        if amount > type(self).max_withdrawal:\n            print('Amount must be less than', type(self).max_withdrawal)\n        else:\n            self.balance -= amount\n\n    def deposit(self, amount):\n        self.balance += amount\n\n    def time_to_retire(self, amount):\n        years = 0\n        while self.balance < amount:\n            self.balance += self.balance * Account.interest_rate\n            years += 1\n        return years\n\n\n# Testhelfer – nicht ändern\ndef test_time_to_retire(balance, target):\n    return Account(balance).time_to_retire(target)",
+    "tests": [
+      {"input": [100, 100], "expected": 0},
+      {"input": [100, 101], "expected": 1},
+      {"input": [100, 105], "expected": 3}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Verwende balance=1000, target=1100 – wie viele Jahre? (5 Jahre bei 2% Zins)",
+        "Verwende balance=50, target=50 – Ergebnis sollte 0 sein (bereits erreicht)",
+        "Verwende balance=100, target=102 – Ergebnis: 1 Jahr (100 * 1.02 = 102)"
+      ]
+    },
+    "hints": [
+      "Initialisiere years = 0. Wenn self.balance bereits >= amount ist, gibt die while-Schleife sofort 0 zurück",
+      "In der while-Schleife: Erhöhe das Guthaben mit self.balance += self.balance * Account.interest_rate und zähle years += 1",
+      "Greife auf die Klassenvariable mit Account.interest_rate zu (nicht self.interest_rate)"
+    ],
+    "explanation": "Klassenvariablen (wie interest_rate = 0.02) gehören zur Klasse selbst und werden mit Klassenname.variable aufgerufen. Instanzvariablen (self.balance) gehören zum einzelnen Objekt und können sich je nach Instanz unterscheiden.",
+    "difficulty": "medium",
+    "topics": ["OOP", "Klassenvariablen", "Instanzmethoden", "while-Schleife", "Zinsrechnung"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab05_03",
+    "title": "FreeChecking – Kostenloses Girokonto",
+    "description_de": "Schreibe eine Unterklasse FreeChecking die von Account erbt.\n\nFreeChecking erlaubt 2 kostenlose Abhebungen (Klassenvariable free_withdrawals = 2). Ab der 3. Abhebung wird eine Gebühr von 1 fällig (withdraw_fee = 1).\n\nUmzusetzende Methoden:\n• __init__(balance): Elternkonstruktor aufrufen, Zähler für verbleibende Gratisabhebungen setzen\n• withdraw(amount): Wenn noch Gratisabhebungen übrig → normale Abhebung (Account.withdraw). Sonst → Abhebung mit Gebühr (amount + withdraw_fee)\n\nDie Klasse Account ist vollständig vorgegeben.",
+    "function_name": "test_free_checking",
+    "parameters": ["initial_balance", "amounts"],
+    "starter_code": "class Account:\n    max_withdrawal = 10\n    interest_rate = 0.02\n\n    def __init__(self, balance):\n        self.balance = balance\n\n    def withdraw(self, amount):\n        if amount > type(self).max_withdrawal:\n            print('Amount must be less than', type(self).max_withdrawal)\n        else:\n            self.balance -= amount\n\n    def deposit(self, amount):\n        self.balance += amount\n\n\nclass FreeChecking(Account):\n    free_withdrawals = 2\n    withdraw_fee = 1\n\n    def __init__(self, balance):\n        pass  # TODO: Elternkonstruktor aufrufen + Zähler initialisieren\n\n    def withdraw(self, amount):\n        pass  # TODO: Gratisabhebung oder mit Gebühr\n\n\n# Testhelfer – nicht ändern\ndef test_free_checking(initial_balance, amounts):\n    fc = FreeChecking(initial_balance)\n    for amount in amounts:\n        fc.withdraw(amount)\n    return fc.balance",
+    "canonical_solution": "class Account:\n    max_withdrawal = 10\n    interest_rate = 0.02\n\n    def __init__(self, balance):\n        self.balance = balance\n\n    def withdraw(self, amount):\n        if amount > type(self).max_withdrawal:\n            print('Amount must be less than', type(self).max_withdrawal)\n        else:\n            self.balance -= amount\n\n    def deposit(self, amount):\n        self.balance += amount\n\n\nclass FreeChecking(Account):\n    free_withdrawals = 2\n    withdraw_fee = 1\n\n    def __init__(self, balance):\n        Account.__init__(self, balance)\n        self.free_left = FreeChecking.free_withdrawals\n\n    def withdraw(self, amount):\n        if self.free_left > 0:\n            self.free_left -= 1\n            Account.withdraw(self, amount)\n        else:\n            Account.withdraw(self, amount + FreeChecking.withdraw_fee)\n\n\n# Testhelfer – nicht ändern\ndef test_free_checking(initial_balance, amounts):\n    fc = FreeChecking(initial_balance)\n    for amount in amounts:\n        fc.withdraw(amount)\n    return fc.balance",
+    "tests": [
+      {"input": [100, [5]], "expected": 95},
+      {"input": [100, [5, 5]], "expected": 90},
+      {"input": [100, [5, 5, 5]], "expected": 84}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Verwende Startguthaben=200, vier Abhebungen à 3 – Ergebnis: 200-3-3-(3+1)-(3+1)=189",
+        "Verwende Startguthaben=100, eine Abhebung von 7 – Ergebnis: 93 (eine Gratis-Abhebung verbraucht, eine noch übrig)",
+        "Verwende Startguthaben=50, drei Abhebungen à 2 – Ergebnis: 50-2-2-(2+1)=45"
+      ]
+    },
+    "hints": [
+      "Im __init__ der Unterklasse: Rufe Account.__init__(self, balance) auf und setze dann self.free_left = FreeChecking.free_withdrawals",
+      "In withdraw(): Prüfe if self.free_left > 0. Wenn ja, verringere self.free_left um 1 und rufe Account.withdraw(self, amount) auf",
+      "Wenn keine Gratisabhebungen mehr übrig: Rufe Account.withdraw(self, amount + FreeChecking.withdraw_fee) auf"
+    ],
+    "explanation": "Vererbung (class FreeChecking(Account)) bedeutet: FreeChecking erbt alle Methoden und Variablen von Account. Durch Überschreiben von withdraw() kann FreeChecking eigenes Verhalten definieren, ohne die Klasse Account zu ändern.",
+    "difficulty": "medium",
+    "topics": ["Vererbung", "Unterklassen", "Methodenüberschreibung", "OOP", "Klassenvariablen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab05_04",
+    "title": "Triangle – Dreieck (Fläche und Klassifikation)",
+    "description_de": "Schreibe eine Klasse Triangle (Dreieck) mit den drei Seitenlängen a, b, c.\n\nIm Konstruktor: Speichere die Seiten sortiert (kleinste zuerst) mit sorted().\n\nImplementiere:\n• perimeter() – Umfang: Summe aller Seiten\n• area() – Fläche nach der Heronschen Formel:\n  s = (a+b+c) / 2\n  A = √(s·(s-a)·(s-b)·(s-c))\n• is_right() – True wenn rechtwinklig: prüfe a²+b²=c² (mit sortierten Seiten)\n• side_classification() – gibt 'equilateral', 'isosceles' oder 'scalene' zurück\n\nHinweis: import math und nutze math.sqrt()",
+    "function_name": "test_area",
+    "parameters": ["a", "b", "c"],
+    "starter_code": "import math\n\nclass Triangle:\n    def __init__(self, a, b, c):\n        self.sides = sorted([a, b, c])  # [kleinste, mittlere, größte Seite]\n\n    def perimeter(self):\n        pass  # TODO: Summe aller Seiten\n\n    def area(self):\n        pass  # TODO: Heronsche Formel (nutze self.perimeter())\n\n    def is_right(self):\n        pass  # TODO: Pythagoreischer Satz für sortierte Seiten\n\n    def side_classification(self):\n        pass  # TODO: 'equilateral', 'isosceles' oder 'scalene'\n\n\n# Testhelfer – nicht ändern\ndef test_area(a, b, c):\n    return round(Triangle(a, b, c).area(), 2)",
+    "canonical_solution": "import math\n\nclass Triangle:\n    def __init__(self, a, b, c):\n        self.sides = sorted([a, b, c])\n\n    def perimeter(self):\n        return sum(self.sides)\n\n    def area(self):\n        a, b, c = self.sides\n        s = self.perimeter() / 2\n        return math.sqrt(s * (s - a) * (s - b) * (s - c))\n\n    def is_right(self):\n        a, b, c = self.sides\n        return abs(a**2 + b**2 - c**2) < 1e-9\n\n    def side_classification(self):\n        a, b, c = self.sides\n        if a == b == c:\n            return 'equilateral'\n        elif a == b or b == c:\n            return 'isosceles'\n        else:\n            return 'scalene'\n\n\n# Testhelfer – nicht ändern\ndef test_area(a, b, c):\n    return round(Triangle(a, b, c).area(), 2)",
+    "tests": [
+      {"input": [3, 4, 5], "expected": 6.0},
+      {"input": [6, 8, 10], "expected": 24.0},
+      {"input": [5, 12, 13], "expected": 30.0}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Teste Triangle(3,4,5).perimeter() – Ergebnis: 12",
+        "Teste Triangle(3,4,5).is_right() → True; Triangle(3,4,6).is_right() → False",
+        "Teste Triangle(5,5,5).side_classification() → 'equilateral'; Triangle(5,5,6) → 'isosceles'; Triangle(3,4,5) → 'scalene'"
+      ]
+    },
+    "hints": [
+      "perimeter(): return sum(self.sides) – ganz einfach",
+      "area(): Entpacke mit a, b, c = self.sides. Berechne s = self.perimeter() / 2. Dann: return math.sqrt(s * (s-a) * (s-b) * (s-c))",
+      "is_right(): Entpacke a, b, c = self.sides. Die Seiten sind sortiert, also ist c die Hypotenuse. Prüfe: abs(a**2 + b**2 - c**2) < 1e-9"
+    ],
+    "explanation": "Die Heronsche Formel berechnet die Dreiecksfläche nur aus den Seitenlängen, ohne Winkel zu brauchen. Das Sortieren im Konstruktor vereinfacht alle anderen Methoden – man weiß immer: self.sides[2] ist die längste Seite.",
+    "difficulty": "medium",
+    "topics": ["OOP", "Klassen", "math-Modul", "Heronsche Formel", "Geometrie", "sorted()"],
+    "exam_relevance": "medium"
+  },
+  {
+    "id": "lab05_05",
+    "title": "Vector – Mathematischer Vektor",
+    "description_de": "Schreibe eine Klasse Vector für mathematische Vektoren beliebiger Dimension.\n\nDer Konstruktor nimmt beliebig viele Zahlen: Vector(1, 2, 3) → 3D-Vektor\n\nImplementiere:\n• size() – Anzahl der Dimensionen\n• magnitude() – Länge des Vektors: √(x₁²+x₂²+...)\n• __add__(other) – komponentenweise Addition, gibt neuen Vector zurück\n• __sub__(other) – komponentenweise Subtraktion, gibt neuen Vector zurück\n• euclidean_distance(other) – Euklidische Distanz: Länge von (self - other)\n• cosine_similarity(other) – Kosinus-Ähnlichkeit: Skalarprodukt / (|self| · |other|)\n\nHinweis: as_list() und __init__ sind bereits gegeben.",
+    "function_name": "test_magnitude",
+    "parameters": ["components"],
+    "starter_code": "import math\n\nclass Vector:\n    def __init__(self, *args):\n        self.data = list(args)\n\n    def as_list(self):\n        return self.data\n\n    def size(self):\n        pass  # TODO: Anzahl der Dimensionen\n\n    def magnitude(self):\n        pass  # TODO: Wurzel aus der Summe der quadrierten Komponenten\n\n    def __add__(self, other):\n        pass  # TODO: Komponentenweise Addition, gibt neuen Vector zurück\n\n    def __sub__(self, other):\n        pass  # TODO: Komponentenweise Subtraktion, gibt neuen Vector zurück\n\n    def euclidean_distance(self, other):\n        pass  # TODO: Länge des Differenzvektors (nutze __sub__ und magnitude)\n\n    def cosine_similarity(self, other):\n        pass  # TODO: Skalarprodukt geteilt durch das Produkt der Längen\n\n\n# Testhelfer – nicht ändern\ndef test_magnitude(components):\n    return round(Vector(*components).magnitude(), 4)",
+    "canonical_solution": "import math\n\nclass Vector:\n    def __init__(self, *args):\n        self.data = list(args)\n\n    def as_list(self):\n        return self.data\n\n    def size(self):\n        return len(self.data)\n\n    def magnitude(self):\n        return math.sqrt(sum(x**2 for x in self.data))\n\n    def __add__(self, other):\n        return Vector(*[a + b for a, b in zip(self.data, other.data)])\n\n    def __sub__(self, other):\n        return Vector(*[a - b for a, b in zip(self.data, other.data)])\n\n    def euclidean_distance(self, other):\n        return (self - other).magnitude()\n\n    def cosine_similarity(self, other):\n        dot = sum(a * b for a, b in zip(self.data, other.data))\n        return dot / (self.magnitude() * other.magnitude())\n\n\n# Testhelfer – nicht ändern\ndef test_magnitude(components):\n    return round(Vector(*components).magnitude(), 4)",
+    "tests": [
+      {"input": [[3, 4]], "expected": 5.0},
+      {"input": [[0, 0]], "expected": 0.0},
+      {"input": [[1, 2, 2]], "expected": 3.0}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Teste Vector(1,2).__add__(Vector(3,4)).as_list() – Ergebnis: [4, 6]",
+        "Teste round(Vector(0,0).euclidean_distance(Vector(3,4)), 4) – Ergebnis: 5.0",
+        "Teste round(Vector(1,0).cosine_similarity(Vector(0,1)), 4) – Ergebnis: 0.0 (senkrechte Vektoren)"
+      ]
+    },
+    "hints": [
+      "magnitude(): return math.sqrt(sum(x**2 for x in self.data)) – nutze einen Generator-Ausdruck",
+      "__add__: Verwende zip(self.data, other.data) für paarweise Addition und erzeuge einen neuen Vector: return Vector(*[a+b for a,b in zip(self.data, other.data)])",
+      "euclidean_distance ist elegant kurz: return (self - other).magnitude() – nutze deine eigene __sub__ Methode"
+    ],
+    "explanation": "Dunder-Methoden (double underscore) wie __add__ und __sub__ erlauben es, Python-Operatoren (+, -) für eigene Klassen zu überladen. Vector(1,2) + Vector(3,4) ruft intern __add__ auf – das nennt sich Operator-Overloading.",
+    "difficulty": "hard",
+    "topics": ["OOP", "Dunder-Methoden", "Operator-Overloading", "Vektorrechnung", "*args", "zip()"],
+    "exam_relevance": "medium"
+  }
+]

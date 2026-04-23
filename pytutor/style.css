@@ -75,8 +75,26 @@ button { font-family: var(--font-ui); }
 .header-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
   margin-bottom: 10px;
+}
+
+.header-top-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex: 1;
+  min-width: 0;
+}
+.header-top-scroll::-webkit-scrollbar { display: none; }
+
+.logo {
+  flex-shrink: 0;
+  margin-right: 4px;
 }
 
 .logo {
@@ -89,7 +107,8 @@ button { font-family: var(--font-ui); }
 .header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .streak-badge,
@@ -532,6 +551,14 @@ kbd {
   border: 1px solid var(--border);
 }
 .btn-explain:hover:not(:disabled) { background: var(--panel-2); color: var(--text); border-color: var(--muted); }
+
+.btn-solution {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-solution:hover:not(:disabled) { background: var(--panel-2); color: var(--text); border-color: var(--muted); }
+body.exam-active .btn-solution { opacity: 0.3; pointer-events: none; }
 
 .btn-next {
   background: var(--accent);
@@ -1099,6 +1126,26 @@ body.exam-active .hint-area { opacity: 0.4; pointer-events: none; }
   font-size: 0.72rem;
 }
 
+.lab-btn--exam {
+  border-color: rgba(158,78,58,0.35);
+  color: var(--muted);
+  margin-left: 4px;
+}
+.lab-btn--exam:not(.unavailable):hover {
+  border-color: rgba(158,78,58,0.6);
+  color: var(--text);
+}
+.lab-btn--exam.active {
+  background: rgba(158,78,58,0.12);
+  border-color: rgba(158,78,58,0.5);
+  color: var(--text);
+}
+
+.icon-btn svg {
+  display: block;
+  pointer-events: none;
+}
+
 /* ══════════════════════════════════════════════════════════
    PROGRESS DASHBOARD
    ══════════════════════════════════════════════════════════ */
@@ -1374,7 +1421,7 @@ body.exam-active .hint-area { opacity: 0.4; pointer-events: none; }
 
   .logo { font-size: 1rem; }
 
-  .header-right { gap: 6px; flex-wrap: wrap; }
+  .header-right { gap: 6px; flex-wrap: nowrap; }
 
   .streak-badge,
   .score-badge {
