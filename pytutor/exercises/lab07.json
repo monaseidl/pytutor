@@ -1,0 +1,242 @@
+[
+  {
+    "id": "lab07_01",
+    "title": "count_occurrences – Iterator-Häufigkeit",
+    "description_de": "Implementiere count_occurrences(t, n, x), das einen Iterator t, eine Zahl n und einen Wert x nimmt.\n\nEs gibt zurück, wie oft x unter den ersten n Elementen von t vorkommt.\n\nWICHTIG: Rufe next() auf t genau n-mal auf. Gehe davon aus, dass t mindestens n Elemente hat.\n\nKeine Listen/Dictionary-Comprehensions verwenden!\n\nBeispiel:\ns = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])\ncount_occurrences(s, 10, 9) → 3  (drei Neuner in den ersten 10 Elementen)",
+    "function_name": "test_count_occurrences",
+    "parameters": ["lst", "n", "x"],
+    "starter_code": "def count_occurrences(t, n, x):\n    \"\"\"Gibt zurück, wie oft x in den ersten n Elementen des Iterators t vorkommt.\"\"\"\n    # YOUR CODE HERE – ruf next(t) genau n-mal auf\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_count_occurrences(lst, n, x):\n    return count_occurrences(iter(lst), n, x)",
+    "canonical_solution": "def count_occurrences(t, n, x):\n    count = 0\n    for _ in range(n):\n        if next(t) == x:\n            count += 1\n    return count\n\n\n# Testhelfer – nicht ändern\ndef test_count_occurrences(lst, n, x):\n    return count_occurrences(iter(lst), n, x)",
+    "tests": [
+      {"input": [[10, 9, 10, 9, 9, 10, 8, 8, 8, 7], 10, 9], "expected": 3},
+      {"input": [[10, 9, 10, 9, 9, 10, 8, 8, 8, 7], 3, 10], "expected": 2},
+      {"input": [[3, 2, 2, 2, 1, 2, 1, 4, 4, 5, 5, 5], 1, 3], "expected": 1}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Suche nach Wert der gar nicht vorkommt: count_occurrences(iter([1,2,3]), 3, 9) → 0",
+        "Alle Elemente gleich: count_occurrences(iter([5,5,5,5]), 4, 5) → 4",
+        "n kleiner als Listenlänge: count_occurrences(iter([1,1,1,2,2]), 2, 1) → 2 (nur erste 2)"
+      ]
+    },
+    "hints": [
+      "Verwende eine for-Schleife mit range(n), um genau n-mal next(t) aufzurufen",
+      "Starte mit count = 0. In jedem Schleifendurchlauf: value = next(t), wenn value == x dann count += 1",
+      "Gib count am Ende zurück – nicht vorher! Die Schleife muss immer genau n-mal laufen"
+    ],
+    "explanation": "Iteratoren in Python verwalten intern einen Zeiger auf die aktuelle Position. Jeder next()-Aufruf gibt das nächste Element zurück und rückt den Zeiger vor. Wenn derselbe Iterator zweimal übergeben wird, macht er genau dort weiter, wo er aufgehört hat.",
+    "difficulty": "easy",
+    "topics": ["Iteratoren", "next()", "iter()", "for-Schleife", "Zählen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab07_02",
+    "title": "repeated – Erste k-fach Wiederholung",
+    "description_de": "Implementiere repeated(t, k), das einen Iterator t und eine ganze Zahl k > 1 nimmt.\n\nEs gibt den ersten Wert in t zurück, der k-mal in Folge auftritt.\n\nRufe next() auf t nur so oft wie nötig auf. Gehe davon aus, dass es in t einen solchen Wert gibt.\n\nKeine Listen/Dictionary-Comprehensions verwenden!\n\nBeispiel:\ns = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])\nrepeated(s, 2) → 9   (9 kommt zweimal hintereinander vor: ...9, 9...)\nrepeated_s, 3) → 8   (8 kommt dreimal hintereinander vor: 8, 8, 8)",
+    "function_name": "test_repeated",
+    "parameters": ["lst", "k"],
+    "starter_code": "def repeated(t, k):\n    \"\"\"Gibt den ersten Wert zurück, der k-mal hintereinander in Iterator t vorkommt.\"\"\"\n    assert k > 1\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_repeated(lst, k):\n    return repeated(iter(lst), k)",
+    "canonical_solution": "def repeated(t, k):\n    assert k > 1\n    count = 1\n    current = next(t)\n    while True:\n        val = next(t)\n        if val == current:\n            count += 1\n            if count == k:\n                return current\n        else:\n            current = val\n            count = 1\n\n\n# Testhelfer – nicht ändern\ndef test_repeated(lst, k):\n    return repeated(iter(lst), k)",
+    "tests": [
+      {"input": [[10, 9, 10, 9, 9, 10, 8, 8, 8, 7], 2], "expected": 9},
+      {"input": [[10, 9, 10, 9, 9, 10, 8, 8, 8, 7], 3], "expected": 8},
+      {"input": [[3, 2, 2, 2, 1, 2, 1, 4, 4, 5, 5, 5], 3], "expected": 2}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Wiederholung direkt am Anfang: repeated(iter([5,5,3,4]), 2) → 5",
+        "k=2, zwei Paare: repeated(iter([1,2,2,3,3]), 2) → 2 (erstes Paar gewinnt)",
+        "Langer Anlauf: repeated(iter([1,2,3,4,5,5,5]), 3) → 5"
+      ]
+    },
+    "hints": [
+      "Starte mit current = next(t) und count = 1. Hole dann in einer while-Schleife immer das nächste Element",
+      "Wenn val == current: erhöhe count. Wenn count == k: return current",
+      "Wenn val != current: setze current = val und count = 1 (neuer Kandidat, Zähler zurücksetzen)"
+    ],
+    "explanation": "Dieses Problem zeigt das 'Sliding Window'-Muster bei Iteratoren: Wir merken uns den aktuellen Kandidaten und zählen Wiederholungen. Sobald die Sequenz bricht, fangen wir mit dem neuen Wert von vorne an.",
+    "difficulty": "medium",
+    "topics": ["Iteratoren", "next()", "while-Schleife", "Zustandsspeicherung"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab07_03",
+    "title": "matches – Übereinstimmende Positionen (zip)",
+    "description_de": "Implementiere matches(a, b), das zwei Sequenzen a und b nimmt.\n\nEs gibt die Anzahl der Positionen k zurück, an denen a[k] == b[k] gilt.\n\nVerwende zip! Keine Listen/Dictionary-Comprehensions verwenden.\n\nBeispiele:\nmatches([1, 2, 3, 4, 5], [3, 2, 3, 0, 5]) → 3   (Positionen 1, 2, 4)\nmatches('abcd', 'dcba') → 0   (keine Übereinstimmung)\nmatches('abcde', 'edcba') → 1   (nur Position 2: 'c'=='c')",
+    "function_name": "matches",
+    "parameters": ["a", "b"],
+    "starter_code": "def matches(a, b):\n    \"\"\"Gibt die Anzahl der Positionen k zurück, an denen a[k] == b[k] gilt. Nutze zip!\"\"\"\n    # YOUR CODE HERE – nutze zip(a, b), keine List-Comprehension\n    pass",
+    "canonical_solution": "def matches(a, b):\n    count = 0\n    for x, y in zip(a, b):\n        if x == y:\n            count += 1\n    return count",
+    "tests": [
+      {"input": [[1, 2, 3, 4, 5], [3, 2, 3, 0, 5]], "expected": 3},
+      {"input": ["abcd", "dcba"], "expected": 0},
+      {"input": ["abcde", "edcba"], "expected": 1}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Gleiche Sequenzen: matches([1,2,3], [1,2,3]) → 3 (alle stimmen überein)",
+        "Verschiedene Längen: matches([1,2,3,4,5], [1,2,3]) → 3 (zip stoppt beim Kürzeren)",
+        "Keine Übereinstimmung: matches([1,3,5], [2,4,6]) → 0"
+      ]
+    },
+    "hints": [
+      "zip(a, b) erzeugt Paare: für a=[1,2,3] und b=[3,2,1] → (1,3), (2,2), (3,1)",
+      "Iteriere mit for x, y in zip(a, b): und zähle Paare, bei denen x == y",
+      "zip stoppt automatisch beim kürzeren Iterable – kein Index-out-of-bounds möglich"
+    ],
+    "explanation": "zip(a, b) kombiniert zwei Iterables paarweise. Es stoppt sobald eine der Sequenzen erschöpft ist. Das macht es ideal für paarweisen Vergleich ohne manuelle Indizierung.",
+    "difficulty": "easy",
+    "topics": ["zip()", "Iteratoren", "Paarweiser Vergleich", "Sequenzen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab07_04",
+    "title": "palindrome – Palindrom-Prüfung (zip)",
+    "description_de": "Implementiere palindrome(s), das eine Sequenz s nimmt und True zurückgibt, wenn s von vorne und hinten gleich ist (ein Palindrom).\n\nVerwende zip! Keine Listen/Dictionary-Comprehensions verwenden.\n\nHinweis: reversed(s) gibt eine umgekehrte Version einer Sequenz zurück.\n\nBeispiele:\npalindrome([3, 1, 4, 1, 3]) → True\npalindrome([3, 1, 4, 1, 5]) → False\npalindrome('seveneves') → True",
+    "function_name": "palindrome",
+    "parameters": ["s"],
+    "starter_code": "def palindrome(s):\n    \"\"\"Gibt True zurück, wenn s ein Palindrom ist. Nutze zip und reversed!\"\"\"\n    # YOUR CODE HERE – nutze zip(s, reversed(s)), keine List-Comprehension\n    pass",
+    "canonical_solution": "def palindrome(s):\n    for a, b in zip(s, reversed(s)):\n        if a != b:\n            return False\n    return True",
+    "tests": [
+      {"input": [[3, 1, 4, 1, 3]], "expected": true},
+      {"input": [[3, 1, 4, 1, 5]], "expected": false},
+      {"input": ["seveneves"], "expected": true}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Einzelnes Element: palindrome([5]) → True (Länge 1 ist immer Palindrom)",
+        "Gerades Palindrom: palindrome([1,2,2,1]) → True",
+        "String-Palindrom: palindrome('racecar') → True"
+      ]
+    },
+    "hints": [
+      "zip(s, reversed(s)) paart das erste Element mit dem letzten, das zweite mit dem vorletzten usw.",
+      "Iteriere mit for a, b in zip(s, reversed(s)): – wenn irgendwo a != b → return False",
+      "Wenn die Schleife ohne False-Rückgabe durchläuft → return True"
+    ],
+    "explanation": "Durch zip(s, reversed(s)) vergleichen wir jedes Element mit seinem Spiegelbild. zip stoppt in der Mitte (bei ungerader Länge wird das Mittelelement mit sich selbst verglichen – immer gleich), daher funktioniert das für jede Länge.",
+    "difficulty": "easy",
+    "topics": ["zip()", "reversed()", "Palindrom", "Sequenzen"],
+    "exam_relevance": "medium"
+  },
+  {
+    "id": "lab07_05",
+    "title": "generate_constant – Unendlicher Generator",
+    "description_de": "Schreibe eine Generatorfunktion generate_constant(x), die denselben Wert x endlos yield-t.\n\nEine Generatorfunktion verwendet das Schlüsselwort yield statt return. Jedes Mal wenn next() aufgerufen wird, gibt der Generator den nächsten Wert zurück.\n\nBeispiel:\ntwo = generate_constant(2)\nnext(two) → 2\nnext(two) → 2\nsum([next(two) for _ in range(100)]) → 200",
+    "function_name": "test_generate_constant",
+    "parameters": ["x", "n"],
+    "starter_code": "def generate_constant(x):\n    \"\"\"Generatorfunktion, die x unendlich oft yield-t.\"\"\"\n    # YOUR CODE HERE – verwende yield in einer while-Schleife\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_generate_constant(x, n):\n    gen = generate_constant(x)\n    result = []\n    for _ in range(n):\n        result.append(next(gen))\n    return result",
+    "canonical_solution": "def generate_constant(x):\n    while True:\n        yield x\n\n\n# Testhelfer – nicht ändern\ndef test_generate_constant(x, n):\n    gen = generate_constant(x)\n    result = []\n    for _ in range(n):\n        result.append(next(gen))\n    return result",
+    "tests": [
+      {"input": [2, 3], "expected": [2, 2, 2]},
+      {"input": [5, 4], "expected": [5, 5, 5, 5]},
+      {"input": [0, 2], "expected": [0, 0]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Negativer Wert: generate_constant(-1) → -1, -1, -1, ...",
+        "String: generate_constant('ha') → 'ha', 'ha', 'ha', ...",
+        "Viele next()-Aufrufe: sum der ersten 1000 Elemente von generate_constant(3) → 3000"
+      ]
+    },
+    "hints": [
+      "Eine Generatorfunktion hat mindestens ein yield-Statement – das unterscheidet sie von normalen Funktionen",
+      "Verwende while True: yield x – die Schleife läuft ewig, aber Python pausiert bei jedem yield",
+      "Der Generator-Körper wird NICHT ausgeführt wenn du die Funktion aufrufst – erst wenn du next() aufrufst"
+    ],
+    "explanation": "Generatorfunktionen mit yield sind 'lazy': Sie berechnen Werte nur wenn next() aufgerufen wird und merken sich wo sie aufgehört haben. while True: yield x erzeugt eine unendliche Folge, ohne den Speicher zu füllen.",
+    "difficulty": "easy",
+    "topics": ["Generatoren", "yield", "Unendliche Sequenzen", "next()"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab07_06",
+    "title": "black_hole – Generator mit Falle",
+    "description_de": "Implementiere black_hole(seq, trap), einen Generator der Elemente aus seq yield-t, bis eines gleich trap ist. Ab diesem Punkt wird trap unendlich oft yield-t.\n\nDu kannst generate_constant verwenden. Kein Indexing oder Slicing auf seq!\n\nBeispiel:\ntrapped = black_hole([1, 2, 3], 2)\n[next(trapped) for _ in range(6)] → [1, 2, 2, 2, 2, 2]\n\nlist(black_hole(range(5), 7)) → [0, 1, 2, 3, 4]  (trap nie getroffen → endlich)",
+    "function_name": "test_black_hole",
+    "parameters": ["lst", "trap", "n"],
+    "starter_code": "def generate_constant(x):\n    while True:\n        yield x\n\n\ndef black_hole(seq, trap):\n    \"\"\"Yield-t Elemente aus seq, bis trap getroffen wird – dann yield trap für immer.\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_black_hole(lst, trap, n):\n    gen = black_hole(lst, trap)\n    result = []\n    for _ in range(n):\n        try:\n            result.append(next(gen))\n        except StopIteration:\n            break\n    return result",
+    "canonical_solution": "def generate_constant(x):\n    while True:\n        yield x\n\n\ndef black_hole(seq, trap):\n    for item in seq:\n        yield item\n        if item == trap:\n            yield from generate_constant(trap)\n\n\n# Testhelfer – nicht ändern\ndef test_black_hole(lst, trap, n):\n    gen = black_hole(lst, trap)\n    result = []\n    for _ in range(n):\n        try:\n            result.append(next(gen))\n        except StopIteration:\n            break\n    return result",
+    "tests": [
+      {"input": [[1, 2, 3], 2, 6], "expected": [1, 2, 2, 2, 2, 2]},
+      {"input": [[0, 1, 2, 3], 1, 5], "expected": [0, 1, 1, 1, 1]},
+      {"input": [[0, 1, 2, 3, 4], 9, 10], "expected": [0, 1, 2, 3, 4]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Trap direkt am Anfang: black_hole([5,1,2], 5) → 5,5,5,5,... (sofort gefangen)",
+        "Trap am Ende: black_hole([1,2,3], 3, 5) → [1,2,3,3,3]",
+        "Trap nie getroffen: list(black_hole([1,2,3], 0)) → [1,2,3]"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for item in seq: – yield item für jedes Element",
+      "Nach dem yield: prüfe if item == trap. Wenn ja: yield from generate_constant(trap)",
+      "yield from delegiert an einen anderen Iterator/Generator: alle seine Werte werden nacheinander yield-t"
+    ],
+    "explanation": "yield from generator_obj delegiert alle zukünftigen next()-Aufrufe an den übergebenen Generator. Da generate_constant(trap) unendlich läuft, 'verschwindet' der Generator im Schwarzen Loch sobald trap getroffen wird.",
+    "difficulty": "medium",
+    "topics": ["Generatoren", "yield from", "yield", "Unendliche Sequenzen", "Iteration"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab07_07",
+    "title": "filter_iter – Generator mit Filter",
+    "description_de": "Implementiere filter_iter(iterable, f), eine Generatorfunktion die nur die Elemente des Iterables yield-t, für die f(element) True zurückgibt.\n\nDas Iterable kann unendlich sein! Keine Listen/Dictionary-Comprehensions verwenden.\n\nBeispiel:\nis_even = lambda x: x % 2 == 0\nlist(filter_iter(range(5), is_even)) → [0, 2, 4]\n\nnaturals = (n for n in range(1, 100))\ns = filter_iter(naturals, is_even)\nnext(s) → 2\nnext(s) → 4",
+    "function_name": "test_filter_evens",
+    "parameters": ["lst"],
+    "starter_code": "def filter_iter(iterable, f):\n    \"\"\"Generatorfunktion: yield-t nur Elemente aus iterable, für die f(element) True ist.\"\"\"\n    # YOUR CODE HERE – verwende yield, keine List-Comprehension\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_filter_evens(lst):\n    return list(filter_iter(iter(lst), lambda x: x % 2 == 0))",
+    "canonical_solution": "def filter_iter(iterable, f):\n    for item in iterable:\n        if f(item):\n            yield item\n\n\n# Testhelfer – nicht ändern\ndef test_filter_evens(lst):\n    return list(filter_iter(iter(lst), lambda x: x % 2 == 0))",
+    "tests": [
+      {"input": [[0, 1, 2, 3, 4]], "expected": [0, 2, 4]},
+      {"input": [[1, 3, 5, 7]], "expected": []},
+      {"input": [[2, 4, 6, 8]], "expected": [2, 4, 6, 8]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Filter nach Werten > 3: filter_iter([1,2,3,4,5], lambda x: x>3) → [4,5]",
+        "Leeres Iterable: list(filter_iter([], lambda x: True)) → []",
+        "Alle Elemente gefiltert: list(filter_iter([1,3,5], lambda x: x%2==0)) → []"
+      ]
+    },
+    "hints": [
+      "Verwende for item in iterable: – das funktioniert mit jedem Iterable (Liste, Iterator, Generator)",
+      "Prüfe if f(item): und wenn True → yield item",
+      "Die Funktion ist ein Generator weil sie yield verwendet – Python's eingebautes filter() macht genau das gleiche"
+    ],
+    "explanation": "filter_iter ist eine reimplementierung von Pythons eingebautem filter(). Der Generator-Ansatz ist speichereffizient: Elemente werden einzeln berechnet wenn next() aufgerufen wird. Auch unendliche Iterables funktionieren, da nie alles auf einmal geladen wird.",
+    "difficulty": "easy",
+    "topics": ["Generatoren", "yield", "Higher-Order Functions", "filter()", "Lambda"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab07_08",
+    "title": "differences – Aufeinanderfolgende Differenzen",
+    "description_de": "Implementiere differences(it), eine Generatorfunktion die einen Iterator it mit Zahlen nimmt.\n\nSie yield-t die Differenzen zwischen aufeinanderfolgenden Elementen: second - first, third - second usw.\n\nWenn it weniger als 2 Werte hat: yield nichts.\n\nKeine Listen/Dictionary-Comprehensions verwenden!\n\nBeispiel:\nd = differences(iter([5, 2, -100, 103]))\n[next(d) for _ in range(3)] → [-3, -102, 203]\n\nlist(differences(iter([1]))) → []   (weniger als 2 Elemente)",
+    "function_name": "test_differences",
+    "parameters": ["lst"],
+    "starter_code": "def differences(it):\n    \"\"\"Generatorfunktion: yield-t die Differenzen zwischen aufeinanderfolgenden Elementen.\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_differences(lst):\n    return list(differences(iter(lst)))",
+    "canonical_solution": "def differences(it):\n    try:\n        prev = next(it)\n    except StopIteration:\n        return\n    for curr in it:\n        yield curr - prev\n        prev = curr\n\n\n# Testhelfer – nicht ändern\ndef test_differences(lst):\n    return list(differences(iter(lst)))",
+    "tests": [
+      {"input": [[5, 2, -100, 103]], "expected": [-3, -102, 203]},
+      {"input": [[1, 2, 3, 4]], "expected": [1, 1, 1]},
+      {"input": [[1]], "expected": []}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Zwei Elemente: differences(iter([10, 4])) → [-6]",
+        "Leere Liste: list(differences(iter([]))) → []",
+        "Konstante Folge: differences(iter([3,3,3,3])) → [0,0,0]"
+      ]
+    },
+    "hints": [
+      "Hole das erste Element mit prev = next(it). Fange StopIteration ab (leere Liste) – dann einfach return",
+      "Iteriere mit for curr in it: – yield curr - prev und setze dann prev = curr",
+      "Bei einer Liste mit nur einem Element: next(it) klappt, aber die for-Schleife hat keine Iterationen → kein yield → [] ✓"
+    ],
+    "explanation": "Das Muster 'merke dir das vorherige Element' ist fundamental bei Iterator-Problemen. try/except StopIteration behandelt den Sonderfall leeres Iterable. In Python ist 'return' in einer Generatorfunktion wie ein StopIteration-Signal.",
+    "difficulty": "medium",
+    "topics": ["Generatoren", "yield", "Iteratoren", "next()", "StopIteration", "Differenzen"],
+    "exam_relevance": "high"
+  }
+]
