@@ -1,0 +1,272 @@
+[
+  {
+    "id": "lab06_01",
+    "title": "without – Element an Index entfernen",
+    "description_de": "Implementiere die Funktion without(s, i), die eine verkettete Liste s und einen Index i nimmt.\n\nSie gibt eine NEUE verkettete Liste zurück, die alle Elemente von s enthält außer dem Element an Index i (s.first hat Index 0). Die originale Liste s wird nicht verändert.\n\nWenn i außerhalb der Liste liegt (kein Element an Index i vorhanden), wird eine vollständige Kopie von s zurückgegeben.\n\nHinweis: Ein rekursiver Ansatz ist einfacher als ein iterativer.",
+    "function_name": "test_without",
+    "parameters": ["lst", "i"],
+    "starter_code": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef without(s, i):\n    \"\"\"Gibt eine neue verkettete Liste wie s zurück, aber ohne das Element an Index i.\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_without(lst, i):\n    s = make_link(lst)\n    result = without(s, i)\n    return link_to_list(result)",
+    "canonical_solution": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef without(s, i):\n    if s is Link.empty:\n        return Link.empty\n    if i == 0:\n        return s.rest\n    return Link(s.first, without(s.rest, i - 1))\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_without(lst, i):\n    s = make_link(lst)\n    result = without(s, i)\n    return link_to_list(result)",
+    "tests": [
+      {"input": [[3, 5, 7, 9], 0], "expected": [5, 7, 9]},
+      {"input": [[3, 5, 7, 9], 2], "expected": [3, 5, 9]},
+      {"input": [[3, 5, 7, 9], 4], "expected": [3, 5, 7, 9]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Entferne das letzte Element: without([1,2,3], 2) → [1,2]",
+        "Liste mit einem Element: without([42], 0) → []",
+        "Index weit außerhalb: without([1,2,3], 99) → [1,2,3] (vollständige Kopie)"
+      ]
+    },
+    "hints": [
+      "Basisfall: Wenn s leer ist (s is Link.empty), gib Link.empty zurück",
+      "Wenn i == 0, überspringe das aktuelle Element: gib s.rest zurück",
+      "Sonst: Baue einen neuen Link mit s.first und rufe without(s.rest, i-1) rekursiv auf"
+    ],
+    "explanation": "Eine verkettete Liste (Linked List) besteht aus Link-Objekten, die jeweils ein Element (first) und einen Zeiger auf das nächste (rest) halten. Um eine neue Liste ohne Element i zu bauen, gehen wir rekursiv durch die Liste und lassen das Element bei i weg.",
+    "difficulty": "medium",
+    "topics": ["Linked Lists", "Rekursion", "OOP", "Datenstrukturen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab06_02",
+    "title": "duplicate_link – Werte verdoppeln",
+    "description_de": "Schreibe die Funktion duplicate_link(s, val), die eine verkettete Liste s und einen Wert val nimmt.\n\nSie mutiert s so, dass jedes Element gleich val von einem weiteren val-Element gefolgt wird. Die Funktion gibt None zurück.\n\nAchtung: Vermeide eine Endlosschleife! Die neu eingefügten Duplikate sollen nicht nochmals verdoppelt werden.\n\nBeispiel:\ns = Link(5, Link(4, Link(5)))\nduplicate_link(s, 5)\n→ s wird zu Link(5, Link(5, Link(4, Link(5, Link(5)))))",
+    "function_name": "test_duplicate_link",
+    "parameters": ["lst", "val"],
+    "starter_code": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef duplicate_link(s, val):\n    \"\"\"Mutiert s: nach jedem Element == val wird ein weiteres val eingefügt.\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_duplicate_link(lst, val):\n    s = make_link(lst)\n    duplicate_link(s, val)\n    return link_to_list(s)",
+    "canonical_solution": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef duplicate_link(s, val):\n    while s is not Link.empty:\n        if s.first == val:\n            s.rest = Link(val, s.rest)\n            s = s.rest.rest\n        else:\n            s = s.rest\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_duplicate_link(lst, val):\n    s = make_link(lst)\n    duplicate_link(s, val)\n    return link_to_list(s)",
+    "tests": [
+      {"input": [[5, 4, 5], 5], "expected": [5, 5, 4, 5, 5]},
+      {"input": [[2, 4, 6, 8], 10], "expected": [2, 4, 6, 8]},
+      {"input": [[1, 2, 2, 3], 2], "expected": [1, 2, 2, 2, 2, 3]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Verdopple 3 in [3,3,3] → [3,3,3,3,3,3] (alle verdoppelt)",
+        "Wert kommt nicht vor: duplicate_link([1,2,3], 9) → [1,2,3] (keine Änderung)",
+        "Liste mit einem Element: duplicate_link([7], 7) → [7,7]"
+      ]
+    },
+    "hints": [
+      "Verwende eine while-Schleife: while s is not Link.empty",
+      "Wenn s.first == val: füge ein neues Link(val, s.rest) als s.rest ein – dann überspringe s um ZWEI Schritte (s = s.rest.rest), damit das neue Duplikat nicht nochmal verdoppelt wird",
+      "Wenn s.first != val: gehe einfach einen Schritt weiter: s = s.rest"
+    ],
+    "explanation": "Mutation einer verketteten Liste bedeutet: wir ändern die rest-Attribute bestehender Nodes. Durch das Überspringen von zwei Schritten nach dem Einfügen vermeiden wir die Endlosschleife – wir bearbeiten nur die Original-Elemente.",
+    "difficulty": "medium",
+    "topics": ["Linked Lists", "Mutation", "while-Schleife", "Datenstrukturen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab06_03",
+    "title": "store_digits – Ziffern als verkettete Liste",
+    "description_de": "Schreibe die Funktion store_digits(n), die eine positive ganze Zahl n nimmt und eine verkettete Liste mit den Ziffern von n in der richtigen Reihenfolge (von links nach rechts) zurückgibt.\n\nBeispiele:\nstore_digits(2345) → Link(2, Link(3, Link(4, Link(5))))\nstore_digits(876) → Link(8, Link(7, Link(6)))\nstore_digits(2450) → Link(2, Link(4, Link(5, Link(0))))\n\nWICHTIG: Verwende NICHT str() oder reversed()! Nutze stattdessen Divisionsoperationen (// und %).",
+    "function_name": "test_store_digits",
+    "parameters": ["n"],
+    "starter_code": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef store_digits(n):\n    \"\"\"Speichert die Ziffern von n in einer verketteten Liste (ohne str oder reversed).\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_store_digits(n):\n    return link_to_list(store_digits(n))",
+    "canonical_solution": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef store_digits(n):\n    result = Link.empty\n    while n > 0:\n        result = Link(n % 10, result)\n        n //= 10\n    return result\n\n\n# Testhelfer – nicht ändern\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_store_digits(n):\n    return link_to_list(store_digits(n))",
+    "tests": [
+      {"input": [2345], "expected": [2, 3, 4, 5]},
+      {"input": [876], "expected": [8, 7, 6]},
+      {"input": [2450], "expected": [2, 4, 5, 0]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Einzelne Ziffer: store_digits(7) → [7]",
+        "Führende Null im Ergebnis: store_digits(20105) → [2,0,1,0,5]",
+        "Zweistellige Zahl: store_digits(42) → [4,2]"
+      ]
+    },
+    "hints": [
+      "Der Trick: Baue die Liste von hinten nach vorne. n % 10 gibt die letzte Ziffer, n // 10 entfernt sie",
+      "Starte mit result = Link.empty. In jeder Iteration: result = Link(n % 10, result) – das fügt die aktuelle letzte Ziffer VORNE ein",
+      "Beispiel für n=123: Runde 1 → Link(3), n=12; Runde 2 → Link(2, Link(3)), n=1; Runde 3 → Link(1, Link(2, Link(3)))"
+    ],
+    "explanation": "Indem wir die Ziffern von hinten extrahieren und jeweils vorne in die Liste einfügen, entsteht automatisch die richtige Reihenfolge – ohne str() oder reversed() zu brauchen. Das ist ein klassisches 'umgekehrtes Aufbauen' Muster.",
+    "difficulty": "medium",
+    "topics": ["Linked Lists", "Ganzzahldivision", "while-Schleife", "Modulo"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab06_04",
+    "title": "deep_map_mut – Tiefe Map-Mutation",
+    "description_de": "Implementiere deep_map_mut(func, s), das die Funktion func auf jedes Element in der verketteten Liste s anwendet. Ist ein Element selbst eine verkettete Liste, wird func rekursiv auf deren Elemente angewendet.\n\nDie Funktion mutiert die Liste in-place – sie erstellt KEINE neuen Link-Objekte. Sie gibt None zurück.\n\nNutze isinstance(element, Link) um zu prüfen ob ein Element selbst eine Liste ist.\n\nBeispiel:\nlink1 = Link(3, Link(5, Link(6)))\ndeep_map_mut(lambda x: x * x, link1)\n→ link1 wird zu Link(9, Link(25, Link(36)))",
+    "function_name": "test_deep_map_double",
+    "parameters": ["lst"],
+    "starter_code": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef deep_map_mut(func, s):\n    \"\"\"Mutiert s: ersetzt jedes Element durch func(element). Erstellt keine neuen Links!\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_deep_map_double(lst):\n    s = make_link(lst)\n    deep_map_mut(lambda x: x * 2, s)\n    return link_to_list(s)",
+    "canonical_solution": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef deep_map_mut(func, s):\n    while s is not Link.empty:\n        if isinstance(s.first, Link):\n            deep_map_mut(func, s.first)\n        else:\n            s.first = func(s.first)\n        s = s.rest\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef link_to_list(s):\n    result = []\n    while s is not Link.empty:\n        result.append(s.first)\n        s = s.rest\n    return result\n\ndef test_deep_map_double(lst):\n    s = make_link(lst)\n    deep_map_mut(lambda x: x * 2, s)\n    return link_to_list(s)",
+    "tests": [
+      {"input": [[1, 2, 3]], "expected": [2, 4, 6]},
+      {"input": [[5, 10, 0]], "expected": [10, 20, 0]},
+      {"input": [[3, 7, 4]], "expected": [6, 14, 8]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Wende x+1 an: [10, 20, 30] → [11, 21, 31]",
+        "Wende x*x an: [2, 3, 4] → [4, 9, 16]",
+        "Leere Liste: deep_map_mut(lambda x: x*2, Link.empty) → keine Änderung, kein Fehler"
+      ]
+    },
+    "hints": [
+      "Verwende eine while-Schleife: while s is not Link.empty – und am Ende s = s.rest",
+      "Prüfe in jedem Schritt: isinstance(s.first, Link). Wenn ja → rekursiver Aufruf. Wenn nein → s.first = func(s.first)",
+      "WICHTIG: Weise das Ergebnis direkt s.first zu, erstelle kein neues Link-Objekt"
+    ],
+    "explanation": "Indem wir s.first direkt überschreiben (s.first = func(s.first)) statt einen neuen Link zu erzeugen, mutieren wir die Liste in-place. Die Rekursion für verschachtelte Listen ist ein klassisches Muster für 'tiefe' Operationen auf rekursiven Datenstrukturen.",
+    "difficulty": "medium",
+    "topics": ["Linked Lists", "Mutation", "Rekursion", "isinstance", "Higher-Order Functions"],
+    "exam_relevance": "medium"
+  },
+  {
+    "id": "lab06_05",
+    "title": "sum_rec – Summe (rekursiv)",
+    "description_de": "Implementiere sum_rec(s, k) rekursiv. Die Funktion nimmt eine verkettete Liste s von Zahlen und eine nicht-negative Zahl k.\n\nSie gibt die Summe der ersten k Elemente von s zurück.\n• Wenn s weniger als k Elemente hat: summiere alle Elemente\n• Wenn k == 0 oder s leer ist: gib 0 zurück\n\nVerwende Rekursion (keinen while-Loop, kein sum_iter).",
+    "function_name": "test_sum_rec",
+    "parameters": ["lst", "k"],
+    "starter_code": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef sum_rec(s, k):\n    \"\"\"Gibt die Summe der ersten k Elemente von s zurück (rekursiv).\"\"\"\n    # YOUR CODE HERE – verwende Rekursion, keinen Loop\n    pass\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef test_sum_rec(lst, k):\n    return sum_rec(make_link(lst), k)",
+    "canonical_solution": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef sum_rec(s, k):\n    if s is Link.empty or k == 0:\n        return 0\n    return s.first + sum_rec(s.rest, k - 1)\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef test_sum_rec(lst, k):\n    return sum_rec(make_link(lst), k)",
+    "tests": [
+      {"input": [[1, 6, 8], 2], "expected": 7},
+      {"input": [[1, 6, 8], 5], "expected": 15},
+      {"input": [[], 1], "expected": 0}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "k=0: sum_rec([1,2,3], 0) → 0",
+        "k genau so groß wie die Liste: sum_rec([3,4,5], 3) → 12",
+        "k=1: sum_rec([10,20,30], 1) → 10"
+      ]
+    },
+    "hints": [
+      "Basisfälle: Wenn s leer ist (s is Link.empty) ODER k == 0 → gib 0 zurück",
+      "Rekursionsfall: return s.first + sum_rec(s.rest, k - 1) – addiere das erste Element und gehe weiter",
+      "Die zwei Basisfälle können in einem if kombiniert werden: if s is Link.empty or k == 0: return 0"
+    ],
+    "explanation": "Rekursive Funktionen auf verketteten Listen folgen immer dem gleichen Muster: Basisfall prüfen (leer oder Bedingung erfüllt), sonst aktuelles Element verarbeiten und rekursiv mit s.rest weitermachen.",
+    "difficulty": "easy",
+    "topics": ["Linked Lists", "Rekursion", "Basisfälle", "Summe"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab06_06",
+    "title": "sum_iter – Summe (iterativ)",
+    "description_de": "Implementiere sum_iter(s, k) iterativ mit einem while-Loop. Die Funktion nimmt eine verkettete Liste s von Zahlen und eine nicht-negative Zahl k.\n\nSie gibt die Summe der ersten k Elemente von s zurück.\n• Wenn s weniger als k Elemente hat: summiere alle Elemente\n• Wenn k == 0 oder s leer ist: gib 0 zurück\n\nVerwende einen while-Loop – keine Rekursion.",
+    "function_name": "test_sum_iter",
+    "parameters": ["lst", "k"],
+    "starter_code": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef sum_iter(s, k):\n    \"\"\"Gibt die Summe der ersten k Elemente von s zurück (iterativ, kein Rekursion).\"\"\"\n    # YOUR CODE HERE – verwende einen while-Loop\n    pass\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef test_sum_iter(lst, k):\n    return sum_iter(make_link(lst), k)",
+    "canonical_solution": "class Link:\n    empty = ()\n    def __init__(self, first, rest=empty):\n        self.first = first\n        self.rest = rest\n\n\ndef sum_iter(s, k):\n    total = 0\n    while s is not Link.empty and k > 0:\n        total += s.first\n        s = s.rest\n        k -= 1\n    return total\n\n\n# Testhelfer – nicht ändern\ndef make_link(lst):\n    if not lst:\n        return Link.empty\n    return Link(lst[0], make_link(lst[1:]))\n\ndef test_sum_iter(lst, k):\n    return sum_iter(make_link(lst), k)",
+    "tests": [
+      {"input": [[1, 6, 8], 2], "expected": 7},
+      {"input": [[1, 6, 8], 5], "expected": 15},
+      {"input": [[], 1], "expected": 0}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "k=0: sum_iter([1,2,3], 0) → 0",
+        "Alle Elemente: sum_iter([3,4,5], 3) → 12",
+        "k=1: sum_iter([10,20,30], 1) → 10"
+      ]
+    },
+    "hints": [
+      "Starte mit total = 0. Die while-Bedingung prüft zwei Dinge: s ist nicht leer UND k > 0",
+      "Im Loop: total += s.first, dann s = s.rest um weiterzugehen, und k -= 1 um den Zähler zu reduzieren",
+      "Der Loop stoppt automatisch wenn die Liste zu Ende ist (s is Link.empty) oder k Elemente verarbeitet wurden"
+    ],
+    "explanation": "Der Unterschied zwischen sum_rec (rekursiv) und sum_iter (iterativ) liegt im Ansatz: Rekursion nutzt den Call-Stack als impliziten Schleifenmechanismus. Iterativ mit while ist meist effizienter (kein Stack-Overhead) und bei langen Listen sicherer (kein Stack-Overflow).",
+    "difficulty": "easy",
+    "topics": ["Linked Lists", "while-Schleife", "Iteration", "Summe"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab06_07",
+    "title": "cumulative_mul – Kumulatives Produkt im Baum",
+    "description_de": "Schreibe die Funktion cumulative_mul(t), die den Baum t so mutiert, dass jeder Knoten das Produkt seines eigenen Labels und aller Labels in seinen Teilbäumen (Kinder, Kindeskinder usw.) enthält.\n\nBeispiel:\nt = Tree(1, [Tree(3, [Tree(5)]), Tree(7)])\ncumulative_mul(t)\n→ t wird zu Tree(105, [Tree(15, [Tree(5)]), Tree(7)])\n\nHinweis: Verarbeite zuerst die Teilbäume, dann aktualisiere den aktuellen Knoten (Post-Order).",
+    "function_name": "test_cumulative_mul",
+    "parameters": ["root", "children"],
+    "starter_code": "class Tree:\n    def __init__(self, label, branches=[]):\n        self.label = label\n        self.branches = list(branches)\n\n    def is_leaf(self):\n        return not self.branches\n\n\ndef cumulative_mul(t):\n    \"\"\"Mutiert t: jedes Label wird durch das Produkt seines Teilbaums ersetzt.\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_cumulative_mul(root, children):\n    t = Tree(root, [Tree(c) for c in children])\n    cumulative_mul(t)\n    return t.label",
+    "canonical_solution": "class Tree:\n    def __init__(self, label, branches=[]):\n        self.label = label\n        self.branches = list(branches)\n\n    def is_leaf(self):\n        return not self.branches\n\n\ndef cumulative_mul(t):\n    for branch in t.branches:\n        cumulative_mul(branch)\n        t.label *= branch.label\n\n\n# Testhelfer – nicht ändern\ndef test_cumulative_mul(root, children):\n    t = Tree(root, [Tree(c) for c in children])\n    cumulative_mul(t)\n    return t.label",
+    "tests": [
+      {"input": [2, [3, 4]], "expected": 24},
+      {"input": [1, [5, 7]], "expected": 35},
+      {"input": [6, []], "expected": 6}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Tree(3, [Tree(5), Tree(2)]) → root wird 30 (3*5*2)",
+        "Tree(4, [Tree(1), Tree(1), Tree(1)]) → root bleibt 4 (4*1*1*1)",
+        "Einzelner Blattknoten Tree(7) → bleibt 7"
+      ]
+    },
+    "hints": [
+      "Verarbeite die Kinder ZUERST (rekursiver Aufruf), bevor du das aktuelle Label aktualisierst – das ist Post-Order-Traversal",
+      "Für jeden Branch: rufe cumulative_mul(branch) auf, dann t.label *= branch.label",
+      "Basisfall ist implizit: Wenn t.is_leaf(), hat die for-Schleife keine Iterationen – nichts passiert"
+    ],
+    "explanation": "Post-Order-Traversal bedeutet: zuerst alle Teilbäume verarbeiten, dann den aktuellen Knoten. So hat jeder Branch bereits sein finales (kumuliertes) Label, wenn wir t.label *= branch.label aufrufen.",
+    "difficulty": "medium",
+    "topics": ["Trees", "Rekursion", "Mutation", "Post-Order", "Datenstrukturen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab06_08",
+    "title": "prune_small – Baum beschneiden",
+    "description_de": "Implementiere prune_small(t, n), die einen Baum t und eine Zahl n nimmt.\n\nFür jeden Knoten mit mehr als n Branches: behalte nur die n Branches mit den KLEINSTEN Labels, entferne den Rest.\n\nDie Funktion mutiert den Baum in-place (t.branches direkt verändern) und gibt None zurück.\n\nHinweis aus dem Lab: Starte mit einem while-Loop!\nHinweis: max(t.branches, key=lambda b: b.label) findet den Branch mit dem größten Label.",
+    "function_name": "test_prune_small",
+    "parameters": ["root", "children", "n"],
+    "starter_code": "class Tree:\n    def __init__(self, label, branches=[]):\n        self.label = label\n        self.branches = list(branches)\n\n    def is_leaf(self):\n        return not self.branches\n\n\ndef prune_small(t, n):\n    \"\"\"Beschneidet t: behalte pro Knoten nur die n Branches mit den kleinsten Labels.\"\"\"\n    # YOUR CODE HERE – starte mit einem while-Loop\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_prune_small(root, children, n):\n    t = Tree(root, [Tree(c) for c in children])\n    prune_small(t, n)\n    return sorted([b.label for b in t.branches])",
+    "canonical_solution": "class Tree:\n    def __init__(self, label, branches=[]):\n        self.label = label\n        self.branches = list(branches)\n\n    def is_leaf(self):\n        return not self.branches\n\n\ndef prune_small(t, n):\n    while len(t.branches) > n:\n        t.branches.remove(max(t.branches, key=lambda b: b.label))\n    for branch in t.branches:\n        prune_small(branch, n)\n\n\n# Testhelfer – nicht ändern\ndef test_prune_small(root, children, n):\n    t = Tree(root, [Tree(c) for c in children])\n    prune_small(t, n)\n    return sorted([b.label for b in t.branches])",
+    "tests": [
+      {"input": [6, [3, 4], 1], "expected": [3]},
+      {"input": [6, [1, 3, 5], 2], "expected": [1, 3]},
+      {"input": [6, [2, 4, 6, 8], 2], "expected": [2, 4]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "n >= Anzahl Branches: prune_small(t, 5) mit 3 Branches → nichts wird entfernt",
+        "n=0: alle Branches werden entfernt → Blattknoten",
+        "Gleichstand: [3, 3, 5] mit n=2 → behalte [3,3], entferne 5"
+      ]
+    },
+    "hints": [
+      "while len(t.branches) > n: Entferne immer den Branch mit dem GRÖSSTEN Label",
+      "Zum Entfernen: t.branches.remove(max(t.branches, key=lambda b: b.label))",
+      "Nach dem Beschneiden: Rufe prune_small(branch, n) rekursiv für alle verbliebenen Branches auf"
+    ],
+    "explanation": "Durch wiederholtes Entfernen des Maximums bis n Branches übrig sind, behalten wir automatisch die n kleinsten. Die Rekursion danach stellt sicher, dass auch alle Teilbäume beschnitten werden.",
+    "difficulty": "medium",
+    "topics": ["Trees", "Mutation", "while-Schleife", "Rekursion", "max()"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab06_09",
+    "title": "delete – Knoten aus Baum entfernen",
+    "description_de": "Implementiere delete(t, x), die einen Baum t und ein Label x nimmt.\n\nSie entfernt alle Nicht-Wurzel-Knoten mit Label x aus dem Baum. Die Kinder eines gelöschten Knotens werden zu direkten Kindern von dessen Elternknoten (sie 'rücken hoch').\n\nDer Wurzelknoten wird nie entfernt, auch wenn sein Label x ist.\n\nBeispiel:\nt = Tree(1, [Tree(2, [Tree(4)]), Tree(3)])\ndelete(t, 2)\n→ t wird zu Tree(1, [Tree(4), Tree(3)])\n(Tree(2) entfernt, sein Kind Tree(4) rückt hoch)",
+    "function_name": "test_delete",
+    "parameters": ["root", "children", "x"],
+    "starter_code": "class Tree:\n    def __init__(self, label, branches=[]):\n        self.label = label\n        self.branches = list(branches)\n\n    def is_leaf(self):\n        return not self.branches\n\n\ndef delete(t, x):\n    \"\"\"Entfernt alle Nicht-Wurzel-Knoten mit Label x; ihre Kinder rücken hoch.\"\"\"\n    new_branches = []\n    # YOUR CODE HERE\n    # t.branches = ...\n\n\n# Testhelfer – nicht ändern\ndef test_delete(root, children, x):\n    t = Tree(root, [Tree(c) for c in children])\n    delete(t, x)\n    return sorted([b.label for b in t.branches])",
+    "canonical_solution": "class Tree:\n    def __init__(self, label, branches=[]):\n        self.label = label\n        self.branches = list(branches)\n\n    def is_leaf(self):\n        return not self.branches\n\n\ndef delete(t, x):\n    new_branches = []\n    for b in t.branches:\n        delete(b, x)\n        if b.label == x:\n            new_branches.extend(b.branches)\n        else:\n            new_branches.append(b)\n    t.branches = new_branches\n\n\n# Testhelfer – nicht ändern\ndef test_delete(root, children, x):\n    t = Tree(root, [Tree(c) for c in children])\n    delete(t, x)\n    return sorted([b.label for b in t.branches])",
+    "tests": [
+      {"input": [3, [2, 4], 2], "expected": [4]},
+      {"input": [1, [3, 4], 2], "expected": [3, 4]},
+      {"input": [3, [2, 2], 2], "expected": []}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Lösche Label 5: Tree(1, [Tree(5), Tree(3)]) → nur Tree(3) bleibt",
+        "Keine Übereinstimmung: delete(t, 99) → Baum unverändert",
+        "Blattknoten löschen: Tree(2, [Tree(5)]) löscht Tree(5) → Tree(2) ohne Branches"
+      ]
+    },
+    "hints": [
+      "Iteriere über t.branches. Rufe für jeden Branch zuerst delete(b, x) rekursiv auf (damit Teilbäume schon bereinigt sind)",
+      "Wenn b.label == x: füge b.branches zu new_branches hinzu (extend) – die Kinder rücken hoch",
+      "Wenn b.label != x: füge b selbst zu new_branches hinzu (append). Am Ende: t.branches = new_branches"
+    ],
+    "explanation": "Der Schlüssel ist die Reihenfolge: ZUERST rekursiv die Teilbäume bereinigen, DANN entscheiden ob der aktuelle Branch entfernt wird. Mit extend() statt append() sorgen wir dafür, dass die Kinder des gelöschten Knotens direkt in die Elternliste eingefügt werden.",
+    "difficulty": "hard",
+    "topics": ["Trees", "Rekursion", "Mutation", "extend()", "Datenstrukturen"],
+    "exam_relevance": "high"
+  }
+]
