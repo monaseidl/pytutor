@@ -1,0 +1,188 @@
+[
+  {
+    "id": "ki150_01",
+    "title": "fltr_lst – Strings nach Länge filtern",
+    "description_de": "Implementiere die Funktion fltr_lst(string_list, min_len, max_len).\n\nSie erhält eine Liste von Strings und zwei positive ganze Zahlen min_len und max_len (min_len < max_len).\n\nGib eine neue Liste zurück, die nur die Strings aus string_list enthält, deren Länge (Anzahl der Zeichen) zwischen min_len und max_len liegt (beide Werte inklusive).\n\nBeispiel:\nfltr_lst(['hi', 'hello', 'hey', 'world'], 3, 5)\n→ ['hello', 'hey', 'world']  ('hi' hat Länge 2 → rausgefiltert)",
+    "function_name": "fltr_lst",
+    "parameters": ["string_list", "min_len", "max_len"],
+    "starter_code": "def fltr_lst(string_list, min_len, max_len):\n    \"\"\"Gibt eine neue Liste zurück mit Strings deren Länge in [min_len, max_len] liegt.\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def fltr_lst(string_list, min_len, max_len):\n    result = []\n    for s in string_list:\n        if min_len <= len(s) <= max_len:\n            result.append(s)\n    return result",
+    "tests": [
+      {"input": [["hi", "hello", "hey", "world"], 3, 5], "expected": ["hello", "hey", "world"]},
+      {"input": [["a", "bb", "ccc", "dddd"], 2, 3], "expected": ["bb", "ccc"]},
+      {"input": [["python", "java", "c"], 4, 6], "expected": ["python", "java"]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "min_len == max_len: nur Strings mit genau dieser Länge: fltr_lst(['ab','abc','abcd'], 3, 3) → ['abc']",
+        "Leere Ergebnisliste: fltr_lst(['hi','bye'], 10, 20) → []",
+        "Alle Strings passen: fltr_lst(['cat','dog','fox'], 3, 3) → ['cat','dog','fox']"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for s in string_list: und prüfe len(s)",
+      "Die Bedingung für 'zwischen min_len und max_len inklusiv': min_len <= len(s) <= max_len",
+      "Füge passende Strings mit result.append(s) zur Ergebnisliste hinzu"
+    ],
+    "explanation": "Filtern einer Liste bedeutet: nur Elemente behalten, die eine Bedingung erfüllen. Python erlaubt doppelte Vergleiche: min_len <= len(s) <= max_len ist equivalent zu min_len <= len(s) and len(s) <= max_len.",
+    "difficulty": "easy",
+    "topics": ["Listen", "Filtern", "len()", "Strings", "Schleifen"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_02",
+    "title": "count_digits – Ziffern zählen (rekursiv)",
+    "description_de": "Implementiere eine REKURSIVE Funktion count_digits(n, digit), die zählt, wie oft die Ziffer digit in der positiven ganzen Zahl n vorkommt.\n\nEINSCHRÄNKUNGEN:\n• Keine Schleifen (for/while)\n• Keine Umwandlung in Strings\n\nTipp: n % 10 gibt die letzte Ziffer, n // 10 entfernt die letzte Ziffer.\n\nBeispiele:\ncount_digits(1221, 1) → 2\ncount_digits(1000, 0) → 3\ncount_digits(333, 3) → 3",
+    "function_name": "count_digits",
+    "parameters": ["n", "digit"],
+    "starter_code": "def count_digits(n, digit):\n    \"\"\"Zählt wie oft digit in n vorkommt. Rekursiv, keine Schleifen, kein str()!\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def count_digits(n, digit):\n    if n == 0:\n        return 0\n    return (1 if n % 10 == digit else 0) + count_digits(n // 10, digit)",
+    "tests": [
+      {"input": [1221, 1], "expected": 2},
+      {"input": [1000, 0], "expected": 3},
+      {"input": [12345, 5], "expected": 1}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Ziffer kommt nicht vor: count_digits(1234, 9) → 0",
+        "Einstellige Zahl: count_digits(7, 7) → 1; count_digits(7, 3) → 0",
+        "Alle Ziffern gleich: count_digits(5555, 5) → 4"
+      ]
+    },
+    "hints": [
+      "Basisfall: if n == 0: return 0 (keine Ziffern mehr zu prüfen)",
+      "Rekursionsfall: prüfe die letzte Ziffer n % 10 und verarbeite den Rest n // 10 rekursiv",
+      "Ergebnis: (1 if n % 10 == digit else 0) + count_digits(n // 10, digit)"
+    ],
+    "explanation": "Jeder rekursive Aufruf verarbeitet eine Ziffer (die letzte mit n%10) und delegiert den Rest (n//10) an sich selbst. Der Basisfall n==0 stoppt die Rekursion. Kein Schleife, kein str() nötig.",
+    "difficulty": "medium",
+    "topics": ["Rekursion", "Modulo", "Ganzzahldivision", "Basisfälle"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_03",
+    "title": "squared_tuples – Liste von (Element, Quadrat)-Tupeln",
+    "description_de": "Gegeben sei eine Liste L mit positiven ganzzahligen Elementen.\n\nErzeuge eine neue Liste, wobei das Tupel an Position i enthält:\n• das i-te Element von L\n• das Quadrat dieses Elements\n\nBeispiel:\nL = [3, 5, 2]\nsquared_tuples(L) → [(3, 9), (5, 25), (2, 4)]",
+    "function_name": "squared_tuples",
+    "parameters": ["L"],
+    "starter_code": "def squared_tuples(L):\n    \"\"\"Gibt eine Liste von (L[i], L[i]**2) Tupeln zurück.\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def squared_tuples(L):\n    result = []\n    for i in range(len(L)):\n        result.append((L[i], L[i] ** 2))\n    return result",
+    "tests": [
+      {"input": [[3, 5, 2]], "expected": [[3, 9], [5, 25], [2, 4]]},
+      {"input": [[1, 4]], "expected": [[1, 1], [4, 16]]},
+      {"input": [[7]], "expected": [[7, 49]]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Eins in der Liste: squared_tuples([1,2,3]) → [(1,1),(2,4),(3,9)]",
+        "Leere Liste: squared_tuples([]) → []",
+        "Große Zahlen: squared_tuples([10,100]) → [(10,100),(100,10000)]"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for i in range(len(L)): über alle Indizes",
+      "Erstelle für jede Position ein Tupel: (L[i], L[i]**2)",
+      "Füge das Tupel mit result.append((L[i], L[i]**2)) zur Ergebnisliste hinzu"
+    ],
+    "explanation": "Tupel in Python werden mit () erstellt und sind unveränderlich. (x, x**2) erzeugt ein Paar. In den Tests werden Tupel als Listen dargestellt [(3,9)→[3,9]] da JSON keine Tuples kennt – die KI versteht den Unterschied.",
+    "difficulty": "easy",
+    "topics": ["Listen", "Tupel", "Indexierung", "range()", "Quadrat"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_04",
+    "title": "group_by_grade – Nach Note gruppieren",
+    "description_de": "Gegeben sei ein Dictionary d, das Studenten (keys, string) auf Noten (values, int) abbildet.\n\nSchreibe eine Funktion group_by_grade(d), die ein neues Dictionary zurückgibt:\n• Keys: die Noten (int)\n• Values: Liste der Studenten mit dieser Note\n\nBeispiel:\nd = {'Alice': 1, 'Bob': 2, 'Charlie': 1}\ngroup_by_grade(d) → {1: ['Alice', 'Charlie'], 2: ['Bob']}",
+    "function_name": "group_by_grade",
+    "parameters": ["d"],
+    "starter_code": "def group_by_grade(d):\n    \"\"\"Invertiert d: Note → [Studenten mit dieser Note].\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def group_by_grade(d):\n    result = {}\n    for student, grade in d.items():\n        if grade not in result:\n            result[grade] = []\n        result[grade].append(student)\n    return result",
+    "tests": [
+      {"input": [{"Alice": 1, "Bob": 2, "Charlie": 1}], "expected": {1: ["Alice", "Charlie"], 2: ["Bob"]}},
+      {"input": [{"Anna": 3, "Ben": 1, "Cara": 3}], "expected": {1: ["Ben"], 3: ["Anna", "Cara"]}},
+      {"input": [{"Solo": 2}], "expected": {2: ["Solo"]}}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Alle haben die gleiche Note: group_by_grade({'A':1,'B':1,'C':1}) → {1: ['A','B','C']}",
+        "Jeder hat eine andere Note: group_by_grade({'X':1,'Y':2,'Z':3}) → {1:['X'],2:['Y'],3:['Z']}",
+        "Nur ein Student: group_by_grade({'Maria': 2}) → {2: ['Maria']}"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for student, grade in d.items():",
+      "Prüfe if grade not in result: result[grade] = [] – initialisiere die Liste wenn die Note noch nicht vorkommt",
+      "Dann: result[grade].append(student). Alternativ: result.setdefault(grade, []).append(student)"
+    ],
+    "explanation": "Dictionary-Invertierung: Wir wechseln Keys und Values. setdefault(key, default) gibt den Wert für key zurück, oder setzt ihn auf default falls er nicht vorhanden ist – elegante Alternative zum if-Check.",
+    "difficulty": "medium",
+    "topics": ["Dictionary", "Gruppieren", "items()", "setdefault()"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_05",
+    "title": "char_freq – Zeichenhäufigkeit",
+    "description_de": "Schreibe eine Funktion char_freq(s), die gegeben einen String s zwei Werte zurückgibt:\n\na) Ein Dictionary mit Einzelzeichen als Keys und ihrer Häufigkeit als Values\nb) Das häufigste Zeichen (bei mehreren gleichhäufigen: beliebiges davon)\n\nDu kannst davon ausgehen, dass s nicht leer ist.\n\nBeispiele:\nchar_freq('aab') → ({'a': 2, 'b': 1}, 'a')\nchar_freq('hello') → ({'h':1,'e':1,'l':2,'o':1}, 'l')",
+    "function_name": "test_char_freq",
+    "parameters": ["s"],
+    "starter_code": "def char_freq(s):\n    \"\"\"Gibt (freq_dict, max_char) zurück für den String s.\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_char_freq(s):\n    freq, most = char_freq(s)\n    return [freq, most]",
+    "canonical_solution": "def char_freq(s):\n    freq = {}\n    for c in s:\n        freq[c] = freq.get(c, 0) + 1\n    most = max(freq, key=lambda c: freq[c])\n    return freq, most\n\n\n# Testhelfer – nicht ändern\ndef test_char_freq(s):\n    freq, most = char_freq(s)\n    return [freq, most]",
+    "tests": [
+      {"input": ["aab"], "expected": [{"a": 2, "b": 1}, "a"]},
+      {"input": ["hello"], "expected": [{"h": 1, "e": 1, "l": 2, "o": 1}, "l"]},
+      {"input": ["aaab"], "expected": [{"a": 3, "b": 1}, "a"]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Einzelnes Zeichen: char_freq('x') → ({'x':1}, 'x')",
+        "Alle Zeichen gleich häufig: char_freq('ab') → ({'a':1,'b':1}, 'a' oder 'b')",
+        "Längerer String: char_freq('banana') → ({'b':1,'a':3,'n':2}, 'a')"
+      ]
+    },
+    "hints": [
+      "Baue das Frequency-Dict mit: freq[c] = freq.get(c, 0) + 1 – für jedes Zeichen c in s",
+      "Finde das Maximum mit: most = max(freq, key=lambda c: freq[c]) – max() kann über Dict-Keys iterieren",
+      "Gib beide Werte zurück: return freq, most (Python-Funktion kann mehrere Werte zurückgeben)"
+    ],
+    "explanation": "dict.get(key, default) gibt den Wert für key zurück, oder default wenn key nicht existiert – ideal zum Zählen. max(iterable, key=func) findet das Maximum nach einem Sortierkriterium. Mehrere Rückgabewerte werden in Python als Tupel verpackt.",
+    "difficulty": "medium",
+    "topics": ["Dictionary", "max()", "lambda", "get()", "Zeichenhäufigkeit"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_06",
+    "title": "stuck – Generator mit Falle",
+    "description_de": "Der Generator stuck erzeugt Elemente des Parameters seq (ein Iterator) bis ein Element gleich dem Parameter trap ist. Ab dann erzeugt stuck nur noch das Element trap (unendlich oft).\n\nKeine Indices oder Slices auf seq!\n\nBeispiele:\nlist([next(stuck(iter([1,2,3]), 2)) for _ in range(6)])\n→ [1, 2, 2, 2, 2, 2]\n\nlist(stuck(iter(range(5)), 7))\n→ [0, 1, 2, 3, 4]  (trap nie getroffen → endlich)",
+    "function_name": "test_stuck",
+    "parameters": ["lst", "trap", "n"],
+    "starter_code": "def stuck(seq, trap):\n    \"\"\"Generator: yield-t Elemente aus seq bis trap getroffen, dann trap für immer.\"\"\"\n    # YOUR CODE HERE\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_stuck(lst, trap, n):\n    gen = stuck(iter(lst), trap)\n    result = []\n    for _ in range(n):\n        try:\n            result.append(next(gen))\n        except StopIteration:\n            break\n    return result",
+    "canonical_solution": "def stuck(seq, trap):\n    for item in seq:\n        yield item\n        if item == trap:\n            while True:\n                yield trap\n\n\n# Testhelfer – nicht ändern\ndef test_stuck(lst, trap, n):\n    gen = stuck(iter(lst), trap)\n    result = []\n    for _ in range(n):\n        try:\n            result.append(next(gen))\n        except StopIteration:\n            break\n    return result",
+    "tests": [
+      {"input": [[1, 2, 3], 2, 6], "expected": [1, 2, 2, 2, 2, 2]},
+      {"input": [[0, 1, 2, 3], 1, 5], "expected": [0, 1, 1, 1, 1]},
+      {"input": [[0, 1, 2, 3, 4], 9, 10], "expected": [0, 1, 2, 3, 4]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Trap direkt am Anfang: stuck(iter([5,1,2]), 5) → 5,5,5,5,...",
+        "Trap am Ende der endlichen Sequenz: stuck(iter([1,2,3]), 3, 5) → [1,2,3,3,3]",
+        "Leere Sequenz: list(stuck(iter([]), 5)) → []"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for item in seq: – yield item für jedes Element",
+      "Nach dem yield: prüfe if item == trap. Wenn ja: yield trap in einer while True-Schleife (oder yield from einer Endlos-Hilfsfunktion)",
+      "Alternativ: yield from generate_constant(trap) wobei generate_constant(x) eine while-True-yield-Funktion ist"
+    ],
+    "explanation": "Generatoren merken sich ihren Zustand zwischen next()-Aufrufen. Sobald trap getroffen wird, geht der Generator in eine Endlosschleife und gibt nur noch trap aus. Die for-Schleife über seq endet sobald der Iterator erschöpft ist.",
+    "difficulty": "hard",
+    "topics": ["Generatoren", "yield", "while True", "Iteratoren", "next()"],
+    "exam_relevance": "high",
+    "source": "exam"
+  }
+]

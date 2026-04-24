@@ -20,8 +20,9 @@ const LAB_CONFIG = [
   { id: 'lab05',    label: 'Lab 5'      },
   { id: 'lab06',    label: 'Lab 6'      },
   { id: 'lab07',    label: 'Lab 7'      },
-  { id: 'lab09',    label: 'Lab 9'      },
-  { id: 'lab_exam', label: 'Prüfungslab', exam: true },
+  { id: 'lab09',         label: 'Lab 9'           },
+  { id: 'exam_ki150',    label: 'Prüfung KI 150',  exam: true },
+  { id: 'lab_exam',      label: 'Prüfungslab',      exam: true },
 ];
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -182,8 +183,18 @@ async function loadLab(labId) {
   // Sonderfall: Prüfungslab lädt aus importierten Prüfungsaufgaben
   if (labId === 'lab_exam') {
     try {
-      const raw       = localStorage.getItem('exam_questions');
-      const exercises = raw ? JSON.parse(raw) : [];
+      const raw = localStorage.getItem('exam_questions');
+      let exercises = raw ? JSON.parse(raw) : [];
+      if (!exercises.length) {
+        // Fallback: lade vorgeladene Prüfungsaufgaben
+        try {
+          const resp = await fetch('./exercises/exam_ki150.json');
+          if (resp.ok) {
+            const data = await resp.json();
+            exercises = Array.isArray(data) ? data : (data.exercises || []);
+          }
+        } catch { /* ignore */ }
+      }
       if (!exercises.length) {
         state.exercises = [];
         addTutorMsg(
@@ -225,7 +236,7 @@ async function loadLab(labId) {
     const res = await fetch(`./exercises/${labId}.json`);
     if (!res.ok) throw new Error('not found');
     const data = await res.json();
-    state.exercises = data.exercises || [];
+    state.exercises = Array.isArray(data) ? data : (data.exercises || []);
     checkLabCompletion(labId);
     selectNextExercise();
   } catch {
