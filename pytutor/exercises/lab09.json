@@ -1,0 +1,362 @@
+[
+  {
+    "id": "lab09_01",
+    "title": "linear_search – Lineare Suche",
+    "description_de": "Implementiere linear_search(lst, x), die eine Liste lst und einen gesuchten Wert x nimmt.\n\nSie durchsucht die Liste von vorne nach hinten und gibt den Index des ersten Vorkommens von x zurück. Falls x nicht gefunden wird: gibt -1 zurück.\n\nLaufzeit: O(n) – jedes Element wird maximal einmal betrachtet.\n\nBeispiele:\nlinear_search([3, 1, 4, 1, 5], 4) → 2\nlinear_search([3, 1, 4, 1, 5], 9) → -1",
+    "function_name": "linear_search",
+    "parameters": ["lst", "x"],
+    "starter_code": "def linear_search(lst, x):\n    \"\"\"Gibt den Index von x in lst zurück, oder -1 wenn x nicht vorhanden.\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def linear_search(lst, x):\n    for i in range(len(lst)):\n        if lst[i] == x:\n            return i\n    return -1",
+    "tests": [
+      {"input": [[3, 1, 4, 1, 5, 9, 2], 9], "expected": 5},
+      {"input": [[3, 1, 4, 1, 5, 9, 2], 7], "expected": -1},
+      {"input": [[10, 20, 30], 10], "expected": 0}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Element am Ende: linear_search([1,2,3,4,5], 5) → 4",
+        "Leere Liste: linear_search([], 1) → -1",
+        "Erstes Vorkommen: linear_search([2,2,2], 2) → 0 (nicht 1 oder 2)"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for i in range(len(lst)): über alle Indizes",
+      "Vergleiche lst[i] == x. Wenn gleich: return i",
+      "Wenn die Schleife durchläuft ohne Fund: return -1 am Ende der Funktion"
+    ],
+    "explanation": "Lineare Suche prüft jedes Element einmal. Im Worst Case (Element nicht vorhanden oder am Ende) werden alle n Elemente betrachtet → O(n). Sie funktioniert auf beliebigen, auch unsortierten Listen.",
+    "difficulty": "easy",
+    "topics": ["Suche", "Laufzeit", "O(n)", "Lineare Suche"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_02",
+    "title": "binary_search – Binäre Suche",
+    "description_de": "Implementiere binary_search(lst, x), die eine SORTIERTE Liste lst und einen gesuchten Wert x nimmt.\n\nAlgorithmus: Halbiere den Suchbereich bei jedem Schritt:\n• Vergleiche x mit dem mittleren Element\n• Ist x kleiner → suche links, ist x größer → suche rechts\n• Ist x gleich → gib den Index zurück\n• Ist der Suchbereich leer → gib -1 zurück\n\nLaufzeit: O(log n) – viel schneller als lineare Suche!\n\nBeispiel:\nbinary_search([1, 3, 5, 7, 9], 5) → 2",
+    "function_name": "binary_search",
+    "parameters": ["lst", "x"],
+    "starter_code": "def binary_search(lst, x):\n    \"\"\"Gibt den Index von x in der sortierten Liste lst zurück, oder -1.\"\"\"\n    low, high = 0, len(lst) - 1\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def binary_search(lst, x):\n    low, high = 0, len(lst) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if lst[mid] == x:\n            return mid\n        elif lst[mid] < x:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1",
+    "tests": [
+      {"input": [[1, 3, 5, 7, 9], 5], "expected": 2},
+      {"input": [[1, 3, 5, 7, 9], 1], "expected": 0},
+      {"input": [[1, 3, 5, 7, 9], 4], "expected": -1}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Letztes Element: binary_search([2,4,6,8,10], 10) → 4",
+        "Nicht vorhanden: binary_search([1,2,3,4,5], 99) → -1",
+        "Liste mit einem Element: binary_search([42], 42) → 0"
+      ]
+    },
+    "hints": [
+      "Verwende eine while-Schleife: while low <= high: – berechne mid = (low + high) // 2",
+      "Wenn lst[mid] == x: return mid. Wenn lst[mid] < x: low = mid + 1. Wenn lst[mid] > x: high = mid - 1",
+      "Wenn die while-Schleife endet ohne Fund: return -1"
+    ],
+    "explanation": "Binäre Suche halbiert den Suchbereich bei jedem Schritt. Bei 1000 Elementen braucht sie maximal log₂(1000) ≈ 10 Vergleiche statt 1000. Voraussetzung: die Liste muss sortiert sein!",
+    "difficulty": "medium",
+    "topics": ["Suche", "Binäre Suche", "O(log n)", "Sortierte Listen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_03",
+    "title": "bubble_sort – Bubble Sort",
+    "description_de": "Implementiere bubble_sort(lst), die eine Kopie der Liste sortiert zurückgibt (lst selbst bleibt unverändert).\n\nAlgorithmus: In jeder Runde vergleiche benachbarte Paare und tausche sie, wenn sie in falscher Reihenfolge sind. Größte Elemente 'blubbern' ans Ende.\n\nLaufzeit: O(n²)\n\nBeispiel:\nbubble_sort([5, 3, 8, 1, 2]) → [1, 2, 3, 5, 8]",
+    "function_name": "bubble_sort",
+    "parameters": ["lst"],
+    "starter_code": "def bubble_sort(lst):\n    \"\"\"Gibt eine sortierte Kopie von lst zurück (Bubble Sort, O(n²)).\"\"\"\n    lst = lst[:]  # Arbeitskopie erstellen\n    n = len(lst)\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def bubble_sort(lst):\n    lst = lst[:]\n    n = len(lst)\n    for i in range(n):\n        for j in range(n - i - 1):\n            if lst[j] > lst[j + 1]:\n                lst[j], lst[j + 1] = lst[j + 1], lst[j]\n    return lst",
+    "tests": [
+      {"input": [[5, 3, 8, 1, 9, 2]], "expected": [1, 2, 3, 5, 8, 9]},
+      {"input": [[3, 2, 1]], "expected": [1, 2, 3]},
+      {"input": [[]], "expected": []}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Bereits sortiert: bubble_sort([1,2,3,4,5]) → [1,2,3,4,5]",
+        "Duplikate: bubble_sort([3,1,3,2,1]) → [1,1,2,3,3]",
+        "Ein Element: bubble_sort([42]) → [42]"
+      ]
+    },
+    "hints": [
+      "Äußere Schleife: for i in range(n): – die i-te Runde platziert das (n-i)-größte Element an seine Position",
+      "Innere Schleife: for j in range(n - i - 1): – vergleiche Paar (j, j+1)",
+      "Tausch: if lst[j] > lst[j+1]: → lst[j], lst[j+1] = lst[j+1], lst[j]"
+    ],
+    "explanation": "Bubble Sort tauscht benachbarte Paare wiederholt, bis die Liste sortiert ist. Name kommt davon, dass große Elemente bei jeder Runde eine Position nach rechts 'blubbern'. O(n²) wegen der zwei verschachtelten Schleifen.",
+    "difficulty": "medium",
+    "topics": ["Sortierung", "Bubble Sort", "O(n²)", "Tauschen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_04",
+    "title": "selection_sort – Selection Sort",
+    "description_de": "Implementiere selection_sort(lst), die eine Kopie der Liste sortiert zurückgibt.\n\nAlgorithmus: In jeder Runde suche das kleinste Element im unsortierten Teil und tausche es an die richtige Position.\n\nLaufzeit: O(n²)\n\nBeispiel:\nselection_sort([64, 25, 12, 22, 11]) → [11, 12, 22, 25, 64]",
+    "function_name": "selection_sort",
+    "parameters": ["lst"],
+    "starter_code": "def selection_sort(lst):\n    \"\"\"Gibt eine sortierte Kopie von lst zurück (Selection Sort, O(n²)).\"\"\"\n    lst = lst[:]\n    n = len(lst)\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def selection_sort(lst):\n    lst = lst[:]\n    n = len(lst)\n    for i in range(n):\n        min_idx = i\n        for j in range(i + 1, n):\n            if lst[j] < lst[min_idx]:\n                min_idx = j\n        lst[i], lst[min_idx] = lst[min_idx], lst[i]\n    return lst",
+    "tests": [
+      {"input": [[64, 25, 12, 22, 11]], "expected": [11, 12, 22, 25, 64]},
+      {"input": [[5, 4, 3, 2, 1]], "expected": [1, 2, 3, 4, 5]},
+      {"input": [[1, 1, 1]], "expected": [1, 1, 1]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Bereits sortiert: selection_sort([1,2,3]) → [1,2,3]",
+        "Zwei Elemente: selection_sort([9,1]) → [1,9]",
+        "Duplikate: selection_sort([3,1,3,2]) → [1,2,3,3]"
+      ]
+    },
+    "hints": [
+      "Äußere Schleife: for i in range(n): – Position i soll mit dem Minimum des Rests gefüllt werden",
+      "Finde den Index des Minimums: min_idx = i, dann innere Schleife for j in range(i+1, n): if lst[j] < lst[min_idx]: min_idx = j",
+      "Tausche: lst[i], lst[min_idx] = lst[min_idx], lst[i]"
+    ],
+    "explanation": "Selection Sort wählt bei jeder Runde das Minimum aus dem noch unsortierten Teil und tauscht es an die nächste freie Position. Im Unterschied zu Bubble Sort macht er genau n-1 Tauschoperationen (egal wie die Eingabe aussieht).",
+    "difficulty": "medium",
+    "topics": ["Sortierung", "Selection Sort", "O(n²)", "Minimum finden"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_05",
+    "title": "insertion_sort – Insertion Sort",
+    "description_de": "Implementiere insertion_sort(lst), die eine Kopie der Liste sortiert zurückgibt.\n\nAlgorithmus: Wie beim Kartensortieren – nimm jedes Element und schiebe es an die richtige Stelle im bereits sortierten Teil.\n\nLaufzeit: O(n²) im Worst Case, O(n) bei fast sortierten Listen.\n\nBeispiel:\ninsertion_sort([12, 11, 13, 5, 6]) → [5, 6, 11, 12, 13]",
+    "function_name": "insertion_sort",
+    "parameters": ["lst"],
+    "starter_code": "def insertion_sort(lst):\n    \"\"\"Gibt eine sortierte Kopie von lst zurück (Insertion Sort, O(n²)).\"\"\"\n    lst = lst[:]\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def insertion_sort(lst):\n    lst = lst[:]\n    for i in range(1, len(lst)):\n        key = lst[i]\n        j = i - 1\n        while j >= 0 and lst[j] > key:\n            lst[j + 1] = lst[j]\n            j -= 1\n        lst[j + 1] = key\n    return lst",
+    "tests": [
+      {"input": [[12, 11, 13, 5, 6]], "expected": [5, 6, 11, 12, 13]},
+      {"input": [[1, 2, 3, 4, 5]], "expected": [1, 2, 3, 4, 5]},
+      {"input": [[5, 4, 3, 2, 1]], "expected": [1, 2, 3, 4, 5]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Ein Element: insertion_sort([7]) → [7]",
+        "Duplikate: insertion_sort([4,2,4,1]) → [1,2,4,4]",
+        "Zwei Elemente getauscht: insertion_sort([9,3]) → [3,9]"
+      ]
+    },
+    "hints": [
+      "Äußere Schleife startet bei i=1. key = lst[i] ist das einzufügende Element",
+      "Innere while-Schleife: solange j >= 0 und lst[j] > key: schiebe lst[j] um eine Position nach rechts (lst[j+1] = lst[j]), j -= 1",
+      "Nach dem while: setze lst[j+1] = key (freie Lücke mit dem Schlüssel füllen)"
+    ],
+    "explanation": "Insertion Sort baut eine sortierte Teilliste von links auf. Jedes neue Element wird durch Verschieben größerer Elemente nach rechts an die korrekte Position eingefügt – wie beim manuellen Sortieren von Spielkarten.",
+    "difficulty": "medium",
+    "topics": ["Sortierung", "Insertion Sort", "O(n²)", "Einfügen"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_06",
+    "title": "merge_sort – Merge Sort",
+    "description_de": "Implementiere merge_sort(lst), die eine Kopie der Liste sortiert zurückgibt.\n\nAlgorithmus (Divide & Conquer):\n1. Teile die Liste in der Mitte\n2. Sortiere beide Hälften rekursiv\n3. Merge (füge zusammen): füge beide sortierten Hälften zu einer sortierten Liste zusammen\n\nLaufzeit: O(n log n) – deutlich besser als O(n²)!\n\nBasisfall: Liste mit 0 oder 1 Elementen ist bereits sortiert.\n\nBeispiel:\nmerge_sort([38, 27, 43, 3]) → [3, 27, 38, 43]",
+    "function_name": "merge_sort",
+    "parameters": ["lst"],
+    "starter_code": "def merge_sort(lst):\n    \"\"\"Gibt eine sortierte Kopie von lst zurück (Merge Sort, O(n log n)).\"\"\"\n    if len(lst) <= 1:\n        return lst\n    mid = len(lst) // 2\n    left = merge_sort(lst[:mid])\n    right = merge_sort(lst[mid:])\n    return merge(left, right)\n\n\ndef merge(left, right):\n    \"\"\"Füge zwei sortierte Listen zu einer sortierten Liste zusammen.\"\"\"\n    result = []\n    i, j = 0, 0\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def merge_sort(lst):\n    if len(lst) <= 1:\n        return lst\n    mid = len(lst) // 2\n    left = merge_sort(lst[:mid])\n    right = merge_sort(lst[mid:])\n    return merge(left, right)\n\n\ndef merge(left, right):\n    result = []\n    i, j = 0, 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result",
+    "tests": [
+      {"input": [[38, 27, 43, 3, 9, 82, 10]], "expected": [3, 9, 10, 27, 38, 43, 82]},
+      {"input": [[5, 2]], "expected": [2, 5]},
+      {"input": [[]], "expected": []}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Bereits sortiert: merge_sort([1,2,3,4,5]) → [1,2,3,4,5]",
+        "Umgekehrt sortiert: merge_sort([5,4,3,2,1]) → [1,2,3,4,5]",
+        "Duplikate: merge_sort([3,1,2,1,3]) → [1,1,2,3,3]"
+      ]
+    },
+    "hints": [
+      "merge_sort ist bereits vorgegeben. Implementiere nur merge(left, right)",
+      "In merge(): Solange beide Listen nicht leer – vergleiche left[i] und right[j], füge das kleinere an result an und rücke den Zeiger vor",
+      "Am Ende: eine Liste kann noch Elemente haben – füge Rest mit extend an: result.extend(left[i:]) und result.extend(right[j:])"
+    ],
+    "explanation": "Merge Sort teilt das Problem rekursiv in Hälften (Divide). Die merge()-Funktion kombiniert zwei bereits sortierte Listen in O(n) Zeit (Conquer). Durch die Halbierung des Problems gibt es log n Rekursionsebenen → O(n log n) Gesamtlaufzeit.",
+    "difficulty": "hard",
+    "topics": ["Sortierung", "Merge Sort", "O(n log n)", "Divide & Conquer", "Rekursion"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_07",
+    "title": "safe_append – Sicheres Anhängen (Referenzen)",
+    "description_de": "Schreibe die Funktion safe_append(lst, item), die ein Element item an eine KOPIE der Liste lst anhängt und die neue Liste zurückgibt.\n\nDie originale Liste lst darf dabei NICHT verändert werden!\n\nWichtig: In Python sind Listen Referenztypen. b = a kopiert nicht die Liste, sondern nur den Zeiger. Deshalb brauchen wir eine echte Kopie.\n\nBeispiele:\nlst = [1, 2, 3]\nsafe_append(lst, 4) → [1, 2, 3, 4]\nlst → [1, 2, 3]  (unverändert!)",
+    "function_name": "safe_append",
+    "parameters": ["lst", "item"],
+    "starter_code": "def safe_append(lst, item):\n    \"\"\"Gibt eine neue Liste zurück, die alle Elemente von lst plus item enthält.\"\"\"\n    # YOUR CODE HERE – verändere lst NICHT direkt!\n    pass",
+    "canonical_solution": "def safe_append(lst, item):\n    new_lst = lst[:]\n    new_lst.append(item)\n    return new_lst",
+    "tests": [
+      {"input": [[1, 2, 3], 4], "expected": [1, 2, 3, 4]},
+      {"input": [[], 5], "expected": [5]},
+      {"input": [[10, 20], 30], "expected": [10, 20, 30]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "String anhängen: safe_append([1,2,3], 'x') → [1,2,3,'x']",
+        "Nested list: safe_append([[1,2],[3,4]], [5,6]) → [[1,2],[3,4],[5,6]]",
+        "Leere Liste, mehrere Aufrufe: safe_append(safe_append([], 1), 2) → [1,2]"
+      ]
+    },
+    "hints": [
+      "Erstelle eine Kopie mit lst[:] oder list(lst) – das erzeugt eine neue Liste mit denselben Elementen",
+      "Hänge item an die KOPIE an: new_lst.append(item)",
+      "Gib new_lst zurück – niemals lst.append(item) direkt!"
+    ],
+    "explanation": "In Python zeigen Variablen auf Objekte im Speicher. b = a gibt beiden Variablen einen Zeiger auf dasselbe Listenobjekt. lst[:] erstellt eine flache Kopie – ein neues Listen-Objekt mit den gleichen Elementen. So bleibt das Original unverändert.",
+    "difficulty": "easy",
+    "topics": ["Referenzen", "Kopieren", "Listen", "Mutation", "Shallow Copy"],
+    "exam_relevance": "medium"
+  },
+  {
+    "id": "lab09_08",
+    "title": "make_accumulator – Closure mit nonlocal",
+    "description_de": "Schreibe die Funktion make_accumulator(start), die eine Closure zurückgibt.\n\nDie zurückgegebene Funktion nimmt eine Zahl n und addiert sie zu einem laufenden Gesamt (das bei start beginnt). Sie gibt das neue Gesamt zurück.\n\nStichwort: nonlocal – ohne dieses Schlüsselwort kann eine innere Funktion eine Variable der äußeren Funktion nicht neu zuweisen.\n\nBeispiel:\nacc = make_accumulator(10)\nacc(5) → 15\nacc(3) → 18\nacc(-8) → 10",
+    "function_name": "test_make_accumulator",
+    "parameters": ["start", "amounts"],
+    "starter_code": "def make_accumulator(start):\n    \"\"\"Gibt eine Closure zurück, die einen laufenden Gesamtwert ab start akkumuliert.\"\"\"\n    total = start\n    def accumulate(n):\n        # YOUR CODE HERE – Tipp: nonlocal total\n        pass\n    return accumulate\n\n\n# Testhelfer – nicht ändern\ndef test_make_accumulator(start, amounts):\n    acc = make_accumulator(start)\n    result = []\n    for n in amounts:\n        result.append(acc(n))\n    return result",
+    "canonical_solution": "def make_accumulator(start):\n    total = start\n    def accumulate(n):\n        nonlocal total\n        total += n\n        return total\n    return accumulate\n\n\n# Testhelfer – nicht ändern\ndef test_make_accumulator(start, amounts):\n    acc = make_accumulator(start)\n    result = []\n    for n in amounts:\n        result.append(acc(n))\n    return result",
+    "tests": [
+      {"input": [0, [1, 2, 3]], "expected": [1, 3, 6]},
+      {"input": [10, [5, -5, 10]], "expected": [15, 10, 20]},
+      {"input": [0, [100]], "expected": [100]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Negativer Startwert: make_accumulator(-10), dann acc(5) → -5",
+        "Nur positive Zahlen: make_accumulator(0), Aufrufe 1,1,1,1 → [1,2,3,4]",
+        "Zwei unabhängige Akkumulatoren: acc1 und acc2 beeinflussen sich nicht"
+      ]
+    },
+    "hints": [
+      "In der inneren Funktion accumulate: Schreibe nonlocal total – ohne das würde Python total als lokale Variable behandeln",
+      "Dann: total += n und return total",
+      "WARUM nonlocal? total += n ist implizit total = total + n – eine Zuweisung macht total zu einer lokalen Variable. nonlocal verhindert das"
+    ],
+    "explanation": "Closures merken sich die Variablen ihrer äußeren Funktion auch nachdem diese zurückgekehrt ist. nonlocal erlaubt der inneren Funktion, eine Variable der äußeren Funktion zu VERÄNDERN (nicht nur zu lesen). Ohne nonlocal würde count += 1 einen UnboundLocalError auslösen.",
+    "difficulty": "medium",
+    "topics": ["Closures", "nonlocal", "Scoping", "LEGB-Regel", "Higher-Order Functions"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_09",
+    "title": "divide – Division mit Exception Handling",
+    "description_de": "Erweitere die Funktion divide(a, b), die a / b berechnet.\n\nSie soll folgende Fehler abfangen:\n• ZeroDivisionError (b == 0): gib None zurück\n• TypeError (falsche Typen): gib None zurück\n\nBeispiele:\ndivide(10, 2) → 5.0\ndivide(10, 0) → None   (Division durch 0)\ndivide('x', 2) → None  (falscher Typ)",
+    "function_name": "divide",
+    "parameters": ["a", "b"],
+    "starter_code": "def divide(a, b):\n    \"\"\"Berechnet a / b. Gibt None zurück bei ZeroDivisionError oder TypeError.\"\"\"\n    # YOUR CODE HERE – verwende try/except\n    pass",
+    "canonical_solution": "def divide(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return None\n    except TypeError:\n        return None",
+    "tests": [
+      {"input": [10, 2], "expected": 5.0},
+      {"input": [10, 0], "expected": null},
+      {"input": ["x", 2], "expected": null}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Ganzzahldivision funktioniert: divide(7, 2) → 3.5",
+        "Beide null: divide(0, 5) → 0.0",
+        "Falscher Typ b: divide(10, 'zwei') → None"
+      ]
+    },
+    "hints": [
+      "Verwende try: return a / b",
+      "Fange einzelne Ausnahmen mit except ZeroDivisionError: return None und except TypeError: return None",
+      "Du kannst auch beide in einem Block abfangen: except (ZeroDivisionError, TypeError): return None"
+    ],
+    "explanation": "try/except fängt Laufzeitfehler ab ohne das Programm zu stoppen. ZeroDivisionError tritt auf wenn der Nenner 0 ist, TypeError wenn die Typen nicht zur Operation passen (z.B. String / int). Jede except-Klausel kann unterschiedlich reagieren.",
+    "difficulty": "easy",
+    "topics": ["Exception Handling", "try/except", "ZeroDivisionError", "TypeError"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_10",
+    "title": "safe_list_access – Sicherer Listenzugriff",
+    "description_de": "Schreibe safe_list_access(lst, index), die das Element an Position index zurückgibt.\n\nFalls index außerhalb der Liste liegt (IndexError): gib None zurück.\n\nVerwende Exception Handling (kein if-Statement das die Länge prüft)!\n\nBeispiele:\nsafe_list_access([10, 20, 30], 1) → 20\nsafe_list_access([10, 20, 30], 5) → None   (Index zu groß)\nsafe_list_access([], 0) → None               (leere Liste)",
+    "function_name": "safe_list_access",
+    "parameters": ["lst", "index"],
+    "starter_code": "def safe_list_access(lst, index):\n    \"\"\"Gibt lst[index] zurück, oder None wenn index außerhalb der Liste liegt.\"\"\"\n    # YOUR CODE HERE – verwende try/except IndexError\n    pass",
+    "canonical_solution": "def safe_list_access(lst, index):\n    try:\n        return lst[index]\n    except IndexError:\n        return None",
+    "tests": [
+      {"input": [[10, 20, 30], 1], "expected": 20},
+      {"input": [[10, 20, 30], 10], "expected": null},
+      {"input": [[], 0], "expected": null}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Letztes Element: safe_list_access([1,2,3], 2) → 3",
+        "Negativer Index: safe_list_access([1,2,3], -1) → 3 (gültiger negativer Index)",
+        "Leere Liste: safe_list_access([], 5) → None"
+      ]
+    },
+    "hints": [
+      "try: return lst[index] – versuche auf das Element zuzugreifen",
+      "except IndexError: return None – wenn der Index ungültig ist",
+      "Hinweis: In Python lösen negative Indizes wie -1 keinen IndexError aus (solange die Liste nicht leer ist)"
+    ],
+    "explanation": "EAFP-Stil (Easier to Ask Forgiveness than Permission): In Python ist es oft idiomatischer, einfach etwas zu probieren und den Fehler abzufangen, als vorher die Bedingungen zu prüfen. Das macht den Code kürzer und oft auch schneller.",
+    "difficulty": "easy",
+    "topics": ["Exception Handling", "try/except", "IndexError", "EAFP"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_11",
+    "title": "process_data – Exceptions selbst auslösen",
+    "description_de": "Schreibe process_data(data), die folgende Regeln durchsetzt:\n\n• Wenn data kein list ist → raise TypeError('data must be a list')\n• Wenn die Liste leer ist → raise ValueError('list must not be empty')\n• Sonst → gib die Summe aller Elemente zurück\n\nBeispiele:\nprocess_data([1, 2, 3]) → 6\nprocess_data([]) → ValueError\nprocess_data(42) → TypeError",
+    "function_name": "test_process_data",
+    "parameters": ["data"],
+    "starter_code": "def process_data(data):\n    \"\"\"Gibt die Summe von data zurück. Wirft TypeError oder ValueError bei ungültiger Eingabe.\"\"\"\n    # YOUR CODE HERE – verwende raise TypeError(...) und raise ValueError(...)\n    pass\n\n\n# Testhelfer – nicht ändern\ndef test_process_data(data):\n    try:\n        return process_data(data)\n    except TypeError:\n        return 'TypeError'\n    except ValueError:\n        return 'ValueError'",
+    "canonical_solution": "def process_data(data):\n    if not isinstance(data, list):\n        raise TypeError('data must be a list')\n    if len(data) == 0:\n        raise ValueError('list must not be empty')\n    return sum(data)\n\n\n# Testhelfer – nicht ändern\ndef test_process_data(data):\n    try:\n        return process_data(data)\n    except TypeError:\n        return 'TypeError'\n    except ValueError:\n        return 'ValueError'",
+    "tests": [
+      {"input": [[1, 2, 3]], "expected": 6},
+      {"input": [[]], "expected": "ValueError"},
+      {"input": [42], "expected": "TypeError"}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Negative Zahlen: process_data([-1, -2, -3]) → -6",
+        "Gemischte Typen im String: process_data('hello') → TypeError (String ist keine Liste)",
+        "Liste mit einem Element: process_data([99]) → 99"
+      ]
+    },
+    "hints": [
+      "Prüfe den Typ mit isinstance(data, list). Wenn False: raise TypeError('data must be a list')",
+      "Prüfe dann die Länge: if len(data) == 0: raise ValueError('list must not be empty')",
+      "Wenn beide Prüfungen bestanden: return sum(data)"
+    ],
+    "explanation": "raise wirft eine Exception explizit aus – als Entwickler legst du so Verträge für deine Funktionen fest. isinstance() prüft den Typ eines Objekts. Der Unterschied zu Assertions: Exceptions (raise) für Fehler die zur Laufzeit erwartet werden, assert für Entwickler-Annahmen die nie eintreten sollten.",
+    "difficulty": "medium",
+    "topics": ["Exception Handling", "raise", "isinstance()", "TypeError", "ValueError"],
+    "exam_relevance": "high"
+  },
+  {
+    "id": "lab09_12",
+    "title": "calculate_average – Assertions",
+    "description_de": "Erweitere die Funktion calculate_average(grades), die den Durchschnitt einer Notenliste berechnet.\n\nFüge Assertions hinzu, die prüfen:\n• Die Eingabe ist eine nicht-leere Liste\n• Alle Elemente sind Zahlen zwischen 0 und 100\n\nAssertions sind Entwickler-Prüfungen: Sie werfen AssertionError wenn die Bedingung False ist.\n\nassert bedingung, 'Fehlermeldung'\n\nBeispiele:\ncalculate_average([80, 90, 100]) → 90.0\ncalculate_average([]) → AssertionError",
+    "function_name": "test_calculate_average",
+    "parameters": ["grades"],
+    "starter_code": "def calculate_average(grades):\n    \"\"\"Berechnet den Durchschnitt. Assertions prüfen die Eingabe.\"\"\"\n    # YOUR CODE HERE – füge assert-Statements vor der Berechnung ein\n    return sum(grades) / len(grades)\n\n\n# Testhelfer – nicht ändern\ndef test_calculate_average(grades):\n    try:\n        return round(calculate_average(grades), 2)\n    except (AssertionError, Exception):\n        return 'AssertionError'",
+    "canonical_solution": "def calculate_average(grades):\n    assert isinstance(grades, list) and len(grades) > 0, 'grades must be a non-empty list'\n    assert all(isinstance(g, (int, float)) and 0 <= g <= 100 for g in grades), 'all grades must be numbers between 0 and 100'\n    return sum(grades) / len(grades)\n\n\n# Testhelfer – nicht ändern\ndef test_calculate_average(grades):\n    try:\n        return round(calculate_average(grades), 2)\n    except (AssertionError, Exception):\n        return 'AssertionError'",
+    "tests": [
+      {"input": [[80, 90, 100]], "expected": 90.0},
+      {"input": [[70, 75, 80]], "expected": 75.0},
+      {"input": [[]], "expected": "AssertionError"}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Wert > 100: calculate_average([50, 110]) → AssertionError (110 ungültig)",
+        "Negativer Wert: calculate_average([-5, 50]) → AssertionError",
+        "Einzelne Note: calculate_average([85]) → 85.0"
+      ]
+    },
+    "hints": [
+      "assert isinstance(grades, list) and len(grades) > 0, 'grades must be a non-empty list'",
+      "assert all(isinstance(g, (int, float)) and 0 <= g <= 100 for g in grades), 'all grades must be numbers between 0 and 100'",
+      "all(...) gibt True zurück wenn ALLE Elemente die Bedingung erfüllen. Mit einem Generator-Ausdruck ist das elegant kurz"
+    ],
+    "explanation": "Assertions dokumentieren Annahmen: 'Dieser Code setzt voraus, dass...'. Sie werden mit -O (Optimierung) deaktiviert und sind für Entwicklerfehler gedacht. Für Laufzeitfehler (z.B. ungültige Nutzereingaben) ist raise besser geeignet.",
+    "difficulty": "medium",
+    "topics": ["Assertions", "assert", "Defensive Programming", "all()", "isinstance()"],
+    "exam_relevance": "high"
+  }
+]
