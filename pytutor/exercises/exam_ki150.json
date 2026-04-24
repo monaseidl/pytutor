@@ -101,9 +101,9 @@
     "starter_code": "def group_by_grade(d):\n    \"\"\"Invertiert d: Note → [Studenten mit dieser Note].\"\"\"\n    # YOUR CODE HERE\n    pass",
     "canonical_solution": "def group_by_grade(d):\n    result = {}\n    for student, grade in d.items():\n        if grade not in result:\n            result[grade] = []\n        result[grade].append(student)\n    return result",
     "tests": [
-      {"input": [{"Alice": 1, "Bob": 2, "Charlie": 1}], "expected": {1: ["Alice", "Charlie"], 2: ["Bob"]}},
-      {"input": [{"Anna": 3, "Ben": 1, "Cara": 3}], "expected": {1: ["Ben"], 3: ["Anna", "Cara"]}},
-      {"input": [{"Solo": 2}], "expected": {2: ["Solo"]}}
+      {"input": [{"Alice": 1, "Bob": 2, "Charlie": 1}], "expected": {"1": ["Alice", "Charlie"], "2": ["Bob"]}},
+      {"input": [{"Anna": 3, "Ben": 1, "Cara": 3}], "expected": {"1": ["Ben"], "3": ["Anna", "Cara"]}},
+      {"input": [{"Solo": 2}], "expected": {"2": ["Solo"]}}
     ],
     "variation_rules": {
       "concept_variations": [
@@ -182,6 +182,164 @@
     "explanation": "Generatoren merken sich ihren Zustand zwischen next()-Aufrufen. Sobald trap getroffen wird, geht der Generator in eine Endlosschleife und gibt nur noch trap aus. Die for-Schleife über seq endet sobald der Iterator erschöpft ist.",
     "difficulty": "hard",
     "topics": ["Generatoren", "yield", "while True", "Iteratoren", "next()"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_07",
+    "title": "verschiedenes – Fallunterscheidung ohne built-ins",
+    "description_de": "Schreibe eine Funktion verschiedenes(x, y, z) mit drei Parametern.\n\nRegeln (in dieser Reihenfolge prüfen):\n1. Falls x größer als y UND kleiner als z ist: Ergebnis ist x + abs(y) * z\n2. Falls y größer als z ist: Ergebnis ist die Summe aller drei Parameter\n3. In allen anderen Fällen: Ergebnis ist z\n\nWICHTIG: Benutze KEINE built-in Funktionen von Python – auch nicht abs()!\nDu musst den Absolutwert selbst berechnen.\n\nBeispiele:\nverschiedenes(5, 3, 10) → 5 + 3 * 10 = 35   (Fall 1)\nverschiedenes(2, 8, 3)  → 2 + 8 + 3 = 13    (Fall 2)\nverschiedenes(1, 3, 10) → 10                 (Fall 3)",
+    "function_name": "verschiedenes",
+    "parameters": ["x", "y", "z"],
+    "starter_code": "def verschiedenes(x, y, z):\n    \"\"\"Fallunterscheidung – KEINE built-in Funktionen (auch kein abs())!\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def verschiedenes(x, y, z):\n    abs_y = y if y >= 0 else -y\n    if x > y and x < z:\n        return x + abs_y * z\n    elif y > z:\n        return x + y + z\n    else:\n        return z",
+    "tests": [
+      {"input": [5, 3, 10], "expected": 35},
+      {"input": [2, 8, 3],  "expected": 13},
+      {"input": [1, 3, 10], "expected": 10},
+      {"input": [5, -3, 10], "expected": 35}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Grenzfall: x == y → Fall 1 schlägt fehl (x > y ist False), weiter zu Fall 2 oder 3",
+        "Alle gleich: verschiedenes(5, 5, 5) → Fall 1 fehl (5>5 False), Fall 2 fehl (5>5 False) → return z=5",
+        "Negativer y-Wert in Fall 1: verschiedenes(5, -2, 10) → 5 + 2*10 = 25 (abs(-2)=2)"
+      ]
+    },
+    "hints": [
+      "Prüfe die Fälle in der richtigen Reihenfolge: if ... elif ... else",
+      "abs() ist verboten! Berechne den Absolutwert selbst: abs_y = y if y >= 0 else -y",
+      "Fall 1: if x > y and x < z: return x + abs_y * z"
+    ],
+    "explanation": "Ohne abs() muss man Absolutwert manuell berechnen: y if y >= 0 else -y. Die Fälle werden strikt von oben nach unten geprüft – elif wird nur erreicht wenn if-Bedingung False war. 'In allen anderen Fällen' bedeutet else: ohne Bedingung.",
+    "difficulty": "easy",
+    "topics": ["Fallunterscheidung", "if/elif/else", "Absolutwert", "Arithmetik"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_08",
+    "title": "positionen – Alle Indizes eines Werts",
+    "description_de": "Schreibe eine Funktion positionen(liste, wert).\n\nSie erhält eine Liste und einen Wert als Parameter und gibt eine neue Liste mit allen Positionen (Indizes) zurück, an denen wert in liste vorkommt.\n\nFalls der Wert nicht vorkommt: leere Liste zurückgeben.\n\nEINSCHRÄNKUNGEN:\n• Keine built-in Funktionen außer len()\n• list.index() ist NICHT erlaubt\n\nBeispiele:\npositionen([1, 2, 1, 3, 1], 1) → [0, 2, 4]\npositionen([5, 6, 7], 6)       → [1]\npositionen([1, 2, 3], 9)       → []",
+    "function_name": "positionen",
+    "parameters": ["liste", "wert"],
+    "starter_code": "def positionen(liste, wert):\n    \"\"\"Gibt Liste aller Indizes zurück, an denen wert in liste vorkommt.\n    Nur len() erlaubt – kein list.index()!\n    \"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def positionen(liste, wert):\n    result = []\n    for i in range(len(liste)):\n        if liste[i] == wert:\n            result.append(i)\n    return result",
+    "tests": [
+      {"input": [[1, 2, 1, 3, 1], 1], "expected": [0, 2, 4]},
+      {"input": [[5, 6, 7], 6],        "expected": [1]},
+      {"input": [[1, 2, 3], 9],        "expected": []},
+      {"input": [[7, 7, 7], 7],        "expected": [0, 1, 2]}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Wert kommt nicht vor: positionen([1,2,3], 9) → []",
+        "Wert überall: positionen([5,5,5], 5) → [0,1,2]",
+        "Wert nur am Ende: positionen([1,2,3,3], 3) → [2,3]"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for i in range(len(liste)): – so bekommst du den Index i",
+      "Vergleiche: if liste[i] == wert: – dann Index aufnehmen",
+      "result.append(i) fügt den Index zur Ergebnisliste hinzu"
+    ],
+    "explanation": "Der klassische Weg ohne .index(): explizit über Indizes iterieren mit range(len(liste)) und bei Übereinstimmung den Index sammeln. Im Gegensatz zu .index() werden ALLE Vorkommen gefunden, nicht nur das erste.",
+    "difficulty": "easy",
+    "topics": ["Listen", "Indizes", "range()", "Schleifen", "Suchen"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_09",
+    "title": "largest_factor – Größter echter Teiler",
+    "description_de": "Implementiere largest_factor(n): Die Funktion berechnet den größten Faktor von n (n > 1), der kleiner ist als n.\n\nEin Faktor ist ein Integer, der n ganzzahlig teilt (n % faktor == 0).\n\nBeispiele:\nlargest_factor(12) → 6   (12/6=2 ✓, 12/7 nein, 12/8 nein, …)\nlargest_factor(7)  → 1   (Primzahl: einziger echter Teiler < 7 ist 1)\nlargest_factor(15) → 5   (15/5=3 ✓)",
+    "function_name": "largest_factor",
+    "parameters": ["n"],
+    "starter_code": "def largest_factor(n):\n    \"\"\"Größter Faktor von n, der kleiner als n ist. n > 1 garantiert.\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def largest_factor(n):\n    for i in range(n - 1, 0, -1):\n        if n % i == 0:\n            return i",
+    "tests": [
+      {"input": [12], "expected": 6},
+      {"input": [7],  "expected": 1},
+      {"input": [15], "expected": 5},
+      {"input": [100],"expected": 50}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Primzahl: largest_factor(13) → 1 (nur 1 teilt 13 außer 13 selbst)",
+        "Gerade Zahl: largest_factor(8) → 4 (8/4=2)",
+        "Quadratzahl: largest_factor(9) → 3 (9/3=3)"
+      ]
+    },
+    "hints": [
+      "Starte von n-1 und gehe abwärts bis 1: for i in range(n-1, 0, -1):",
+      "Der erste Wert i, für den n % i == 0 gilt, ist der gesuchte größte Faktor",
+      "Gib ihn sofort zurück: return i – dann bricht die Schleife ab"
+    ],
+    "explanation": "Indem wir von n-1 abwärts suchen, finden wir automatisch den GRÖSSTEN Teiler zuerst. Das erste i mit n%i==0 ist die Antwort – return i beendet die Funktion sofort. Bei Primzahlen ist 1 der einzige Teiler < n.",
+    "difficulty": "easy",
+    "topics": ["Schleifen", "Modulo", "Teiler", "range()"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_10",
+    "title": "wannwer – Geburtstagswörterbuch umdrehen",
+    "description_de": "Gegeben ist ein Dictionary gebtage: Keys sind Personennamen, Values sind Geburtstage als Tagesnummer (1–365).\n\nBeispiel: gebtage = {'Franz': 14, 'Hans': 365, 'Luke': 99}\n\nImplementiere wannwer(gebtage): Es erzeugt ein neues Dictionary, das für jeden Tag die Liste der Personen enthält, die an diesem Tag Geburtstag haben.\n\nBeispiel:\ngebtage = {'Franz': 14, 'Hans': 365, 'Luke': 99, 'Anna': 14}\nwannwer(gebtage) → {14: ['Franz', 'Anna'], 365: ['Hans'], 99: ['Luke']}",
+    "function_name": "wannwer",
+    "parameters": ["gebtage"],
+    "starter_code": "def wannwer(gebtage):\n    \"\"\"Dreht gebtage um: {Tag: [Personen mit Geburtstag an diesem Tag]}.\"\"\"\n    # YOUR CODE HERE\n    pass",
+    "canonical_solution": "def wannwer(gebtage):\n    result = {}\n    for person, day in gebtage.items():\n        if day not in result:\n            result[day] = []\n        result[day].append(person)\n    return result",
+    "tests": [
+      {"input": [{"Franz": 14, "Hans": 365, "Luke": 99, "Anna": 14}], "expected": {"14": ["Franz", "Anna"], "365": ["Hans"], "99": ["Luke"]}},
+      {"input": [{"Alice": 1, "Bob": 2, "Carol": 1}],                 "expected": {"1": ["Alice", "Carol"], "2": ["Bob"]}},
+      {"input": [{"Solo": 100}],                                       "expected": {"100": ["Solo"]}}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Alle am gleichen Tag: wannwer({'A':5,'B':5}) → {5: ['A','B']}",
+        "Alle verschiedene Tage: wannwer({'A':1,'B':2}) → {1:['A'], 2:['B']}",
+        "Ein Eintrag: wannwer({'Franz': 14}) → {14: ['Franz']}"
+      ]
+    },
+    "hints": [
+      "Iteriere mit for person, day in gebtage.items():",
+      "Prüfe: if day not in result: result[day] = []  – Liste initialisieren wenn Tag noch nicht vorkommt",
+      "Dann: result[day].append(person) – Person zur Liste hinzufügen"
+    ],
+    "explanation": "Dictionary-Inversion: Wir tauschen Keys und Values. Da mehrere Personen denselben Geburtstag haben können, wird der Value eine Liste. Schlüssel müssen vor dem ersten append initialisiert werden – oder mit setdefault(day, []).append(person) in einem Schritt.",
+    "difficulty": "medium",
+    "topics": ["Dictionary", "items()", "Inversion", "Gruppieren", "Listen"],
+    "exam_relevance": "high",
+    "source": "exam"
+  },
+  {
+    "id": "ki150_11",
+    "title": "keinekollision – Personen ohne geteilten Geburtstag",
+    "description_de": "Gegeben ist ein Dictionary gebtage (Personennamen → Tagesnummer 1–365).\n\nImplementiere keinekollision(gebtage): Mit Hilfe von wannwer gibt sie eine Liste der Personen zurück, die ihren Geburtstag mit NIEMANDEM anderen aus gebtage teilen.\n\nBeispiel:\ngebtage = {'Franz': 14, 'Hans': 365, 'Luke': 99, 'Anna': 14}\nwannwer(gebtage) → {14: ['Franz','Anna'], 365: ['Hans'], 99: ['Luke']}\nkeinekollision(gebtage) → ['Hans', 'Luke']  (nur Hans und Luke sind allein an ihrem Tag)\n\nHinweis: Nutze wannwer als Hilfsfunktion!",
+    "function_name": "keinekollision",
+    "parameters": ["gebtage"],
+    "starter_code": "def wannwer(gebtage):\n    \"\"\"Dreht gebtage um: {Tag: [Personen]}.\"\"\"\n    result = {}\n    for person, day in gebtage.items():\n        if day not in result:\n            result[day] = []\n        result[day].append(person)\n    return result\n\n\ndef keinekollision(gebtage):\n    \"\"\"Gibt Liste der Personen zurück, die ihren Tag mit niemandem teilen.\"\"\"\n    # YOUR CODE HERE (nutze wannwer!)\n    pass",
+    "canonical_solution": "def wannwer(gebtage):\n    result = {}\n    for person, day in gebtage.items():\n        if day not in result:\n            result[day] = []\n        result[day].append(person)\n    return result\n\n\ndef keinekollision(gebtage):\n    inverted = wannwer(gebtage)\n    result = []\n    for day, persons in inverted.items():\n        if len(persons) == 1:\n            result.append(persons[0])\n    return result",
+    "tests": [
+      {"input": [{"Franz": 14, "Hans": 365, "Luke": 99, "Anna": 14}], "expected": ["Hans", "Luke"]},
+      {"input": [{"Alice": 1, "Bob": 2, "Carol": 1}],                 "expected": ["Bob"]},
+      {"input": [{"A": 5, "B": 5, "C": 5}],                          "expected": []}
+    ],
+    "variation_rules": {
+      "concept_variations": [
+        "Alle kollisionsfrei: keinekollision({'A':1,'B':2,'C':3}) → ['A','B','C']",
+        "Alle kollidieren: keinekollision({'A':7,'B':7}) → []",
+        "Einer allein, andere kollodieren: keinekollision({'A':1,'B':2,'C':2}) → ['A']"
+      ]
+    },
+    "hints": [
+      "Rufe zuerst wannwer(gebtage) auf – das gibt dir {Tag: [Personen]}",
+      "Iteriere über das Ergebnis: for day, persons in inverted.items():",
+      "Wenn len(persons) == 1: Diese Person teilt ihren Tag mit niemand – result.append(persons[0])"
+    ],
+    "explanation": "Keinekollision baut auf wannwer auf: Erst invertieren, dann alle Tage filtern, an denen nur eine Person steht. len(persons) == 1 bedeutet: genau eine Person an diesem Tag → sie hat keine Kollision. persons[0] holt diese einzelne Person aus der Liste.",
+    "difficulty": "medium",
+    "topics": ["Dictionary", "items()", "Hilfsfunktion", "Filtern", "len()"],
     "exam_relevance": "high",
     "source": "exam"
   }
