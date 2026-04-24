@@ -30,6 +30,13 @@
           <button id="add-lab-btn" class="btn-add-lab" title="Übungsblatt als Lab importieren">+ Lab</button>
           <button id="exam-upload-btn" class="btn-add-lab" title="Alte Prüfungsaufgaben hochladen">Prüfungsaufgaben</button>
           <button id="exam-btn" class="btn-exam" title="Prüfungsmodus starten (10 Aufgaben, 5 min Timer)">Prüfung</button>
+          <button id="stats-btn" class="icon-btn" title="Statistik & Fortschritt" aria-label="Statistik">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </button>
           <button id="settings-btn" class="icon-btn" title="Einstellungen (API Key)" aria-label="Einstellungen">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="3"/>
@@ -167,6 +174,9 @@
     <span><kbd>Ctrl</kbd>+<kbd>H</kbd> Tipp</span>
     <span><kbd>Esc</kbd> Prüfungsmodus beenden</span>
   </footer>
+
+  <!-- ── Stats View ── -->
+  <div id="stats-view" class="hidden"></div>
 
   </div><!-- /#app -->
 

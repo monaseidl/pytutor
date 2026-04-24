@@ -8,8 +8,11 @@
 const LS_PROG        = 'pytutor_progress';
 const LS_KEY         = 'pytutor_api_key';
 const LS_PROVIDER    = 'pytutor_api_provider';
+const LS_DAILY       = 'pytutor_daily';
+const LS_LAB_STATS   = 'pytutor_lab_stats';
 const EXAM_TOTAL     = 10;   // questions per exam session
 const EXAM_SECS      = 300;  // 5 minutes per question
+const DAILY_GOAL     = 7;    // exercises per day for full circles
 
 const LAB_CONFIG = [
   { id: 'lab01',    label: 'Lab 1'      },
@@ -24,6 +27,10 @@ const LAB_CONFIG = [
   { id: 'exam_ki150',    label: 'Prüfung KI 150',  exam: true },
   { id: 'lab_exam',      label: 'Prüfungslab',      exam: true },
 ];
+
+// ── Daily & Lab Stats (module-level, loaded at boot) ───────────────────────
+let dailyStats = {};  // { "2026-04-24": {total, correct} }
+let labStats   = {};  // { "lab01": {total, correct} }
 
 // ── State ──────────────────────────────────────────────────────────────────
 const state = {
@@ -54,6 +61,7 @@ const exam = {
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   loadProgress();
+  loadDailyStats();
   loadApiKey();
   buildLabSelector();
   bindEvents();
@@ -114,6 +122,7 @@ function updateProgress(passed) {
   const id = ex.id;
   const p  = state.progress;
 
+  recordAttempt(passed);
   p.attempts[id] = (p.attempts[id] || 0) + 1;
 
   if (passed) {
@@ -1066,6 +1075,255 @@ function renderProgressDashboard() {
 }
 
 /* ══════════════════════════════════════════════════════════
+   DAILY STATS + LAB STATS
+   ══════════════════════════════════════════════════════════ */
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function loadDailyStats() {
+  try { dailyStats = JSON.parse(localStorage.getItem(LS_DAILY)     || '{}'); } catch { dailyStats = {}; }
+  try { labStats   = JSON.parse(localStorage.getItem(LS_LAB_STATS) || '{}'); } catch { labStats   = {}; }
+}
+
+function saveDailyStats() {
+  localStorage.setItem(LS_DAILY,     JSON.stringify(dailyStats));
+  localStorage.setItem(LS_LAB_STATS, JSON.stringify(labStats));
+}
+
+function recordAttempt(passed) {
+  const today = todayStr();
+  if (!dailyStats[today]) dailyStats[today] = { total: 0, correct: 0 };
+  dailyStats[today].total  += 1;
+  if (passed) dailyStats[today].correct += 1;
+
+  const labId = state.currentLabId;
+  if (!labStats[labId]) labStats[labId] = { total: 0, correct: 0 };
+  labStats[labId].total  += 1;
+  if (passed) labStats[labId].correct += 1;
+
+  saveDailyStats();
+
+  // Celebrate when daily goal is exactly reached
+  if (dailyStats[today].total === DAILY_GOAL) {
+    setTimeout(() => addTutorMsg('🎉 Tagesziel erreicht! Alle 7 Kreise voll – super gemacht!', 'success'), 400);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   STATS PAGE
+   ══════════════════════════════════════════════════════════ */
+function openStats() {
+  document.getElementById('main').classList.add('hidden');
+  document.getElementById('stats-view').classList.remove('hidden');
+  renderStatsPage();
+}
+
+function closeStats() {
+  document.getElementById('stats-view').classList.add('hidden');
+  document.getElementById('main').classList.remove('hidden');
+}
+
+function renderStatsPage() {
+  const view = document.getElementById('stats-view');
+  view.innerHTML = '';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'stats-page-header';
+  const back = document.createElement('button');
+  back.className   = 'stats-back-btn';
+  back.textContent = '← Zurück';
+  back.addEventListener('click', closeStats);
+  const ttl = document.createElement('h2');
+  ttl.className   = 'stats-page-title';
+  ttl.textContent = 'Statistik & Fortschritt';
+  hdr.append(back, ttl);
+  view.appendChild(hdr);
+
+  view.appendChild(renderDailySection());
+  view.appendChild(renderCalendarSection());
+  view.appendChild(renderLabStatsSection());
+}
+
+function renderDailySection() {
+  const today     = todayStr();
+  const data      = dailyStats[today] || { total: 0, correct: 0 };
+  const done      = Math.min(data.total, DAILY_GOAL);
+  const pct       = done / DAILY_GOAL;
+  const CIRC      = 2 * Math.PI * 36;
+  const ringColor = pct >= 1 ? 'var(--sage)' : 'var(--accent)';
+
+  const section = document.createElement('div');
+  section.className = 'stats-section';
+  section.innerHTML = `<div class="stats-section-title">Heute – Tagesziel ${done}/${DAILY_GOAL} Aufgaben</div>`;
+
+  const body = document.createElement('div');
+  body.className = 'daily-body';
+
+  // Big ring
+  const ringWrap = document.createElement('div');
+  ringWrap.className = 'big-ring-wrap';
+  ringWrap.innerHTML = `
+    <svg class="big-ring" viewBox="0 0 88 88" width="88" height="88" aria-hidden="true">
+      <circle cx="44" cy="44" r="36" stroke="var(--border)" stroke-width="7" fill="none"/>
+      <circle cx="44" cy="44" r="36"
+              stroke="${ringColor}" stroke-width="7" fill="none"
+              stroke-linecap="round"
+              stroke-dasharray="${CIRC.toFixed(1)}"
+              stroke-dashoffset="${(CIRC * (1 - pct)).toFixed(1)}"
+              transform="rotate(-90 44 44)"/>
+    </svg>
+    <div class="big-ring-label">${Math.round(pct * 100)}%</div>`;
+
+  // 7 small circles
+  const smallWrap = document.createElement('div');
+  smallWrap.className = 'small-circles-col';
+  smallWrap.innerHTML = '<div class="small-circles-label">Aufgaben heute</div>';
+  const dots = document.createElement('div');
+  dots.className = 'small-circles-row';
+  for (let i = 0; i < DAILY_GOAL; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'small-circle' + (i < done ? ' filled' : '');
+    dot.title = i < done ? `Aufgabe ${i + 1} erledigt` : `Aufgabe ${i + 1}`;
+    dots.appendChild(dot);
+  }
+  smallWrap.appendChild(dots);
+
+  if (data.total > 0) {
+    const acc = Math.round((data.correct / data.total) * 100);
+    const accEl = document.createElement('div');
+    accEl.className = 'daily-acc-text';
+    accEl.textContent = `${data.correct} richtig · ${data.total - data.correct} falsch · ${acc}% Genauigkeit`;
+    smallWrap.appendChild(accEl);
+  } else {
+    const emptyEl = document.createElement('div');
+    emptyEl.className = 'daily-acc-text muted';
+    emptyEl.textContent = 'Noch keine Aufgabe heute gelöst. Los geht\'s!';
+    smallWrap.appendChild(emptyEl);
+  }
+
+  body.append(ringWrap, smallWrap);
+  section.appendChild(body);
+  return section;
+}
+
+function renderCalendarSection() {
+  const now    = new Date();
+  const year   = now.getFullYear();
+  const month  = now.getMonth();
+  const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const DAYS   = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+
+  const section = document.createElement('div');
+  section.className = 'stats-section';
+  section.innerHTML = `<div class="stats-section-title">Kalender – ${MONTHS[month]} ${year}</div>`;
+
+  const grid = document.createElement('div');
+  grid.className = 'calendar-grid';
+
+  DAYS.forEach(d => {
+    const el = document.createElement('div');
+    el.className   = 'cal-day-label';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDay   = new Date(year, month, 1).getDay();
+  const startOff   = (firstDay + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayD     = todayStr();
+
+  for (let i = 0; i < startOff; i++) grid.appendChild(document.createElement('div'));
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const mm   = String(month + 1).padStart(2, '0');
+    const dd   = String(d).padStart(2, '0');
+    const key  = `${year}-${mm}-${dd}`;
+    const data = dailyStats[key];
+    const tot  = data?.total || 0;
+    const hit  = tot >= DAILY_GOAL;
+    const any  = tot > 0;
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell'
+      + (key === todayD ? ' today' : '')
+      + (hit ? ' goal-hit' : any ? ' partial' : '');
+    cell.title = tot ? `${tot} Aufgaben` : '';
+
+    const num = document.createElement('span');
+    num.className   = 'cal-num';
+    num.textContent = d;
+    cell.appendChild(num);
+
+    if (hit) {
+      const ck = document.createElement('span');
+      ck.className   = 'cal-check';
+      ck.textContent = '✓';
+      cell.appendChild(ck);
+    } else if (any) {
+      const dot = document.createElement('span');
+      dot.className   = 'cal-dot';
+      dot.textContent = tot;
+      cell.appendChild(dot);
+    }
+
+    grid.appendChild(cell);
+  }
+
+  section.appendChild(grid);
+
+  // Legend
+  const legend = document.createElement('div');
+  legend.className = 'cal-legend';
+  legend.innerHTML =
+    '<span class="cal-legend-item goal-hit">✓ Tagesziel (≥7)</span>' +
+    '<span class="cal-legend-item partial">Teilweise geübt</span>' +
+    '<span class="cal-legend-item none">Nicht geübt</span>';
+  section.appendChild(legend);
+
+  return section;
+}
+
+function renderLabStatsSection() {
+  const section = document.createElement('div');
+  section.className = 'stats-section';
+  section.innerHTML = '<div class="stats-section-title">Lab-Statistik</div>';
+
+  const hasAny = LAB_CONFIG.some(lab => (labStats[lab.id]?.total || 0) > 0);
+
+  if (!hasAny) {
+    const empty = document.createElement('div');
+    empty.className   = 'stats-empty';
+    empty.textContent = 'Noch keine Aufgaben geübt. Starte ein Lab um hier deinen Fortschritt zu sehen!';
+    section.appendChild(empty);
+    return section;
+  }
+
+  const rows = document.createElement('div');
+  rows.className = 'lab-stats-rows';
+
+  LAB_CONFIG.forEach(lab => {
+    const s = labStats[lab.id];
+    if (!s || s.total === 0) return;
+
+    const acc     = Math.round((s.correct / s.total) * 100);
+    const fillCls = acc >= 70 ? 'good' : acc >= 40 ? 'warn' : 'bad';
+
+    const row = document.createElement('div');
+    row.className = 'lab-stat-row';
+    row.innerHTML = `
+      <span class="lab-stat-label">${escHtml(lab.label)}</span>
+      <div class="lab-stat-track"><div class="lab-stat-fill ${fillCls}" style="width:${acc}%"></div></div>
+      <span class="lab-stat-pct ${fillCls}">${acc}%</span>
+      <span class="lab-stat-cnt">${s.correct}/${s.total}</span>`;
+    rows.appendChild(row);
+  });
+
+  section.appendChild(rows);
+  return section;
+}
+
+/* ══════════════════════════════════════════════════════════
    ADD LAB  – Änderung 1
    ══════════════════════════════════════════════════════════ */
 function openAddLabModal() {
@@ -1812,6 +2070,10 @@ function bindEvents() {
         generateLabFromText();
       }
     });
+
+  // ── Stats page ──
+  document.getElementById('stats-btn')
+    .addEventListener('click', openStats);
 
   // ── Settings ──
   document.getElementById('settings-btn')
