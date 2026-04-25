@@ -34,15 +34,17 @@ let labStats   = {};  // { "lab01": {total, correct} }
 
 // ── State ──────────────────────────────────────────────────────────────────
 const state = {
-  exercises:    [],
-  currentBase:  null,   // original exercise (reset / hints)
-  currentEx:    null,   // possibly varied exercise shown to user
-  currentLabId: 'lab01',
-  hintLevel:    0,
-  progress:     null,
-  apiKey:       '',
-  apiProvider:  'anthropic',
-  running:      false,
+  exercises:            [],
+  currentBase:          null,   // original exercise (reset / hints)
+  currentEx:            null,   // possibly varied exercise shown to user
+  currentLabId:         'lab01',
+  hintLevel:            0,
+  progress:             null,
+  apiKey:               '',
+  apiProvider:          'anthropic',
+  running:              false,
+  pendingSuccess:       false,  // set true after correct run, consumed on "Nächste Aufgabe"
+  completionCardShown:  false,  // guard so completion card only shows once per lab
 };
 
 // Exam sub-state (isolated for clarity)
@@ -77,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setTimeout(() => {
       openSettings();
       document.getElementById('api-key-status').textContent =
-        '👋 Willkommen! Bitte trage deinen Claude API Key ein um zu starten.';
+        '👋 Willkommen! Bitte trage deinen API Key ein um zu starten.';
       document.getElementById('api-key-status').className = 'api-key-status';
     }, 400);
   }
@@ -122,7 +124,6 @@ function updateProgress(passed) {
   const id = ex.id;
   const p  = state.progress;
 
-  recordAttempt(passed);
   p.attempts[id] = (p.attempts[id] || 0) + 1;
 
   if (passed) {
@@ -148,7 +149,7 @@ function updateProgress(passed) {
 
   saveProgress();
   updateStreakDisplay();
-  checkLabCompletion(state.currentLabId);
+  checkLabCompletion(state.currentLabId, passed);
   if (document.getElementById('progress-content')
       && !document.getElementById('progress-content').classList.contains('hidden')) {
     renderProgressDashboard();
@@ -187,7 +188,8 @@ function updateApiStatusBadge() {
    LAB LOADING  (all labs are clickable; 404 → info message)
    ══════════════════════════════════════════════════════════ */
 async function loadLab(labId) {
-  state.currentLabId = labId;
+  state.currentLabId        = labId;
+  state.completionCardShown = false;
 
   // Sonderfall: Prüfungslab lädt aus importierten Prüfungsaufgaben
   if (labId === 'lab_exam') {
@@ -279,17 +281,63 @@ function buildLabSelector() {
   });
 }
 
-// Mark lab button green with ✓ if all exercises solved
-function checkLabCompletion(labId) {
+// Mark lab button green with ✓ if all exercises solved; show completion card only once per lab
+function checkLabCompletion(labId, passed = false) {
   if (!state.exercises.length) return;
   const allSolved = state.exercises.every(ex => state.progress.solved[ex.id]);
   const btn = document.querySelector(`[data-lab-id="${labId}"]`);
-  if (!btn) return;
-  if (allSolved) {
-    btn.classList.add('done');
-  } else {
-    btn.classList.remove('done');
+  if (btn) {
+    if (allSolved) btn.classList.add('done');
+    else           btn.classList.remove('done');
   }
+  if (allSolved && passed && !state.completionCardShown) {
+    state.completionCardShown = true;
+    showLabCompletionCard();
+  }
+}
+
+function showLabCompletionCard() {
+  const wrap = document.getElementById('tutor-messages');
+  if (wrap.querySelector('.lab-completion-card')) return;
+
+  const total    = state.exercises.length;
+  const labLabel = LAB_CONFIG.find(l => l.id === state.currentLabId)?.label || state.currentLabId;
+  const card     = document.createElement('div');
+  card.className = 'lab-completion-card';
+  card.innerHTML = `
+    <div class="lc-title">🎉 ${labLabel} abgeschlossen!</div>
+    <div class="lc-text">Du hast alle <strong>${total} Aufgaben</strong> erfolgreich gelöst.</div>
+    <div class="lc-actions">
+      <button id="repeat-lab-btn" class="btn btn-run">↺ Lab wiederholen</button>
+      <button id="next-lab-btn" class="btn btn-explain">Nächstes Lab →</button>
+    </div>`;
+  wrap.appendChild(card);
+  wrap.scrollTop = wrap.scrollHeight;
+
+  document.getElementById('repeat-lab-btn').addEventListener('click', () => {
+    state.exercises.forEach(ex => {
+      delete state.progress.solved[ex.id];
+      delete state.progress.attempts[ex.id];
+      delete state.progress.correct[ex.id];
+    });
+    saveProgress();
+    state.completionCardShown = false;
+    clearTutorMessages();
+    addTutorMsg(`Lab neu gestartet – ${total} Aufgaben warten auf dich. Viel Erfolg!`, 'info');
+    selectNextExercise();
+  });
+
+  document.getElementById('next-lab-btn').addEventListener('click', () => {
+    const idx     = LAB_CONFIG.findIndex(l => l.id === state.currentLabId);
+    const nextLab = LAB_CONFIG[idx + 1];
+    if (nextLab) {
+      document.querySelectorAll('.lab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`[data-lab-id="${nextLab.id}"]`)?.classList.add('active');
+      loadLab(nextLab.id);
+    } else {
+      addTutorMsg('Du hast alle verfügbaren Labs abgeschlossen! 🏆', 'success');
+    }
+  });
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -340,15 +388,26 @@ function selectNextExercise() {
    DISPLAY EXERCISE
    ══════════════════════════════════════════════════════════ */
 async function displayExercise(exercise) {
-  state.currentBase = exercise;
-  state.currentEx   = exercise;
-  state.hintLevel   = 0;
+  state.currentBase    = exercise;
+  state.currentEx      = exercise;
+  state.hintLevel      = 0;
+  state.pendingSuccess = false;
 
   renderExercise(exercise);
   setEditorCode(exercise.starter_code);
   clearConsole();
   hideNextButton();
   resetHints();
+  clearTutorMessages();
+
+  const labSolved = state.exercises.filter(ex => state.progress.solved[ex.id]).length;
+  const labTotal  = state.exercises.length;
+  addTutorMsg(
+    `Aufgabe <strong>${exercise.function_name}()</strong> gestartet ` +
+    `(${labSolved}/${labTotal} in diesem Lab gelöst). ` +
+    `Schreib deinen Code und klick auf ▶ Ausführen – ich erkläre dir was passiert!`,
+    'info'
+  );
 
   if (exam.active) {
     exam.used.add(exercise.id);
@@ -382,6 +441,11 @@ function renderExercise(ex) {
 
   document.getElementById('variation-note').classList.add('hidden');
   document.getElementById('variation-note').textContent = '';
+
+  const labSolved = state.exercises.filter(e => state.progress.solved[e.id]).length;
+  const labTotal  = state.exercises.length;
+  const countEl   = document.getElementById('exercise-count');
+  if (countEl) countEl.textContent = labTotal ? `${labSolved}/${labTotal} gelöst` : '';
 
   renderTestPills(ex);
 }
@@ -420,7 +484,7 @@ async function generateVariation(exercise) {
   const spinner = document.getElementById('variation-spinner');
   spinner.classList.remove('hidden');
 
-  const prompt = `Du bist Python-Dozent. Erstelle eine leicht abgewandelte Version dieser Aufgabe. Behalte das gleiche Konzept, ändere aber leicht die Zahlen, Parameter-Namen oder Bedingungen laut den variation_rules. Gib NUR JSON zurück mit den Feldern: description_de, function_name, starter_code, tests, variation_note.
+  const prompt = `Du bist Python-Dozent. Erstelle eine leicht abgewandelte Version dieser Aufgabe. WICHTIG: Behalte IMMER den exakt gleichen Funktionsnamen (${exercise.function_name}). Ändere nur die Zahlen, Grenzwerte oder Bedingungen – nie die Funktion selbst. Gib NUR JSON zurück mit den Feldern: description_de, function_name (muss "${exercise.function_name}" sein), starter_code, tests, variation_note.
 
 Aufgabe:
 ${JSON.stringify({
@@ -434,14 +498,16 @@ ${JSON.stringify({
   })}`;
 
   try {
-    const text   = await callAPI(prompt, 900);
+    const text   = await callAPI(prompt, 900, true);
     const varied = parseJSON(text);
-    if (varied && varied.function_name && Array.isArray(varied.tests)) {
+    if (varied && Array.isArray(varied.tests) && varied.tests.length) {
       const merged = {
         ...exercise,
         description_de: varied.description_de || exercise.description_de,
-        function_name:  varied.function_name  || exercise.function_name,
-        starter_code:   varied.starter_code   || exercise.starter_code,
+        function_name:  exercise.function_name,   // always keep original name
+        starter_code:   varied.starter_code
+          ? varied.starter_code.replace(/def\s+\w+\s*\(/, `def ${exercise.function_name}(`)
+          : exercise.starter_code,
         tests:          varied.tests,
       };
       state.currentEx = merged;
@@ -487,39 +553,43 @@ async function runCode() {
 
   if (!state.apiKey) {
     openSettings();
-    addTutorMsg('Bitte gib zuerst deinen <strong>Claude API Key</strong> in den Einstellungen ein (⚙️).', 'info');
+    addTutorMsg('Bitte gib zuerst deinen <strong>API Key</strong> in den Einstellungen ein (⚙️).', 'info');
     return;
   }
 
   state.running = true;
   setRunLoading(true);
   clearConsole();
+  clearTutorMessages();
 
   const ex = state.currentEx || state.currentBase;
 
-  const prompt = `Du bist Python-Interpreter und Tutor. Analysiere diesen Code für diese Aufgabe. Gib NUR JSON zurück mit:
-- simulated_output (string)
-- test_results (Array: {passed: boolean, input: any, got: any, expected: any})
-- all_passed (boolean)
-- status ("correct"/"wrong_logic"/"syntax_error"/"incomplete"/"runtime_error")
-- error_message (string|null)
-- error_line (Zahl|null)
-- line_by_line (Array für jede nicht-leere Code-Zeile: {line_no: Zahl, code: string, what_happens: string (kurz, Deutsch), background: string (Python-Konzept, 2–5 Wörter), output_contribution: string (wie beeinflusst diese Zeile das Ergebnis, Deutsch), status: "correct"|"partial"|"wrong"})
-- missing_for_perfect (string auf Deutsch was noch fehlt, null wenn all_passed)
-- next_improvement (string: konkretester nächster Verbesserungsschritt auf Deutsch, null wenn all_passed)
+  const prompt = `Du bist Python-Interpreter. Führe diesen Code gedanklich aus und gib NUR JSON zurück (kein Text davor oder danach):
+{
+  "simulated_output": "<was print() ausgeben würde, leer wenn nichts>",
+  "test_results": [{"passed": true/false, "input": <Eingabewert>, "got": <tatsächlicher Rückgabewert>, "expected": <erwarteter Wert>}],
+  "all_passed": true/false,
+  "status": "correct" | "wrong_logic" | "syntax_error" | "incomplete" | "runtime_error",
+  "error_message": null oder "<Fehlermeldung>",
+  "error_line": null oder <Zeilennummer>,
+  "missing_for_perfect": null oder "<was fehlt auf Deutsch>",
+  "next_improvement": null oder "<konkreter nächster Schritt auf Deutsch>"
+}
+
+Führe JEDEN Test einzeln aus. Berechne den tatsächlichen Rückgabewert des Codes für jeden Input – nicht was die Aufgabe erwartet, sondern was der Code WIRKLICH zurückgibt.
 
 Aufgabe:
 - Funktion: ${ex.function_name}
 - Beschreibung: ${ex.description_de}
 - Tests: ${JSON.stringify(ex.tests)}
 
-Code des Studenten:
+Code:
 \`\`\`python
 ${code}
 \`\`\``;
 
   try {
-    const text   = await callAPI(prompt, 2000);
+    const text   = await callAPI(prompt, 1200, true);
     const result = parseJSON(text);
     if (!result || typeof result.all_passed === 'undefined') {
       throw new Error('Unerwartetes API-Antwortformat');
@@ -527,6 +597,7 @@ ${code}
 
     renderConsole(result, ex);
     updateProgress(result.all_passed);
+    state.pendingSuccess = result.all_passed;
 
     if (exam.active) {
       handleExamAnswer(result.all_passed, ex);
@@ -643,29 +714,28 @@ async function fetchErrorFeedback(code, result, ex) {
 
   const failedTests = (result.test_results || []).filter(t => !t.passed).slice(0, 3);
 
-  const prompt = `Du bist ein geduldiger Python-Tutor der Studenten Schritt für Schritt erklärt, warum ihr Code nicht funktioniert. Antworte auf Deutsch als HTML (verwende <strong>, <code>, <br> Tags – kein Markdown). Gliedere deine Antwort in genau diese vier Abschnitte:
+  const prompt = `Du bist ein geduldiger Python-Tutor. Erkläre auf Deutsch als HTML (<strong>, <code>, <br> – kein Markdown) in GENAU diesen vier Abschnitten WARUM der Code nicht funktioniert:
 
 <strong>1. Was stimmt nicht?</strong><br>
-Erkläre in 1–2 Sätzen konkret, was das Problem ist. Nenne die betroffenen Zeilen oder Stellen im Code des Studenten.
+Nenne das konkrete Problem (1–2 Sätze). Welche Zeile macht was Falsches – und WARUM ist das ein Fehler?
 
-<strong>2. Wie funktioniert das Konzept?</strong><br>
-Erkläre das relevante Python-Konzept (z.B. Rückgabewerte, Schleifen, Bedingungen, Typen) in einfachen Worten für Anfänger – so als wäre es das erste Mal dass jemand davon hört.
+<strong>2. Warum verhält Python sich so?</strong><br>
+Erkläre das zugrundeliegende Python-Konzept (z.B. Rückgabewerte, Schleifen, Bedingungen, Typen) von Grund auf: Wie funktioniert es, und WARUM funktioniert es so? Gib ein einfaches Mini-Beispiel mit <code>-Tags.
 
-<strong>3. Was genau passt an meiner Lösung nicht?</strong><br>
-Gehe durch die falschen Zeilen im Code des Studenten. Erkläre für jede problematische Zeile: was sie tut, warum das nicht mit der Aufgabenstellung übereinstimmt.
+<strong>3. Warum passt mein Code nicht zur Aufgabe?</strong><br>
+Gehe durch die problematischen Zeilen. Zeige für jede Zeile mit einem konkreten Testwert: Was berechnet der Code WIRKLICH (z.B. <code>double(3)</code> gibt <code>3</code> zurück weil <code>return x</code> nur x zurückgibt), und warum weicht das von der Erwartung ab?
 
-<strong>4. Wie würde ich meinen Code umschreiben?</strong><br>
-Zeige einen konkreten Weg, wie der Student seinen bestehenden Code anpassen müsste (nicht einfach die fertige Lösung, sondern den Weg dahin). Nutze <code>-Tags für Code-Snippets.
+<strong>4. Wie passe ich meinen Code an?</strong><br>
+Zeige den konkreten Änderungsschritt mit <code>-Tags. Erkläre auch WARUM diese Änderung das Problem löst – nicht einfach "mach X", sondern "mach X, weil Python dann Y macht, was Z bewirkt".
 
-Sei ermutigend und freundlich. Maximal 350 Wörter.
+Maximal 300 Wörter. Freundlicher, ermutigender Ton. Keine fertige Komplettlösung.
 
 Aufgabe: <code>${ex.function_name}</code> – ${ex.description_de}
 
 Code des Studenten:
-${code}
+<code>${code}</code>
 
-Fehlerstatus: ${result.status}
-Fehler: ${result.error_message || 'Falsche Ausgabe'}
+Fehlerstatus: ${result.status}${result.error_message ? '\nFehler: ' + result.error_message : ''}
 Fehlgeschlagene Tests: ${JSON.stringify(failedTests)}`;
 
   try {
@@ -686,7 +756,7 @@ async function explainCode() {
 
   if (!state.apiKey) {
     openSettings();
-    addTutorMsg('Bitte gib zuerst deinen <strong>Claude API Key</strong> ein (⚙️).', 'info');
+    addTutorMsg('Bitte gib zuerst deinen <strong>API Key</strong> ein (⚙️).', 'info');
     return;
   }
 
@@ -696,12 +766,20 @@ async function explainCode() {
     return;
   }
 
+  clearTutorMessages();
   const loadId = addLoadingBubble();
 
-  const prompt = `Erkläre diesem Python-Anfänger jede Zeile seines Codes auf Deutsch. Format pro Zeile: "Zeile N: [code-zeile] → [was diese Zeile macht, einfach erklärt, warum sie hier steht]". Sei sehr anfängerfreundlich. Nummeriere die Zeilen korrekt.
+  const ex = state.currentBase;
+  const prompt = `Du bist Python-Tutor. Erkläre diesem Anfänger jede Zeile seines Codes auf Deutsch als HTML (<code>, <br>, <strong> – kein Markdown).
+
+Für jede nicht-leere Zeile schreibe: <strong>Zeile N:</strong> <code>[Code]</code><br>→ [Was diese Zeile macht (WAS)] – und WARUM sie so geschrieben ist (welches Python-Konzept steckt dahinter, warum genau diese Syntax).<br><br>
+
+Sei sehr anfängerfreundlich – erkläre auch Selbstverständliches wenn es zum Verständnis beiträgt.${ex ? `\n\nKontext: Die Funktion heißt "${ex.function_name}" und soll: ${ex.description_de}` : ''}
 
 Code:
-${code}`;
+\`\`\`python
+${code}
+\`\`\``;
 
   try {
     const text = await callAPI(prompt, 1000);
@@ -1584,7 +1662,7 @@ async function generateLabFromPDF() {
 /* ══════════════════════════════════════════════════════════
    AI API  (Anthropic · OpenAI · Google Gemini)
    ══════════════════════════════════════════════════════════ */
-async function callAPI(prompt, maxTokens = 1000) {
+async function callAPI(prompt, maxTokens = 1000, fastMode = false) {
   const key      = state.apiKey;
   const provider = state.apiProvider;
   let res, data;
@@ -1597,7 +1675,7 @@ async function callAPI(prompt, maxTokens = 1000) {
         'Authorization': `Bearer ${key}`,
       },
       body: JSON.stringify({
-        model:      'gpt-4o-mini',
+        model:      fastMode ? 'gpt-4o-mini' : 'gpt-4o',
         max_tokens: maxTokens,
         messages:   [{ role: 'user', content: prompt }],
       }),
@@ -1636,7 +1714,7 @@ async function callAPI(prompt, maxTokens = 1000) {
         'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify({
-        model:      'claude-sonnet-4-6',
+        model:      fastMode ? 'claude-haiku-4-5-20251001' : 'claude-sonnet-4-6',
         max_tokens: maxTokens,
         messages:   [{ role: 'user', content: prompt }],
       }),
@@ -1703,6 +1781,10 @@ function removeLoadingBubble(id) {
 /* ══════════════════════════════════════════════════════════
    CONSOLE HELPERS
    ══════════════════════════════════════════════════════════ */
+function clearTutorMessages() {
+  document.getElementById('tutor-messages').innerHTML = '';
+}
+
 function clearConsole() {
   document.getElementById('console-output').innerHTML =
     '<span class="console-placeholder">Klick auf ▶ Ausführen um deinen Code zu testen.</span>';
@@ -1969,6 +2051,18 @@ function bindEvents() {
 
   document.getElementById('next-btn')
     .addEventListener('click', () => {
+      if (state.pendingSuccess) {
+        recordAttempt(true);
+        state.pendingSuccess = false;
+      }
+      hideNextButton();
+      selectNextExercise();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+  document.getElementById('skip-btn')
+    .addEventListener('click', () => {
+      state.pendingSuccess = false;
       hideNextButton();
       selectNextExercise();
       window.scrollTo({ top: 0, behavior: 'smooth' });

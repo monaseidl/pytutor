@@ -570,6 +570,24 @@ body.exam-active .btn-solution { opacity: 0.3; pointer-events: none; }
 }
 .btn-next:hover { background: #7a5e3a; border-color: #7a5e3a; transform: translateY(-1px); }
 
+.btn-skip {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--border);
+  width: 100%;
+  font-size: 0.82rem;
+}
+.btn-skip:hover { background: var(--panel-2); color: var(--text); }
+
+.tutor-footer { gap: 8px; flex-direction: column; }
+
+.exercise-count {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
 /* ══════════════════════════════════════════════════════════
    CONSOLE
    ══════════════════════════════════════════════════════════ */
@@ -1754,4 +1772,38 @@ body.exam-active .hint-area { opacity: 0.4; pointer-events: none; }
   font-size: 0.7rem;
   color: var(--muted);
   text-align: right;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LAB COMPLETION CARD
+   ══════════════════════════════════════════════════════════ */
+.lab-completion-card {
+  background: linear-gradient(135deg, #e8f0e8, #d8ecd8);
+  border: 1.5px solid var(--sage);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  margin-top: 8px;
+  text-align: center;
+}
+.lab-completion-card .lc-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--sage);
+  margin-bottom: 6px;
+}
+.lab-completion-card .lc-text {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.lab-completion-card .lc-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.lab-completion-card .lc-actions .btn {
+  width: auto;
+  padding: 8px 16px;
+  font-size: 0.85rem;
 }
