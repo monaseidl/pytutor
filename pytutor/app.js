@@ -2043,6 +2043,19 @@ function bindEvents() {
       syncLineNumbers();
     });
 
+  // ── Mobile char buttons ──
+  document.querySelectorAll('.btn-char').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ch = btn.dataset.insert;
+      const s  = editor.selectionStart;
+      const e2 = editor.selectionEnd;
+      editor.value = editor.value.slice(0, s) + ch + editor.value.slice(e2);
+      editor.selectionStart = editor.selectionEnd = s + ch.length;
+      editor.focus();
+      syncLineNumbers();
+    });
+  });
+
   document.getElementById('reset-btn')
     .addEventListener('click', () => {
       if (state.currentEx) setEditorCode(state.currentEx.starter_code);

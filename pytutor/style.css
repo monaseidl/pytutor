@@ -1406,6 +1406,13 @@ body.exam-active .hint-area { opacity: 0.4; pointer-events: none; }
 .mobile-tab-row {
   display: none;
   padding: 6px 14px 0;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btn-char {
+  padding: 6px 10px;
+  min-width: 36px;
 }
 
 .btn-tab-mobile {
@@ -1431,7 +1438,7 @@ body.exam-active .hint-area { opacity: 0.4; pointer-events: none; }
    ══════════════════════════════════════════════════════════ */
 @media (max-width: 599px) {
 
-  .mobile-tab-row { display: block; }
+  .mobile-tab-row { display: flex; }
 
   #header { padding: 8px 10px 8px; }
 
