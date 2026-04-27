@@ -5,7 +5,7 @@
 // Der alte Cache wird dann beim nächsten Start automatisch
 // gelöscht und alle Dateien frisch vom Server geladen.
 // ─────────────────────────────────────────────────────────────
-const CACHE_NAME = 'pytutor-v3'; // <── nur diese Zeile ändern!
+const CACHE_NAME = 'pytutor-v4'; // <── nur diese Zeile ändern!
 
 const ASSETS = [
   './index.html',
