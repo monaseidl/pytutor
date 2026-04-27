@@ -1,0 +1,222 @@
+{
+  "exercises": [
+    {
+      "id": "lab03b_01",
+      "title": "most_frequent",
+      "description_de": "Gib das häufigste Element einer Liste L zurück. Bei Gleichstand ist die Auswahl beliebig. L enthält nur skalare Typen. Gibt None zurück, wenn L leer ist. Verwende ein Dictionary zum Zählen.",
+      "function_name": "most_frequent",
+      "parameters": ["L"],
+      "starter_code": "def most_frequent(L):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def most_frequent(L):\n    if not L:\n        return None\n    counts = {}\n    for item in L:\n        counts[item] = counts.get(item, 0) + 1\n    return max(counts, key=counts.get)",
+      "tests": [
+        {"input": [[2, 5, 3, 4, 6, 4, 2, 4, 5]], "expected": 4},
+        {"input": [[2, 3, 4, 3, 5, 3, 6, 3, 7]], "expected": 3},
+        {"input": [[42]], "expected": 42},
+        {"input": [[]], "expected": null},
+        {"input": [["a", "b", "a", "c", "a"]], "expected": "a"}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste [1, 1, 2, 2, 2, 3]",
+          "Liste mit nur einem Element [99]",
+          "Liste mit Strings ['x', 'y', 'x', 'x']"
+        ]
+      },
+      "hints": [
+        "Erstelle ein leeres Dictionary counts = {}. Gehe durch jedes Element und erhöhe seinen Zähler: counts[item] = counts.get(item, 0) + 1.",
+        "counts.get(item, 0) gibt den aktuellen Zähler zurück, oder 0 wenn das Element noch nicht im Dict ist.",
+        "Mit max(counts, key=counts.get) bekommst du den Schlüssel mit dem größten Wert. Vergiss den Sonderfall L = [] → return None."
+      ],
+      "explanation": "Ein Dictionary speichert für jedes Element seine Häufigkeit. counts.get(item, 0) ist sicherer als counts[item], da es keinen KeyError wirft. max() mit key=counts.get findet das häufigste Element direkt.",
+      "difficulty": "medium",
+      "topics": ["dictionaries", "schleifen", "max", "get"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03b_02",
+      "title": "is_anagram_dict",
+      "description_de": "Entscheide, ob Strings s1 und s2 Anagramme sind. Groß-/Kleinschreibung wird ignoriert. Verwende ausschließlich Dictionaries (keine sorted(), Sets oder Counter).",
+      "function_name": "is_anagram",
+      "parameters": ["s1", "s2"],
+      "starter_code": "def is_anagram(s1, s2):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def is_anagram(s1, s2):\n    s1 = s1.lower()\n    s2 = s2.lower()\n    counts = {}\n    for ch in s1:\n        counts[ch] = counts.get(ch, 0) + 1\n    for ch in s2:\n        counts[ch] = counts.get(ch, 0) - 1\n    return all(v == 0 for v in counts.values())",
+      "tests": [
+        {"input": ["", ""], "expected": true},
+        {"input": ["abCdabCd", "abcdabcd"], "expected": true},
+        {"input": ["abcdaabcd", "aabbcddcb"], "expected": false},
+        {"input": ["listen", "silent"], "expected": true},
+        {"input": ["hello", "world"], "expected": false}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Teste 'Hallo' und 'oHlal'",
+          "Strings unterschiedlicher Länge 'abc' und 'abcd'",
+          "Teste 'Python' und 'Typhon'"
+        ]
+      },
+      "hints": [
+        "Zähle die Buchstaben von s1 in einem Dictionary hoch (+1 für jeden Buchstaben). Dann für s2 wieder runter (-1).",
+        "Wandle beide Strings zuerst mit .lower() um, damit Groß-/Kleinschreibung keine Rolle spielt.",
+        "Am Ende müssen alle Werte im Dictionary 0 sein: all(v == 0 for v in counts.values())."
+      ],
+      "explanation": "Die dict-basierte Variante zählt Buchstaben für s1 hoch und für s2 runter. Wenn am Ende alle Werte 0 sind, haben beide Strings exakt dieselben Buchstaben – sie sind Anagramme.",
+      "difficulty": "medium",
+      "topics": ["dictionaries", "strings", "schleifen", "get"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03b_03",
+      "title": "count_frequent",
+      "description_de": "Gegeben eine Liste items. Gib ein Dictionary zurück, das jeden Wert auf seine Häufigkeit abbildet – aber nur wenn er mehr als 2-mal vorkommt. Verwende eine einzige Dictionary Comprehension. Beispiel: ['A','A','A','B','B','C','C','C','C','D'] → {'A': 3, 'C': 4}.",
+      "function_name": "count_frequent",
+      "parameters": ["items"],
+      "starter_code": "def count_frequent(items):\n    # Verwende eine einzige Dictionary Comprehension!\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def count_frequent(items):\n    return {x: items.count(x) for x in set(items) if items.count(x) > 2}",
+      "tests": [
+        {"input": [["A", "A", "A", "B", "B", "C", "C", "C", "C", "D"]], "expected": {"A": 3, "C": 4}},
+        {"input": [[1, 1, 1, 2, 2, 3, 3, 3, 3, 3]], "expected": {1: 3, 3: 5}},
+        {"input": [["x", "y", "z"]], "expected": {}},
+        {"input": [[7, 7, 7, 7]], "expected": {7: 4}}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste ['a','a','a','b','b','b','b','c']",
+          "Liste mit Zahlen [1,1,2,2,2,3,3,3,3]",
+          "Liste wo kein Element mehr als 2-mal vorkommt"
+        ]
+      },
+      "hints": [
+        "Eine Dictionary Comprehension hat die Form: {key: value for item in iterable if condition}.",
+        "set(items) gibt dir alle einzigartigen Elemente. Für jedes kannst du items.count(x) aufrufen, um die Häufigkeit zu bestimmen.",
+        "Die Bedingung lautet: if items.count(x) > 2. Damit werden nur Elemente mit mehr als 2 Vorkommen aufgenommen."
+      ],
+      "explanation": "Dictionary Comprehension: {x: items.count(x) for x in set(items) if items.count(x) > 2}. set(items) liefert eindeutige Elemente, .count(x) zählt Vorkommen, und die if-Klausel filtert nach Häufigkeit > 2.",
+      "difficulty": "medium",
+      "topics": ["dictionaries", "comprehension", "set", "count"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03b_04",
+      "title": "group_by_first_letter",
+      "description_de": "Gegeben eine Liste von Wörtern. Gib ein Dictionary zurück, das Wörter nach ihrem ersten Buchstaben (Kleinbuchstabe als Schlüssel) gruppiert. Die Reihenfolge der Wörter in den Listen bleibt erhalten.",
+      "function_name": "group_by_first_letter",
+      "parameters": ["words"],
+      "starter_code": "def group_by_first_letter(words):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def group_by_first_letter(words):\n    result = {}\n    for word in words:\n        key = word[0].lower()\n        if key not in result:\n            result[key] = []\n        result[key].append(word)\n    return result",
+      "tests": [
+        {"input": [["Apple", "art", "Banana", "boat", "anchor"]], "expected": {"a": ["Apple", "art", "anchor"], "b": ["Banana", "boat"]}},
+        {"input": [["Zebra", "zoo", "apple"]], "expected": {"z": ["Zebra", "zoo"], "a": ["apple"]}},
+        {"input": [[]], "expected": {}},
+        {"input": [["Hello"]], "expected": {"h": ["Hello"]}}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Liste ['Cat', 'car', 'dog', 'Door']",
+          "Liste mit nur einem Wort ['Python']",
+          "Liste ['ant', 'Ant', 'ANT']"
+        ]
+      },
+      "hints": [
+        "Erstelle ein leeres Dictionary result = {}. Gehe durch jedes Wort und bestimme seinen Schlüssel mit word[0].lower().",
+        "Prüfe ob der Schlüssel schon im Dictionary ist. Wenn nicht, füge eine leere Liste ein: result[key] = [].",
+        "Dann hänge das Wort an die Liste: result[key].append(word). Gib am Ende result zurück."
+      ],
+      "explanation": "Das Muster 'gruppieren nach Eigenschaft' taucht häufig auf. Zuerst prüfen ob der Schlüssel existiert, dann die Gruppe anlegen oder erweitern. word[0].lower() extrahiert den ersten Buchstaben als Kleinbuchstabe.",
+      "difficulty": "medium",
+      "topics": ["dictionaries", "schleifen", "strings", "listen"],
+      "exam_relevance": "high"
+    },
+    {
+      "id": "lab03b_05",
+      "title": "inventory_value",
+      "description_de": "Gegeben zwei Dictionaries: inventory (Artikelname → Menge) und prices (Artikelname → Stückpreis). Gib eine Liste von (Artikel, Gesamtwert)-Tupeln zurück, absteigend nach Gesamtwert sortiert. Artikel ohne Preis werden ignoriert.",
+      "function_name": "inventory_value",
+      "parameters": ["inventory", "prices"],
+      "starter_code": "def inventory_value(inventory, prices):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def inventory_value(inventory, prices):\n    result = []\n    for item, qty in inventory.items():\n        if item in prices:\n            result.append((item, qty * prices[item]))\n    result.sort(key=lambda x: x[1], reverse=True)\n    return result",
+      "tests": [
+        {"input": [{"apple": 5, "banana": 2, "pear": 10, "orange": 1}, {"apple": 2.0, "banana": 1.0, "pear": 1.5}], "expected": [["pear", 15.0], ["apple", 10.0], ["banana", 2.0]]},
+        {"input": [{}, {"apple": 2.0}], "expected": []},
+        {"input": [{"milk": 3}, {}], "expected": []},
+        {"input": [{"a": 1, "b": 5}, {"a": 10.0, "b": 2.0}], "expected": [["a", 10.0], ["b", 10.0]]}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "inventory={'bread': 10, 'butter': 5}, prices={'bread': 1.5, 'butter': 3.0}",
+          "Ein Artikel im Inventory hat keinen Preis – er soll ignoriert werden",
+          "Leeres Inventory"
+        ]
+      },
+      "hints": [
+        "Gehe mit inventory.items() durch alle Artikel. Prüfe mit 'if item in prices' ob ein Preis existiert.",
+        "Der Gesamtwert ist qty * prices[item]. Erstelle eine Liste von Tupeln (item, gesamtwert).",
+        "Sortiere mit result.sort(key=lambda x: x[1], reverse=True) absteigend nach dem Wert (index 1 jedes Tupels)."
+      ],
+      "explanation": "dict.items() liefert (Schlüssel, Wert)-Paare. lambda x: x[1] als sort-key sortiert nach dem zweiten Element jedes Tupels. reverse=True sorgt für absteigende Reihenfolge.",
+      "difficulty": "medium",
+      "topics": ["dictionaries", "listen", "tupel", "sortieren", "lambda"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab03b_06",
+      "title": "compare_lists",
+      "description_de": "Gegeben zwei Listen a und b gleicher Länge. Vergleiche sie elementweise und gib eine Liste von beschreibenden Strings für jede Position zurück, an der sie sich unterscheiden. Format: 'index I: A != B'. Verwende enumerate und zip.",
+      "function_name": "compare_lists",
+      "parameters": ["a", "b"],
+      "starter_code": "def compare_lists(a, b):\n    # YOUR CODE HERE\n    pass",
+      "canonical_solution": "def compare_lists(a, b):\n    result = []\n    for i, (x, y) in enumerate(zip(a, b)):\n        if x != y:\n            result.append(f'index {i}: {x} != {y}')\n    return result",
+      "tests": [
+        {"input": [[1, 2, 3, 4], [1, 99, 3, 5]], "expected": ["index 1: 2 != 99", "index 3: 4 != 5"]},
+        {"input": [["a", "b", "c"], ["a", "b", "c"]], "expected": []},
+        {"input": [[true, false, true], [false, false, true]], "expected": ["index 0: True != False"]},
+        {"input": [[1], [2]], "expected": ["index 0: 1 != 2"]}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Listen [10, 20, 30] und [10, 25, 30]",
+          "Zwei identische Listen [1, 2, 3]",
+          "Listen mit einem Element [True] und [False]"
+        ]
+      },
+      "hints": [
+        "enumerate(zip(a, b)) gibt dir gleichzeitig den Index i und das Paar (x, y): for i, (x, y) in enumerate(zip(a, b)).",
+        "Prüfe mit if x != y ob sich die Elemente unterscheiden.",
+        "Baue den String mit einem f-String: f'index {i}: {x} != {y}' und hänge ihn an die Ergebnisliste."
+      ],
+      "explanation": "zip(a, b) kombiniert zwei Listen paarweise. enumerate() liefert zusätzlich den Index. f-Strings erlauben elegante String-Formatierung. Das Muster 'for i, (x, y) in enumerate(zip(a, b))' ist ein klassisches Python-Idiom.",
+      "difficulty": "easy",
+      "topics": ["listen", "zip", "enumerate", "f-strings", "schleifen"],
+      "exam_relevance": "medium"
+    },
+    {
+      "id": "lab03b_07",
+      "title": "ct1_trace",
+      "description_de": "Implementiere die Funktion ct1 exakt wie angegeben. Verstehe dabei: (1) d = c ist eine Referenz, kein Kopieren – d und c zeigen auf dasselbe Dictionary. (2) True == 1 in Python, deshalb überschreibt c[L[3]] den Eintrag c[L[2]], wenn L[2] und L[3] beide True sind. (3) d == c ist immer True, weil d IS c.",
+      "function_name": "ct1",
+      "parameters": ["L"],
+      "starter_code": "def ct1(L):\n    a = []\n    b = list()\n    c = dict()\n    d = c\n    for item in L:\n        if item in a:\n            b.append(item)\n        a.append(item)\n    c[L[0]] = a\n    c[L[1]] = b\n    c[L[2]] = len(a)\n    c[L[3]] = len(b)\n    x = (d == c)\n    c[L[4]] = x\n    return c",
+      "canonical_solution": "def ct1(L):\n    a = []\n    b = list()\n    c = dict()\n    d = c\n    for item in L:\n        if item in a:\n            b.append(item)\n        a.append(item)\n    c[L[0]] = a\n    c[L[1]] = b\n    c[L[2]] = len(a)\n    c[L[3]] = len(b)\n    x = (d == c)\n    c[L[4]] = x\n    return c",
+      "tests": [
+        {"input": [["x", "y", "z", "z", "key"]], "expected": {"x": ["x", "y", "z", "z", "key"], "y": ["z"], "z": 1, "key": true}},
+        {"input": [["a", "b", "c", "c", "flag"]], "expected": {"a": ["a", "b", "c", "c", "flag"], "b": ["c"], "c": 1, "flag": true}},
+        {"input": [["p", "q", "p", "q", "out"]], "expected": {"p": 5, "q": 2, "out": true}}
+      ],
+      "variation_rules": {
+        "concept_variations": [
+          "Erkläre warum d == c immer True ist",
+          "Was passiert wenn L[2] == L[3] sind (gleicher Dict-Schlüssel)?",
+          "Was wäre anders wenn d = dict(c) statt d = c geschrieben wird?"
+        ]
+      },
+      "hints": [
+        "d = c ist eine Referenz-Zuweisung: d und c zeigen auf dasselbe Dictionary-Objekt. Änderungen an c sieht man auch über d.",
+        "In Python ist True == 1. Als Dictionary-Schlüssel sind True und 1 deshalb identisch – c[True] und c[1] greifen auf denselben Eintrag zu.",
+        "Nach der Schleife: a hat alle Elemente von L, b hat nur die Duplikate (Elemente die schon in a waren). d == c ist True, weil sie dasselbe Objekt sind."
+      ],
+      "explanation": "Drei Konzepte: (1) d = c bedeutet zwei Namen für ein Objekt, keine Kopie. (2) True == 1 in Python – deshalb überschreibt c[True]=len(b) den Eintrag c[True]=len(a) wenn L[2] und L[3] beide True sind. (3) d == c ist immer True da sie identisch sind (is). Die Schleife sammelt Duplikate in b.",
+      "difficulty": "hard",
+      "topics": ["dictionaries", "referenzen", "tracing", "true-als-schluessel", "is-vs-gleich"],
+      "exam_relevance": "high"
+    }
+  ]
+}

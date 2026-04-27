@@ -5,14 +5,15 @@
 // Der alte Cache wird dann beim nächsten Start automatisch
 // gelöscht und alle Dateien frisch vom Server geladen.
 // ─────────────────────────────────────────────────────────────
-const CACHE_NAME = 'pytutor-v2'; // <── nur diese Zeile ändern!
+const CACHE_NAME = 'pytutor-v3'; // <── nur diese Zeile ändern!
 
 const ASSETS = [
   './index.html',
   './app.js',
   './style.css',
   './manifest.json',
-  './exercises/lab01.json'
+  './exercises/lab01.json',
+  './exercises/lab03b.json'
 ];
 
 // install: alle Dateien in den Cache laden
